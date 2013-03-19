@@ -1,0 +1,12 @@
+
+
+Project roadmap
+================
+
+1) Eclipse plugin for static code analysis
+2) AS 7 service exposing an (REST) API for CDI beans inspection
+3) Make the Eclipse plugin consume this API and adjust the visualisation
+   * Extra eclipse pane showing traits of the bean - toString(), properties, ...
+4) Web application consuming either this API or CDI API directly and visualise in a browser.
+5) Expose the CDI beans info in the AS 7 Management API.
+
