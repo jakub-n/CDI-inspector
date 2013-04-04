@@ -1,0 +1,5 @@
+# eclipse compiled binaries
+bin
+
+# eclipse configuration
+.settings

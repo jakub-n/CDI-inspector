@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: CDI Inspector plugin
+Bundle-SymbolicName: cz.muni.fi.cdii.plugin; singleton:=true
+Bundle-Version: 0.0.1.qualifier
+Bundle-Activator: cz.muni.fi.cdii.plugin.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
