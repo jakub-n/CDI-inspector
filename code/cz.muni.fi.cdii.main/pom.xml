@@ -17,6 +17,7 @@
 
 		<juno-repo.url>http://download.eclipse.org/releases/juno</juno-repo.url>
 		<tycho-repo.url>https://oss.sonatype.org/content/groups/public/</tycho-repo.url>
+		<jboss-tools-repo.url>http://download.jboss.org/jbosstools/updates/JBossTools-4.0.0.Final.core/</jboss-tools-repo.url>
 	</properties>
 
 
@@ -24,6 +25,11 @@
 		<repository>
 			<id>juno</id>
 			<url>${juno-repo.url}</url>
+			<layout>p2</layout>
+		</repository>
+		<repository>
+			<id>jboss-tools</id>
+			<url>${jboss-tools-repo.url}</url>
 			<layout>p2</layout>
 		</repository>
 
