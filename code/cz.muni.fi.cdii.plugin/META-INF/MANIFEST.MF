@@ -17,6 +17,8 @@ Require-Bundle: org.eclipse.ui,
  javax.inject,
  org.eclipse.e4.ui.services,
  org.eclipse.core.expressions,
- org.eclipse.e4.core.services
+ org.eclipse.e4.core.services,
+ org.eclipse.zest.core,
+ org.eclipse.zest.layouts
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

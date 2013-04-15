@@ -13,6 +13,11 @@ import org.eclipse.swt.SWT;
 
 import cz.muni.fi.cdii.plugin.model.IInspection;
 import org.eclipse.wb.swt.SWTResourceManager;
+import org.eclipse.zest.core.widgets.Graph;
+import org.eclipse.zest.core.widgets.GraphConnection;
+import org.eclipse.zest.core.widgets.GraphNode;
+import org.eclipse.zest.layouts.LayoutStyles;
+import org.eclipse.zest.layouts.algorithms.SpringLayoutAlgorithm;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Text;
@@ -27,6 +32,8 @@ public class InspectorPart {
 
 	private Label inspectionPartLabel;
 	private Text outputText;
+
+	private Graph graph;
 
 	public InspectorPart() {
 	}
@@ -43,10 +50,12 @@ public class InspectorPart {
 		this.inspectionPartLabel.setText("Inspector part");
 		
 		outputText = new Text(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.CANCEL | SWT.MULTI);
-		outputText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		outputText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		if (this.log != null) {
 			log.info("log injected into inspection part");
 		}
+		this.graph = new Graph(parent, SWT.BORDER);
+		graph.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 	}
 
 	@PreDestroy
@@ -61,6 +70,11 @@ public class InspectorPart {
 	public void inspect(IInspection inspection) {
 		log.info("inspectionPart.inspect() called");
 		this.outputText.setText(inspection.toString());
+		GraphNode node1 = new GraphNode(this.graph, SWT.NONE, "ahoj");
+		GraphNode node2 = new GraphNode(this.graph, SWT.NONE, "svete");
+		GraphConnection graphConnection = new GraphConnection(this.graph, SWT.NONE,
+		        node1, node2);
+		this.graph.setLayoutAlgorithm(new SpringLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING), true);
 	}
 
 }
