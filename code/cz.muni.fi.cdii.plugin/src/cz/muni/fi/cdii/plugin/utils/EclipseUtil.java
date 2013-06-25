@@ -14,7 +14,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.jboss.tools.cdi.core.CDICoreNature;
 import org.jboss.tools.cdi.core.CDIUtil;
 import org.jboss.tools.cdi.core.ICDIProject;
-import org.jboss.tools.cdi.internal.core.impl.CDIProject;
 
 import cz.muni.fi.cdii.plugin.LocalInspection;
 import cz.muni.fi.cdii.plugin.model.IInspection;

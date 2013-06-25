@@ -6,22 +6,17 @@ import javax.inject.Inject;
 
 import org.eclipse.e4.core.services.log.Logger;
 import org.eclipse.e4.ui.di.Focus;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.zest.core.viewers.GraphViewer;
+import org.eclipse.zest.layouts.LayoutStyles;
+import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
 import cz.muni.fi.cdii.plugin.model.IInspection;
-import org.eclipse.wb.swt.SWTResourceManager;
-import org.eclipse.zest.core.widgets.Graph;
-import org.eclipse.zest.core.widgets.GraphConnection;
-import org.eclipse.zest.core.widgets.GraphNode;
-import org.eclipse.zest.layouts.LayoutStyles;
-import org.eclipse.zest.layouts.algorithms.SpringLayoutAlgorithm;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.layout.GridData;
 
 public class InspectorPart {
 	
@@ -33,7 +28,9 @@ public class InspectorPart {
 	private Label inspectionPartLabel;
 	private Text outputText;
 
-	private Graph graph;
+	//private Graph graph;
+
+	private GraphViewer graphViewer;
 
 	public InspectorPart() {
 	}
@@ -46,16 +43,25 @@ public class InspectorPart {
 		parent.setLayout(new GridLayout(1, true));
 		
 		this.inspectionPartLabel = new Label(parent, SWT.NONE);
-		inspectionPartLabel.setFont(SWTResourceManager.getFont("Cantarell", 11, SWT.BOLD));
+		//inspectionPartLabel.setFont(SWTResourceManager.getFont("Cantarell", 11, SWT.BOLD));
 		this.inspectionPartLabel.setText("Inspector part");
 		
 		outputText = new Text(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.CANCEL | SWT.MULTI);
-		outputText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+		GridData gd_outputText = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
+		gd_outputText.heightHint = 30;
+		outputText.setLayoutData(gd_outputText);
 		if (this.log != null) {
 			log.info("log injected into inspection part");
 		}
-		this.graph = new Graph(parent, SWT.BORDER);
-		graph.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+//		this.graph = new Graph(parent, SWT.BORDER);
+//		graph.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		this.graphViewer = new GraphViewer(parent, SWT.BORDER);
+		this.graphViewer.getGraphControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		this.graphViewer.setContentProvider(new GraphContentProvider());
+		this.graphViewer.setLabelProvider(new GraphLabelProvider());
+		this.graphViewer.setLayoutAlgorithm(new TreeLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING));
+
+		
 	}
 
 	@PreDestroy
@@ -70,11 +76,15 @@ public class InspectorPart {
 	public void inspect(IInspection inspection) {
 		log.info("inspectionPart.inspect() called");
 		this.outputText.setText(inspection.toString());
-		GraphNode node1 = new GraphNode(this.graph, SWT.NONE, "ahoj");
-		GraphNode node2 = new GraphNode(this.graph, SWT.NONE, "svete");
-		GraphConnection graphConnection = new GraphConnection(this.graph, SWT.NONE,
-		        node1, node2);
-		this.graph.setLayoutAlgorithm(new SpringLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING), true);
+//		GraphNode node1 = new GraphNode(this.graph, SWT.NONE, "ahoj");
+//		GraphNode node2 = new GraphNode(this.graph, SWT.NONE, "svete");
+//		GraphConnection graphConnection = new GraphConnection(this.graph, SWT.NONE,
+//		        node1, node2);
+//		this.graph.setLayoutAlgorithm(new SpringLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING), true);
+		
+
+		this.graphViewer.setInput(inspection.getBeans().toArray());
+		this.graphViewer.applyLayout();
 	}
 
 }
