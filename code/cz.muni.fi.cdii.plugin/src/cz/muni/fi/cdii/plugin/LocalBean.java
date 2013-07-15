@@ -48,7 +48,8 @@ public class LocalBean implements IBean {
 		StringBuilder resultBuilder = new StringBuilder();
 		for (IInjectionPoint point : bean.getInjectionPoints()) {
 			resultBuilder.append("\n - ")
-				.append(point.getType().getSignature())
+				// TODO throws NPE
+				//.append(point.getType().getSignature())
 				.append(" ").append(point.getElementName());
 		}
 		return resultBuilder.toString();

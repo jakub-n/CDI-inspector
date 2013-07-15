@@ -1,25 +1,29 @@
 package cz.muni.fi.cdii.plugin;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
-import org.eclipse.e4.core.di.annotations.Optional;
-import org.eclipse.e4.ui.di.UIEventTopic;
-import org.eclipse.e4.ui.workbench.modeling.EPartService;
-import org.eclipse.ui.IPartService;
+import org.eclipse.e4.core.di.annotations.Execute;
+import org.eclipse.e4.core.services.log.Logger;
 
-public class Addon {
+
+// TODO delete
+public class RegisterBroadcastReceiverProcessor {
 	
-	@PostConstruct
-	public void init(IEclipseContext context) {
-		System.out.println("Addon.init()");
+	@Inject
+	Logger log;
+	
+
+	@Execute
+	public void execute(IEclipseContext context) {
+		System.out.println("processor");
+		this.log.info("debug: processor");
+		
 		CdiInspector inspector = new CdiInspector();
 		context.set(CdiInspector.class, inspector);
 		
 		// activate message recieving in CdiInspector
 		ContextInjectionFactory.inject(inspector, context);
 	}
-
 }

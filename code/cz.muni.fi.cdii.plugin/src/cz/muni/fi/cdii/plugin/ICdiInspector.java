@@ -1,8 +1,17 @@
 package cz.muni.fi.cdii.plugin;
 
-public interface ICdiInspector {
+import org.eclipse.e4.ui.di.UIEventTopic;
+import org.osgi.service.event.EventHandler;
+
+import cz.muni.fi.cdii.plugin.model.IInspection;
+
+/**
+ * Interface for classes consuming {@link IInspection#INSPECT_TOPIC} e4 events.
+ * <br>
+ * Extension of {@link EventHandler} is hack to overcome malfunctioning {@link UIEventTopic}
+ * @see <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=412554"> https://bugs.eclipse.org/bugs/show_bug.cgi?id=412554</a>
+ */
+public interface ICdiInspector extends EventHandler {
 	
-	public static final String INSPECT_TOPIC = "cdiinspect";
-	
-	public void inspect();
+	public void inspect(IInspection inspection);
 }

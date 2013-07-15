@@ -23,16 +23,14 @@ public class InspectorPart {
 	public static final String ID = "cz.muni.fi.cdii.plugin.InspectorPartDescriptor";
 	
 	@Inject
-	Logger log;
+	private Logger log;
 
 	private Label inspectionPartLabel;
 	private Text outputText;
-
-	//private Graph graph;
-
 	private GraphViewer graphViewer;
 
 	public InspectorPart() {
+		System.out.println("Inspector part init()");
 	}
 
 	/**
@@ -57,6 +55,7 @@ public class InspectorPart {
 //		graph.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		this.graphViewer = new GraphViewer(parent, SWT.BORDER);
 		this.graphViewer.getGraphControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		//this.graphViewer.getGraphControl()
 		this.graphViewer.setContentProvider(new GraphContentProvider());
 		this.graphViewer.setLabelProvider(new GraphLabelProvider());
 		this.graphViewer.setLayoutAlgorithm(new TreeLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING));
@@ -70,7 +69,7 @@ public class InspectorPart {
 
 	@Focus
 	public void setFocus() {
-		this.inspectionPartLabel.setFocus();
+		this.graphViewer.getGraphControl().setFocus();
 	}
 	
 	public void inspect(IInspection inspection) {
@@ -85,6 +84,7 @@ public class InspectorPart {
 
 		this.graphViewer.setInput(inspection.getBeans().toArray());
 		this.graphViewer.applyLayout();
+		this.setFocus();
 	}
 
 }

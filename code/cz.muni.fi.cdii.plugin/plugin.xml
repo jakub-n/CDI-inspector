@@ -8,6 +8,10 @@
       <fragment
             uri="fragment.e4xmi">
       </fragment>
+      <processor 
+            beforefragment="true"
+            class="cz.muni.fi.cdii.plugin.ContextRegistrator" >
+       </processor>
    </extension>
    <extension
          point="org.eclipse.core.expressions.definitions">
