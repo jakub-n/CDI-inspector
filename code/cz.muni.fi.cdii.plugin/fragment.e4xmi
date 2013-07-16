@@ -4,9 +4,6 @@
     <elements xsi:type="basic:PartDescriptor" xmi:id="_lvrTwKVVEeKyB_UbErip8w" elementId="cz.muni.fi.cdii.plugin.InspectorPartDescriptor" label="CDI Inspector" closeable="true" contributionURI="bundleclass://cz.muni.fi.cdii.plugin/cz.muni.fi.cdii.plugin.ui.InspectorPart"/>
   </fragments>
   <fragments xsi:type="fragment:StringModelFragment" xmi:id="_2bKngKFhEeKusqZ8Ky_Jpw" featurename="menuContributions" parentElementId="org.eclipse.e4.legacy.ide.application">
-    <elements xsi:type="menu:MenuContribution" xmi:id="_eZvDQKFrEeKusqZ8Ky_Jpw" elementId="cz.muni.fi.cdii.plugin.tmp.menucontribution0" parentId="org.eclipse.ui.main.menu">
-      <children xsi:type="menu:DirectMenuItem" xmi:id="_0Dp2MKFkEeKusqZ8Ky_Jpw" elementId="cz.muni.fi.cdii.plugin.directmenuitem.0" label="e4 menu item" contributionURI="bundleclass://cz.muni.fi.cdii.plugin/cz.muni.fi.cdii.plugin.tmp.CommandHandler"/>
-    </elements>
     <elements xsi:type="menu:MenuContribution" xmi:id="_Mw_gIKIJEeKvIKmkebZ9mA" elementId="cz.muni.fi.cdii.plugin.menuContribution.pagkageExplorer" positionInParent="after=additions" parentId="org.eclipse.jdt.ui.PackageExplorer">
       <children xsi:type="menu:DirectMenuItem" xmi:id="_X827oKIJEeKvIKmkebZ9mA" elementId="cz.muni.fi.cdii.plugin.packageManagerMenuItem.inspectCdi" label="Inspect CDI beans" contributionURI="bundleclass://cz.muni.fi.cdii.plugin/cz.muni.fi.cdii.plugin.handlers.InspectCdiHandler">
         <visibleWhen xsi:type="ui:CoreExpression" xmi:id="_ZAiiAKIQEeKvIKmkebZ9mA" coreExpressionId="cz.muni.fi.cdii.plugin.coreExpr.inspectCdi"/>
