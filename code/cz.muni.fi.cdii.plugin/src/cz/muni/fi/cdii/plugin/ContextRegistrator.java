@@ -18,15 +18,8 @@ public class ContextRegistrator {
 	@Execute
 	public void execute(IEclipseContext context, IEventBroker broker) {
 		System.out.println("ContextRegistrator.execute()");
-		// TODO delete
-//		CdiInspector inspector = new CdiInspector();
-//		context.set(CdiInspector.class, inspector);
-//		
-//		// activate message recieving in CdiInspector
-//		ContextInjectionFactory.inject(inspector, context);
 		final CdiInspector inspector = ContextInjectionFactory.make(CdiInspector.class, context);
 		context.set(ICdiInspector.class, inspector);
-		
 		// TODO remove after https://bugs.eclipse.org/bugs/show_bug.cgi?id=412554 resolution
 		broker.subscribe(IInspection.INSPECT_TOPIC, inspector);
 	}

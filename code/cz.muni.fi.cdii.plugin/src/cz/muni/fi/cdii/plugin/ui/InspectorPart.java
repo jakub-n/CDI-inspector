@@ -41,7 +41,6 @@ public class InspectorPart {
 		parent.setLayout(new GridLayout(1, true));
 		
 		this.inspectionPartLabel = new Label(parent, SWT.NONE);
-		//inspectionPartLabel.setFont(SWTResourceManager.getFont("Cantarell", 11, SWT.BOLD));
 		this.inspectionPartLabel.setText("Inspector part");
 		
 		outputText = new Text(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.CANCEL | SWT.MULTI);
@@ -51,11 +50,8 @@ public class InspectorPart {
 		if (this.log != null) {
 			log.info("log injected into inspection part");
 		}
-//		this.graph = new Graph(parent, SWT.BORDER);
-//		graph.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		this.graphViewer = new GraphViewer(parent, SWT.BORDER);
 		this.graphViewer.getGraphControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		//this.graphViewer.getGraphControl()
 		this.graphViewer.setContentProvider(new GraphContentProvider());
 		this.graphViewer.setLabelProvider(new GraphLabelProvider());
 		this.graphViewer.setLayoutAlgorithm(new TreeLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING));
@@ -75,11 +71,6 @@ public class InspectorPart {
 	public void inspect(IInspection inspection) {
 		log.info("inspectionPart.inspect() called");
 		this.outputText.setText(inspection.toString());
-//		GraphNode node1 = new GraphNode(this.graph, SWT.NONE, "ahoj");
-//		GraphNode node2 = new GraphNode(this.graph, SWT.NONE, "svete");
-//		GraphConnection graphConnection = new GraphConnection(this.graph, SWT.NONE,
-//		        node1, node2);
-//		this.graph.setLayoutAlgorithm(new SpringLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING), true);
 		
 
 		this.graphViewer.setInput(inspection.getBeans().toArray());

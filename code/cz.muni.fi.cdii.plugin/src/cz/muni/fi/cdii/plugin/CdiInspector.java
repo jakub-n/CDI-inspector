@@ -28,11 +28,6 @@ public class CdiInspector implements ICdiInspector {
 	@Inject
 	private EPartService partService;
 	
-	
-	public CdiInspector() {
-		System.out.println("CdiInspector.init()");
-	}
-	
 	/**
 	 * It shows inspection part and updates dependency graph based on {@value inspection}
 	 * @param inspection dependency graph description
@@ -40,7 +35,7 @@ public class CdiInspector implements ICdiInspector {
 	@Inject
 	@Optional
 	public void inspect(@UIEventTopic(IInspection.INSPECT_TOPIC) IInspection inspection) {
-		System.out.println("CdiInspector.inspect()");
+		this.log.info("CdiInspector.inspect()");
 		this.partService.showPart(InspectorPart.ID, PartState.ACTIVATE);
 		MPart inspectorMPart = this.partService.findPart(InspectorPart.ID);
 		Object partObject = inspectorMPart.getObject();
