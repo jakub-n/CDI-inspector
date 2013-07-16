@@ -188,7 +188,7 @@
 								<url>http://download.eclipse.org/releases/kepler</url>
 							</repository>
                             <repository>
-                                <url>http://download.eclipse.org/eclipse/updates/4.3</url>
+                                <url>http://download.jboss.org/jbosstools/updates/development/kepler/</url>
                             </repository>
 						</baselineRepositories>
 					</configuration>
