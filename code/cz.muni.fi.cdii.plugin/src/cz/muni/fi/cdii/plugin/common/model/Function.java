@@ -1,8 +1,8 @@
-package cz.muni.fi.cdii.plugin.visual.model;
+package cz.muni.fi.cdii.plugin.common.model;
 
 import java.util.List;
 
-import cz.muni.fi.cdii.plugin.visual.model.internal.ClassMember;
+import cz.muni.fi.cdii.plugin.common.model.internal.ClassMember;
 
 public abstract class Function extends ClassMember {
 	public abstract List<String> getArgumentTypeNames();

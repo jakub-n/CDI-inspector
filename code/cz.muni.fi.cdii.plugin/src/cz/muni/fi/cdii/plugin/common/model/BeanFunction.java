@@ -1,4 +1,4 @@
-package cz.muni.fi.cdii.plugin.visual.model;
+package cz.muni.fi.cdii.plugin.common.model;
 
 import java.util.Map;
 

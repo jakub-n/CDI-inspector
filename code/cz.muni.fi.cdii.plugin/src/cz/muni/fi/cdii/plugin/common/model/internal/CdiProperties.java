@@ -1,4 +1,4 @@
-package cz.muni.fi.cdii.plugin.visual.model.internal;
+package cz.muni.fi.cdii.plugin.common.model.internal;
 
 import java.util.Set;
 
