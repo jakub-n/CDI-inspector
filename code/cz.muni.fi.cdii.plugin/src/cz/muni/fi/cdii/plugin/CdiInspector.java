@@ -13,6 +13,7 @@ import org.eclipse.e4.ui.workbench.modeling.EPartService.PartState;
 import org.eclipse.ui.IPartService;
 import org.osgi.service.event.Event;
 
+import cz.muni.fi.cdii.plugin.common.model.CdiInspection;
 import cz.muni.fi.cdii.plugin.model.IInspection;
 import cz.muni.fi.cdii.plugin.ui.InspectorPart;
 
@@ -34,7 +35,7 @@ public class CdiInspector implements ICdiInspector {
 	 */
 	@Inject
 	@Optional
-	public void inspect(@UIEventTopic(IInspection.INSPECT_TOPIC) IInspection inspection) {
+	public void inspect(@UIEventTopic(CdiInspection.INSPECT_TOPIC) CdiInspection inspection) {
 		this.log.info("CdiInspector.inspect()");
 		this.partService.showPart(InspectorPart.ID, PartState.ACTIVATE);
 		MPart inspectorMPart = this.partService.findPart(InspectorPart.ID);
@@ -51,7 +52,7 @@ public class CdiInspector implements ICdiInspector {
 
 	@Override
 	public void handleEvent(Event event) {
-		final IInspection inspection = (IInspection) event.getProperty(IEventBroker.DATA);
+		final CdiInspection inspection = (CdiInspection) event.getProperty(IEventBroker.DATA);
 		this.inspect(inspection);
 	}
 }

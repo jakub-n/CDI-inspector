@@ -9,6 +9,7 @@ import org.jboss.tools.cdi.core.ICDIProject;
 import cz.muni.fi.cdii.plugin.model.IBean;
 import cz.muni.fi.cdii.plugin.model.IInspection;
 
+@Deprecated
 public class LocalInspection implements IInspection {
 	
 	private Set<IBean> beans = new HashSet<IBean>();

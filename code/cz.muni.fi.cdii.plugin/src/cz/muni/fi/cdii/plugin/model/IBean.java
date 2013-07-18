@@ -2,6 +2,7 @@ package cz.muni.fi.cdii.plugin.model;
 
 import java.util.Collection;
 
+@Deprecated
 public interface IBean {
 	
 	public String getQalifiedName();

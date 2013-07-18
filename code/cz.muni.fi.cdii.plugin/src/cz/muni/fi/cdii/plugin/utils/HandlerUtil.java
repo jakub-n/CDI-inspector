@@ -15,11 +15,13 @@ import org.jboss.tools.cdi.core.CDICoreNature;
 import org.jboss.tools.cdi.core.CDIUtil;
 import org.jboss.tools.cdi.core.ICDIProject;
 
-import cz.muni.fi.cdii.plugin.LocalInspection;
-import cz.muni.fi.cdii.plugin.model.IInspection;
+import cz.muni.fi.cdii.plugin.common.model.CdiInspection;
+import cz.muni.fi.cdii.plugin.visual.model.LocalCdiInspection;
+import cz.muni.fi.cdii.plugin.visual.model.LocalInspectionFactory;
 
-public class EclipseUtil {
+public class HandlerUtil {
 	
+	// TODO refactor - extract Job class
 	public static void showGraphByPackageExplorerSelection(final IStructuredSelection selection, 
 			final IEventBroker broker) {
 		assert !selection.isEmpty();
@@ -33,10 +35,10 @@ public class EclipseUtil {
 				// TODO delete 
 				System.out.println("job executed");
 				Object selectedElement = selection.getFirstElement();
-				IProject project = EclipseUtil.getProjectFromPackageExplorerElement(selectedElement);
-				ICDIProject cdiProject = EclipseUtil.getCdiProjectFromProject(project);
-				LocalInspection inspection = new LocalInspection(cdiProject);
-				broker.post(IInspection.INSPECT_TOPIC, inspection);
+				IProject project = HandlerUtil.getProjectFromPackageExplorerElement(selectedElement);
+				ICDIProject cdiProject = HandlerUtil.getCdiProjectFromProject(project);
+				LocalCdiInspection inspection = LocalInspectionFactory.createInspection(cdiProject);
+				broker.post(CdiInspection.INSPECT_TOPIC, inspection);
 				System.out.println("showGraphByPackageExplorerSelection inspect event posted");
 				return Status.OK_STATUS;
 			}

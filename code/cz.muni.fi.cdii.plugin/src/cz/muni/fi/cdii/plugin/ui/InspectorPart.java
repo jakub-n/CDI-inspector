@@ -16,7 +16,7 @@ import org.eclipse.zest.core.viewers.GraphViewer;
 import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
-import cz.muni.fi.cdii.plugin.model.IInspection;
+import cz.muni.fi.cdii.plugin.common.model.CdiInspection;
 
 public class InspectorPart {
 	
@@ -68,12 +68,13 @@ public class InspectorPart {
 		this.graphViewer.getGraphControl().setFocus();
 	}
 	
-	public void inspect(IInspection inspection) {
+	public void inspect(CdiInspection inspection) {
 		log.info("inspectionPart.inspect() called");
 		this.outputText.setText(inspection.toString());
 		
-
-		this.graphViewer.setInput(inspection.getBeans().toArray());
+		cz.muni.fi.cdii.plugin.common.model.Class[] classes = inspection.getClasses().toArray(
+				new cz.muni.fi.cdii.plugin.common.model.Class[0]);
+		this.graphViewer.setInput(classes);
 		this.graphViewer.applyLayout();
 		this.setFocus();
 	}

@@ -11,6 +11,7 @@ import org.jboss.tools.cdi.internal.core.impl.ProducerMethod;
 
 import cz.muni.fi.cdii.plugin.model.IBean;
 
+@Deprecated
 public class LocalBean implements IBean {
 
 	private org.jboss.tools.cdi.core.IBean jbossBean;
