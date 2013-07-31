@@ -9,11 +9,15 @@ import cz.muni.fi.cdii.plugin.common.model.Function;
 public class LocalClass extends Class {
 	
 	private String className;
+	private String packageName;
 
 	@Override
 	public String getPackageName() {
-		// TODO Auto-generated method stub
-		return "wired package placeholder";
+		return packageName;
+	}
+
+	public void setPackageName(String packageName) {
+		this.packageName = packageName;
 	}
 
 	@Override

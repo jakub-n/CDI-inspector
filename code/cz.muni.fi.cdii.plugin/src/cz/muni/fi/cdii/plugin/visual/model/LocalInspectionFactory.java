@@ -39,7 +39,11 @@ public class LocalInspectionFactory {
 	private void processIClassBean(IClassBean bean) {
 		LocalClass localClass = new LocalClass();
 		
-		String className = this.getFullyQualifiedName(bean.getBeanClass());
+		String qualifiedName = this.getFullyQualifiedName(bean.getBeanClass());
+		int lastDotIndex = qualifiedName.lastIndexOf(".");
+		String packageName = qualifiedName.substring(0, lastDotIndex);
+		String className = qualifiedName.substring(lastDotIndex + 1, qualifiedName.length());
+		localClass.setPackageName(packageName);
 		localClass.setClassName(className);
 		this.classes.add(localClass);
 	}
