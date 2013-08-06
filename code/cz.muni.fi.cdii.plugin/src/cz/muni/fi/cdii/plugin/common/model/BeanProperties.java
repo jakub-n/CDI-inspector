@@ -1,7 +1,6 @@
 package cz.muni.fi.cdii.plugin.common.model;
 
-import cz.muni.fi.cdii.plugin.common.model.internal.CdiProperties;
-
+@Deprecated
 public abstract class BeanProperties extends CdiProperties implements LabelText {
 	public abstract EffectiveScopeEnum getEffectiveScope();
 

@@ -1,5 +1,7 @@
 package cz.muni.fi.cdii.plugin.ui;
 
+import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -7,6 +9,7 @@ import javax.inject.Inject;
 import org.eclipse.e4.core.services.log.Logger;
 import org.eclipse.e4.ui.di.Focus;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -28,6 +31,7 @@ public class InspectorPart {
 	private Label inspectionPartLabel;
 	private Text outputText;
 	private GraphViewer graphViewer;
+	private ColorManager colorManager;
 
 	public InspectorPart() {
 		System.out.println("Inspector part init()");
@@ -38,6 +42,7 @@ public class InspectorPart {
 	 */
 	@PostConstruct
 	public void createControls(Composite parent) {
+		this.colorManager = new ColorManager();
 		parent.setLayout(new GridLayout(1, true));
 		
 		this.inspectionPartLabel = new Label(parent, SWT.NONE);
@@ -53,7 +58,7 @@ public class InspectorPart {
 		this.graphViewer = new GraphViewer(parent, SWT.BORDER);
 		this.graphViewer.getGraphControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		this.graphViewer.setContentProvider(new GraphContentProvider());
-		this.graphViewer.setLabelProvider(new GraphLabelProvider());
+		this.graphViewer.setLabelProvider(new GraphLabelProvider(this.colorManager));
 		this.graphViewer.setLayoutAlgorithm(new TreeLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING));
 
 		
@@ -61,6 +66,7 @@ public class InspectorPart {
 
 	@PreDestroy
 	public void dispose() {
+		this.colorManager.dispose();
 	}
 
 	@Focus

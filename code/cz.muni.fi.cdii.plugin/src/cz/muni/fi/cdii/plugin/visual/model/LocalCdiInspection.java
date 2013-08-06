@@ -1,6 +1,5 @@
 package cz.muni.fi.cdii.plugin.visual.model;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -31,5 +30,11 @@ public class LocalCdiInspection extends CdiInspection {
 	@Override
 	public String toString() {
 		return "Inspection: " + this.classes.toString();
+	}
+
+	@Override
+	public CdiInspection refresh() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -1,7 +1,9 @@
 package cz.muni.fi.cdii.plugin.visual.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
+import cz.muni.fi.cdii.plugin.common.model.Bean;
 import cz.muni.fi.cdii.plugin.common.model.Class;
 import cz.muni.fi.cdii.plugin.common.model.Field;
 import cz.muni.fi.cdii.plugin.common.model.Function;
@@ -10,6 +12,8 @@ public class LocalClass extends Class {
 	
 	private String className;
 	private String packageName;
+	private String note;
+	private Set<LocalBean> beans = new HashSet<>();
 
 	@Override
 	public String getPackageName() {
@@ -51,5 +55,26 @@ public class LocalClass extends Class {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	
 
+	public void setNote(String note) {
+		this.note = note;
+	}
+
+	@Override
+	public String toLabelString() {
+		return this.note + "\n" + super.toLabelString();
+	}
+
+	@Override
+	public Set<? extends Bean> getBeans() {
+		return this.beans;
+	}
+
+	public void addBean(LocalBean bean) {
+		this.beans.add(bean);
+	}
+
+	
 }

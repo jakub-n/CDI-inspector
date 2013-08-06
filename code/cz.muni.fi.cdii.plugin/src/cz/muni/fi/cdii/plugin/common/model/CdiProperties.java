@@ -1,20 +1,19 @@
 package cz.muni.fi.cdii.plugin.common.model;
 
+import java.util.Set;
 
-@Deprecated
-public abstract class InjectionPointProperties extends CdiProperties implements LabelText {
-
-	/**
-	 * Can return null if there is no explicit scope declaration
-	 */
-	public abstract ScopeDeclarationEnum getScopeDeclaration();
-
+public abstract class CdiProperties implements LabelText {
+	public abstract Scope getScope();
+	public abstract String getName();
+	//  TODO smazat, pokud se nepouzije; pripadne presunout do potomka
+	public abstract String getTypeName();
+	public abstract Set<String> getQualifiers();
+	public abstract Set<String> getStereotypes();
+	
 	@Override
 	public String toLabelString() {
 		StringBuilder builder = new StringBuilder();
-		if (this.getScopeDeclaration() != null) {
-			builder.append(this.getScopeDeclaration()).append("\n");
-		}
+		builder.append(this.getScope()).append("\n");
 		for (String qualifier : this.getQualifiers()) {
 			builder.append("@").append(qualifier).append("\n");
 		}

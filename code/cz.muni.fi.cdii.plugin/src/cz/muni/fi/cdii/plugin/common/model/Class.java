@@ -14,6 +14,7 @@ public abstract class Class implements LabelText {
 	public abstract void open();
 	public abstract Set<Field> getFields();
 	public abstract Set<Function> getFunctions();
+	public abstract Set<? extends Bean> getBeans();
 	
 	@Override
 	public String toLabelString() {
