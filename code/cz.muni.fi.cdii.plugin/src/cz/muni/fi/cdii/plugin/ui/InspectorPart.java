@@ -1,7 +1,5 @@
 package cz.muni.fi.cdii.plugin.ui;
 
-import java.util.Map;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -9,18 +7,17 @@ import javax.inject.Inject;
 import org.eclipse.e4.core.services.log.Logger;
 import org.eclipse.e4.ui.di.Focus;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.zest.core.viewers.GraphViewer;
 import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
 import cz.muni.fi.cdii.plugin.common.model.CdiInspection;
 
+@SuppressWarnings("restriction")
 public class InspectorPart {
 	
 	public static final String ID = "cz.muni.fi.cdii.plugin.InspectorPartDescriptor";
@@ -29,7 +26,6 @@ public class InspectorPart {
 	private Logger log;
 
 	private Label inspectionPartLabel;
-	private Text outputText;
 	private GraphViewer graphViewer;
 	private ColorManager colorManager;
 
@@ -47,11 +43,6 @@ public class InspectorPart {
 		
 		this.inspectionPartLabel = new Label(parent, SWT.NONE);
 		this.inspectionPartLabel.setText("Inspector part");
-		
-		outputText = new Text(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.CANCEL | SWT.MULTI);
-		GridData gd_outputText = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
-		gd_outputText.heightHint = 30;
-		outputText.setLayoutData(gd_outputText);
 		if (this.log != null) {
 			log.info("log injected into inspection part");
 		}
@@ -76,7 +67,6 @@ public class InspectorPart {
 	
 	public void inspect(CdiInspection inspection) {
 		log.info("inspectionPart.inspect() called");
-		this.outputText.setText(inspection.toString());
 		
 		cz.muni.fi.cdii.plugin.common.model.Class[] classes = inspection.getClasses().toArray(
 				new cz.muni.fi.cdii.plugin.common.model.Class[0]);
