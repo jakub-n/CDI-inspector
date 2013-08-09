@@ -8,6 +8,9 @@ import cz.muni.fi.cdii.plugin.common.model.BeanFunction;
 import cz.muni.fi.cdii.plugin.common.model.CdiProperties;
 import cz.muni.fi.cdii.plugin.common.model.Class;
 
+/*
+ * TODO modifiable vs. unmodifiable style
+ */
 public class LocalBean extends Bean {
 	
 	final private LocalClass clazz;

@@ -1,6 +1,5 @@
 package cz.muni.fi.cdii.plugin.visual.model;
 
-import java.util.Collections;
 import java.util.Set;
 
 import cz.muni.fi.cdii.plugin.common.model.CdiProperties;
@@ -9,6 +8,9 @@ import cz.muni.fi.cdii.plugin.common.model.Scope;
 public class LocalCdiProperties extends CdiProperties {
 	
 	private Scope scope;
+	private String name;
+	private Set<String> qualifiers;
+	private Set<String> stereotypes;
 
 	public void setScope(Scope scope) {
 		this.scope = scope;
@@ -21,26 +23,29 @@ public class LocalCdiProperties extends CdiProperties {
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return "name not implemented";
-	}
-
-	@Override
-	public String getTypeName() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.name;
 	}
 
 	@Override
 	public Set<String> getQualifiers() {
-		// TODO Auto-generated method stub
-		return Collections.emptySet();
+		return this.qualifiers;
 	}
 
 	@Override
 	public Set<String> getStereotypes() {
-		// TODO Auto-generated method stub
-		return Collections.emptySet();
+		return this.stereotypes;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setQualifiers(Set<String> qualifiers) {
+		this.qualifiers = qualifiers;
+	}
+
+	public void setStereotypes(Set<String> stereotypes) {
+		this.stereotypes = stereotypes;
 	}
 
 }

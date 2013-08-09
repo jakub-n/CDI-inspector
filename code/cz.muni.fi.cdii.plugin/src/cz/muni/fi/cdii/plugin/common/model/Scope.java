@@ -1,5 +1,8 @@
 package cz.muni.fi.cdii.plugin.common.model;
 
+/*
+ * TODO consider to separate package name and annotation name; qualified name vs. fallback mode (name only) 
+ */
 public class Scope {
 	
 	public static Scope UNDEFINED = new Scope();
@@ -62,11 +65,9 @@ public class Scope {
 
 	@Override
 	public String toString() {
-		if (this.isImplicit) {
-			return this.name + " (undefined)";
-		} else {
-			return this.name + (this.isNormal ? " (normal)" : " (pseudo)");
-		}
+			return (this.isImplicit ? "(implicit) " : "@" )
+					+ this.name 
+					+ (this.isNormal ? " (normal)" : " (pseudo)");
 	}
 	
 }
