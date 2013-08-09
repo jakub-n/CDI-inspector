@@ -2,7 +2,7 @@
 <project>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>cz.muni.fi.cdii</groupId>
-	<artifactId>main</artifactId>
+	<artifactId>cz.muni.fi.cdii.main</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<modules>
