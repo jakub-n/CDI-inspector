@@ -5,7 +5,7 @@
   <parent>
     <relativePath>../cz.muni.fi.cdii.main/pom.xml</relativePath>
     <groupId>cz.muni.fi.cdii</groupId>
-    <artifactId>main</artifactId>
+    <artifactId>cz.muni.fi.cdii.main</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
