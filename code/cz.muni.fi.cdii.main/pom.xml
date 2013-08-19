@@ -196,5 +196,19 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+	
+	<profiles>
+	   <profile>
+      <id>composite-repo</id>
+      <activation>
+        <file>
+            <exists>../../../cdi-inspector-repo/pom.xml</exists>
+        </file>
+      </activation>
+      <modules>
+        <module>../../../cdi-inspector-repo</module>
+      </modules>
+    </profile>
+	</profiles>
 
 </project> 
