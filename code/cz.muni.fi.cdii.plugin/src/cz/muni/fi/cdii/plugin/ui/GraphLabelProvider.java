@@ -2,15 +2,20 @@ package cz.muni.fi.cdii.plugin.ui;
 
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.zest.core.viewers.EntityConnectionData;
 import org.eclipse.zest.core.viewers.IEntityStyleProvider;
+import org.eclipse.zest.core.viewers.ISelfStyleProvider;
+import org.eclipse.zest.core.widgets.GraphConnection;
+import org.eclipse.zest.core.widgets.GraphNode;
 
 import cz.muni.fi.cdii.plugin.common.model.Bean;
 import cz.muni.fi.cdii.plugin.common.model.LabelText;
 
 // TODO reimplement to use org.eclipse.zest.core.viewers.IFigureProvider (plugin org.eclipse.zest.jface (2.0.0.201307152033))
-public class GraphLabelProvider extends LabelProvider implements IEntityStyleProvider {
+public class GraphLabelProvider extends LabelProvider implements IEntityStyleProvider, 
+		ISelfStyleProvider {
 
 	private ColorManager colorManager;
 
@@ -82,6 +87,27 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	@Override
 	public boolean fisheyeNode(Object entity) {
 		return true;
+	}
+
+	@Override
+	public void selfStyleConnection(Object element, GraphConnection connection) {
+		connection.getSource().getData();
+		connection.getDestination().getData();
+		final Object sourceData = connection.getSource().getData();
+		final Object destinationData = connection.getDestination().getData();
+		if (sourceData instanceof cz.muni.fi.cdii.plugin.common.model.Class
+				&& destinationData instanceof Bean) {
+			connection.setLineStyle(SWT.LINE_DASH);
+			connection.setLineWidth(4);
+			// set color
+			// connection.setLineColor(this.colorManager.getNamedColor(GraphColorEnum.BEAN_NODE_COLOR));
+		}
+		
+	}
+
+	@Override
+	public void selfStyleNode(Object element, GraphNode node) {
+		// nothing
 	}
 
 }
