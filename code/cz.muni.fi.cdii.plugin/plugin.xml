@@ -37,5 +37,21 @@
          </with>
       </definition>
    </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="cz.muni.fi.cdii.plugin.category.cdi"
+            name="CDI">
+      </category>
+      <view
+            allowMultiple="false"
+            category="cz.muni.fi.cdii.plugin.category.cdi"
+            class="cz.muni.fi.cdii.plugin.ui.e3compat.InspectorPartE3Wrapper"
+            icon="icons/cdii_icon.png"
+            id="cz.muni.fi.cdii.plugin.cdiInspectorView"
+            name="CDI Inspector"
+            restorable="true">
+      </view>
+   </extension>
 
 </plugin>
