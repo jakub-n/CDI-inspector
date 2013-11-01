@@ -18,7 +18,8 @@
 		<eclipse-repo.url>http://download.eclipse.org/releases/kepler</eclipse-repo.url>
 		<tycho-repo.url>https://oss.sonatype.org/content/groups/public/</tycho-repo.url>
 		<!-- <jboss-tools-repo.url>http://download.jboss.org/jbosstools/updates/JBossTools-4.0.0.Final.core/</jboss-tools-repo.url>  -->
-        <jboss-tools-repo.url>http://download.jboss.org/jbosstools/updates/development/kepler/</jboss-tools-repo.url>
+        <jboss-tools-repo.url>http://download.jboss.org/jbosstools/updates/stable/kepler</jboss-tools-repo.url>
+        <e4-tools-repo.url>http://download.eclipse.org/e4/downloads/drops/R-0.14-201306242200/repository</e4-tools-repo.url>
 	</properties>
 
 
@@ -31,6 +32,11 @@
 		<repository>
 			<id>jboss-tools</id>
 			<url>${jboss-tools-repo.url}</url>
+			<layout>p2</layout>
+		</repository>
+		<repository>
+			<id>e4-tools</id>
+			<url>${e4-tools-repo.url}</url>
 			<layout>p2</layout>
 		</repository>
 	</repositories>
@@ -184,12 +190,16 @@
 						<baselineMode>warn</baselineMode>
 						<baselineReplace>none</baselineReplace>
 						<baselineRepositories>
-							<repository>
-								<url>http://download.eclipse.org/releases/kepler</url>
-							</repository>
-                            <repository>
-                                <url>http://download.jboss.org/jbosstools/updates/development/kepler/</url>
-                            </repository>
+						<!-- TODO test wheter needed -->
+<!-- 							<repository> -->
+<!-- 								<url>http://download.eclipse.org/releases/kepler</url> -->
+<!-- 							</repository> -->
+<!--                             <repository> -->
+<!--                                 <url>http://download.jboss.org/jbosstools/updates/development/kepler/</url> -->
+<!--                             </repository> -->
+<!--                             <repository> -->
+<!--                             	<url>http://download.eclipse.org/e4/downloads/drops/R-0.14-201306242200/repository</url> -->
+<!--                             </repository> -->
 						</baselineRepositories>
 					</configuration>
 				</plugin>
