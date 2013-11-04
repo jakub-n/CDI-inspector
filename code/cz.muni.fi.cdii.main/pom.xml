@@ -17,7 +17,6 @@
 
 		<eclipse-repo.url>http://download.eclipse.org/releases/kepler</eclipse-repo.url>
 		<tycho-repo.url>https://oss.sonatype.org/content/groups/public/</tycho-repo.url>
-		<!-- <jboss-tools-repo.url>http://download.jboss.org/jbosstools/updates/JBossTools-4.0.0.Final.core/</jboss-tools-repo.url>  -->
         <jboss-tools-repo.url>http://download.jboss.org/jbosstools/updates/stable/kepler</jboss-tools-repo.url>
         <e4-tools-repo.url>http://download.eclipse.org/e4/downloads/drops/R-0.14-201306242200/repository</e4-tools-repo.url>
 	</properties>
@@ -37,6 +36,11 @@
 		<repository>
 			<id>e4-tools</id>
 			<url>${e4-tools-repo.url}</url>
+			<layout>p2</layout>
+		</repository>
+		<repository>
+			<id>zest2</id>
+			<url>https://raw.github.com/jakub-n/cdi-inspector-repo/master/repos/zest_2</url>
 			<layout>p2</layout>
 		</repository>
 	</repositories>
@@ -186,20 +190,21 @@
 					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>tycho-p2-plugin</artifactId>
 					<version>${tycho.version}</version>
+<!-- 					documentation http://eclipse.org/tycho/sitedocs/tycho-p2/tycho-p2-plugin/p2-metadata-mojo.html -->
+<!-- 					explanation http://wiki.eclipse.org/Tycho/Reproducible_Version_Qualifiers#What_does_this_actually_do.3F -->
 					<configuration>
 						<baselineMode>warn</baselineMode>
 						<baselineReplace>none</baselineReplace>
 						<baselineRepositories>
-						<!-- TODO test wheter needed -->
-<!-- 							<repository> -->
-<!-- 								<url>http://download.eclipse.org/releases/kepler</url> -->
-<!-- 							</repository> -->
-<!--                             <repository> -->
-<!--                                 <url>http://download.jboss.org/jbosstools/updates/development/kepler/</url> -->
-<!--                             </repository> -->
-<!--                             <repository> -->
-<!--                             	<url>http://download.eclipse.org/e4/downloads/drops/R-0.14-201306242200/repository</url> -->
-<!--                             </repository> -->
+							<repository>
+								<url>http://download.eclipse.org/releases/kepler</url>
+							</repository>
+                            <repository>
+                                <url>http://download.jboss.org/jbosstools/updates/development/kepler/</url>
+                            </repository>
+                            <repository>
+                            	<url>http://download.eclipse.org/e4/downloads/drops/R-0.14-201306242200/repository</url>
+                            </repository>
 						</baselineRepositories>
 					</configuration>
 				</plugin>
