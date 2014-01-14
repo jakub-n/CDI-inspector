@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<relativePath>../pom.xml</relativePath>
+		<groupId>cz.muni.fi.cdii.eclipse</groupId>
+		<artifactId>cz.muni.fi.cdii.eclipse.parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>cz.muni.fi.cdii.eclipse.repository</artifactId>
+	<packaging>eclipse-repository</packaging>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>xml-maven-plugin</artifactId>
+					<version>1.0</version>
+					<dependencies>
+						<dependency>
+							<groupId>net.sf.saxon</groupId>
+							<artifactId>saxon</artifactId>
+							<version>8.7</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.maven.plugins
+										</groupId>
+										<artifactId>
+											maven-help-plugin
+										</artifactId>
+										<versionRange>
+											[2.2,)
+										</versionRange>
+										<goals>
+											<goal>effective-pom</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.codehaus.mojo
+										</groupId>
+										<artifactId>
+											xml-maven-plugin
+										</artifactId>
+										<versionRange>
+											[1.0,)
+										</versionRange>
+										<goals>
+											<goal>transform</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<artifactId>maven-help-plugin</artifactId>
+				<version>2.2</version>
+				<executions>
+					<execution>
+						<id>save-effective-pom</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>effective-pom</goal>
+						</goals>
+						<configuration>
+							<output>${project.build.outputDirectory}/pom/file.xml</output>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.7</version>
+				<executions>
+					<execution>
+						<id>unpack-change-and-repack-content.xml</id>
+						<phase>package</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<unzip src="${project.build.directory}/repository/content.jar" 
+									   dest="${project.build.outputDirectory}/content-xml-original" />
+								<echo message="unzip ok" />	   
+								<xslt style="xslt/add_repo_references.xsl" 
+									  in="${project.build.outputDirectory}/content-xml-original/content.xml" 
+									  out="${project.build.outputDirectory}/content-xml-altered/content.xml"
+									  force="true"
+									  failOnError="yes" 
+									  failOnTransformationError="yes"
+									  failOnNoResources="yes" >
+									<param name="links-file-path" expression="${project.build.outputDirectory}/links/file.xml" />
+							  	</xslt>
+						  		<echo message="xslt ok" />
+							  	<zip basedir="${project.build.outputDirectory}/content-xml-altered"
+							  	     destfile="${project.build.directory}/repository/content.jar" 
+							  	     update="true" />
+							  	<echo message="zip ok" />     
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>xml-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>extract-repo-links</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>transform</goal>
+						</goals>
+						<configuration>
+							<transformationSets>
+								<transformationSet>
+									<dir>${project.build.outputDirectory}/pom</dir>
+									<stylesheet>xslt/extract_links.xsl</stylesheet>
+									<outputDir>${project.build.outputDirectory}/links</outputDir>
+								</transformationSet>
+							</transformationSets>
+						</configuration>
+					</execution>
+<!-- 					<execution> -->
+<!-- 						<id>add-repo-references</id> -->
+<!-- 						<phase>package</phase> -->
+<!-- 						<goals> -->
+<!-- 							<goal>transform</goal> -->
+<!-- 						</goals> -->
+<!-- 						<configuration> -->
+<!-- 							<transformationSets> -->
+<!-- 								<transformationSet> -->
+<!-- 									<dir>${project.build.outputDirectory}/content-xml-original</dir> -->
+<!-- 									<stylesheet>xslt/add_repo_references.xsl</stylesheet> -->
+<!-- 									<outputDir>${project.build.outputDirectory}/content-xml-altered</outputDir> -->
+<!-- 									<parameters> -->
+<!-- 										<parameter> -->
+<!-- 											<name>links-file-path</name> -->
+<!-- 											<value>${project.build.outputDirectory}/links/file.xml</value> -->
+<!-- 										</parameter> -->
+<!-- 									</parameters> -->
+<!-- 								</transformationSet> -->
+<!-- 							</transformationSets> -->
+<!-- 						</configuration> -->
+<!-- 					</execution> -->
+				</executions>
+			</plugin>
+<!-- 			<plugin> -->
+<!-- 				<artifactId>maven-assembly-plugin</artifactId> -->
+<!-- 				<version>2.4</version> -->
+<!-- 				<executions> -->
+<!-- 					<execution> -->
+<!-- 						<id>repack-content-jar</id> -->
+<!-- 						<phase>package</phase> -->
+<!-- 						<goals> -->
+<!-- 							<goal>single</goal> -->
+<!-- 						</goals> -->
+<!-- 						<configuration> -->
+<!-- 							<finalName>content</finalName> -->
+<!-- 							<appendAssemblyId>false</appendAssemblyId> -->
+<!-- 							<descriptors> -->
+<!-- 								<descriptor>assembly/repack-content-jar.xml</descriptor> -->
+<!-- 							</descriptors> -->
+<!-- 						</configuration> -->
+<!-- 					</execution> -->
+<!-- 				</executions> -->
+<!-- 			</plugin> -->
+			<plugin>
+			<groupId>org.eclipse.tycho</groupId>
+			<artifactId>tycho-p2-repository-plugin</artifactId>
+			<executions>
+			<execution>
+			<phase>package</phase>
+			<goals>
+			<goal>archive-repository</goal>
+			</goals>
+			</execution>
+			</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project> 

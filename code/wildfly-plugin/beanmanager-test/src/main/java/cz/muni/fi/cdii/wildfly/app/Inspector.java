@@ -2,15 +2,12 @@ package cz.muni.fi.cdii.wildfly.app;
 
 import java.util.Set;
 
-import javax.annotation.Resource;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 @Named
 public class Inspector {

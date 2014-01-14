@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<site>
-   <feature url="features/cz.muni.fi.cdii.feature_0.0.1.qualifier.jar" id="cz.muni.fi.cdii.feature" version="0.0.1.qualifier">
-      <category name="cz.muni.fi.cdii.cdiinspectorcategory"/>
-   </feature>
-   <category-def name="cz.muni.fi.cdii.cdiinspectorcategory" label="CDI Inspector category"/>
-</site>

@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bnd-LastModified: 1391626568820
+Build-Jdk: 1.7.0_51
+Built-By: watt
+Bundle-ClassPath: .,jars/jackson-annotations-2.2.0.jar
+Bundle-ManifestVersion: 2
+Bundle-Name: CDII shared data model
+Bundle-SymbolicName: cz.muni.fi.cdii.common.model
+Bundle-Version: 0.0.1.SNAPSHOT
+Created-By: Apache Maven Bundle Plugin
+Embed-Dependency: *;scope=compile|runtime
+Embed-Directory: jars
+Embed-Transitive: true
+Embedded-Artifacts: jars/jackson-annotations-2.2.0.jar;g="com.fasterxml.
+ jackson.core";a="jackson-annotations";v="2.2.0"
+Export-Package: cz.muni.fi.cdii.plugin.gen2.model;version="0.0.1.SNAPSHO
+ T"
+Tool: Bnd-2.1.0.20130426-122213

@@ -1,0 +1,68 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>cz.muni.fi.cdii.common</groupId>
+	<artifactId>model</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>CDI Inspector shared data model</name>
+	<packaging>${pack}</packaging>
+	
+	<properties>
+		<!-- profile parametrized packaging type -->
+		<pack>jar</pack>
+	</properties>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>2.2.0</version>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<archive>
+						<addMavenDescriptor>false</addMavenDescriptor>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	
+	<profiles>
+		<profile>
+			<id>osgi</id>
+			<properties>
+				<pack>bundle</pack>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.felix</groupId>
+						<artifactId>maven-bundle-plugin</artifactId>
+						<version>2.4.0</version>
+						<extensions>true</extensions>
+						<configuration>
+							<manifestLocation>META-INF</manifestLocation>
+							<instructions>
+								<Embed-Dependency>
+									*;scope=compile|runtime
+								</Embed-Dependency>
+								<Embed-Transitive>true</Embed-Transitive>
+								<Embed-Directory>jars</Embed-Directory>
+							</instructions>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>

@@ -33,6 +33,12 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>cz.muni.fi.cdii.common</groupId>
+			<artifactId>model</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+	
+		<dependency>
 			<groupId>javax.enterprise</groupId>
 			<artifactId>cdi-api</artifactId>
 			<scope>provided</scope>
