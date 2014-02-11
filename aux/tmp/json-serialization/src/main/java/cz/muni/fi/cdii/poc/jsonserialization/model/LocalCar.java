@@ -7,7 +7,6 @@ public class LocalCar extends Car {
 
 	@Override
 	public String toString() {
-		return "Local Car [numOfDoors=" + this.numOfDoors + ", numOfWheels=" + this.numOfWheels 
-				+ "]";
+		return "Local Car" + this.toRawString();
 	}
 }

@@ -3,6 +3,7 @@ package cz.muni.fi.cdii.poc.jsonserialization.model;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonAutoDetect(fieldVisibility=Visibility.DEFAULT, setterVisibility=Visibility.NONE, 
@@ -25,6 +26,7 @@ public class Garage {
 	}
 
 	@JsonProperty
+	@JsonManagedReference("garage-car")
 	public Car car;
 	
 	@Override

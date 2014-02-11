@@ -24,6 +24,7 @@ public class Main {
 		Car car = new Car(null);
 //		Car car = new LocalCar();
 		Garage garage = new Garage(1, 2);
+		car.setGarage(garage);
 		garage.car = car;
 		
 		String json = mapper.writeValueAsString(garage);
