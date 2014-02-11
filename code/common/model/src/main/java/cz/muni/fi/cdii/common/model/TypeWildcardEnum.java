@@ -1,5 +1,6 @@
 package cz.muni.fi.cdii.common.model;
 
+
 /**
  * Enum specifies kind of type wildcard.
  * 

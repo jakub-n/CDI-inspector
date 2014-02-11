@@ -4,10 +4,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+
 /**
  * Represents entity 1:1 matching to some *.class file
  *
  */
+@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
+@JsonAutoDetect(getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE, 
+	isGetterVisibility=Visibility.NONE, fieldVisibility=Visibility.DEFAULT)
 public class Class {
 	
 	public static final String IOPENABLE = "org.eclipse.jdt.core.IOpenable";
@@ -15,13 +24,16 @@ public class Class {
 	/**
 	 * can be null if anonymous
 	 */
+	@JsonProperty
 	private String name;
 	
 	/**
 	 * OuterClass$ThisClass
 	 */
+	@JsonProperty
 	private Class outerClass;
-	
+
+	@JsonProperty
 	private Package package_;
 	
 	/**
@@ -30,18 +42,23 @@ public class Class {
 	 * {@link #equals(Object)} and {@link #hashCode()} are based on this field
 	 */
 	// TODO mozna final
+	@JsonProperty
 	private String javaName;
-	
+
+	@JsonProperty
 	private Set<Field> fields;
 	
 	// TODO is constructor
+	@JsonProperty
 	private Set<Method> methods;
 	
 	// class member
+	@JsonProperty
 	private Set<InjectionPoint> injectionPoints;
 	
 	// TODO mozna vytvorit jen lokalniho typove bezpecneho potomka Class a vnem vlastnost
 	// TODO neserializovat
+	@JsonProperty
 	private Map<String, Object> actions = new HashMap<String, Object>();
 	
 	public Class(final java.lang.Class<?> clazz) {

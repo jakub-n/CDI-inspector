@@ -2,17 +2,28 @@ package cz.muni.fi.cdii.common.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+
 /**
  * Represents java type. For non-parametrized types it is equal to {@link Class}. For parametrized 
  * types there can be multiple {@link Type}s for one {@link Class}.
  * <p>
  * Equality is based on members {@link #clazz}, {@link #typeParameters} and {@link #wildcardType}.
  */
+@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
+@JsonAutoDetect(getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE, 
+	isGetterVisibility=Visibility.NONE, fieldVisibility=Visibility.DEFAULT)
 public class Type {
 	
 	/**
 	 * null iff {@link #wildcardType} is {@link TypeWildcardEnum#QUESTIONMARK}
 	 */
+
+	@JsonProperty
 	private Class clazz;
 	/**
 	 * null if 
@@ -21,7 +32,11 @@ public class Type {
 	 * <li>type is non-parametrized
 	 * </ul>
 	 */
+
+	@JsonProperty
 	private List<Type> typeParameters;
+
+	@JsonProperty
 	private TypeWildcardEnum wildcardType;
 	
 	
