@@ -48,5 +48,5 @@ public class Car {
 // TODO castecny konstruktor - pripadne delegat = mapa
 // TODO identita
 // TODO zpetne a cyklicke reference
-// TODO pres settery a gettry nebo pres vlastnosti? -
+// TODO pres settery a gettry nebo pres vlastnosti? - OD nastavitelne pres @JsonAutoDetect
 

@@ -23,7 +23,7 @@ public class Main {
 
 		Car car = new Car(null);
 //		Car car = new LocalCar();
-		Garage garage = new Garage();
+		Garage garage = new Garage(1, 2);
 		garage.car = car;
 		
 		String json = mapper.writeValueAsString(garage);
