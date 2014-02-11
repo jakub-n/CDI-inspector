@@ -1,4 +1,4 @@
-package cz.muni.fi.cdii.plugin.gen2.model;
+package cz.muni.fi.cdii.common.model;
 
 /**
  * Enum specifies kind of type wildcard.

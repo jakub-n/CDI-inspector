@@ -1,15 +1,11 @@
-package cz.muni.fi.cdii.plugin.gen2.model;
+package cz.muni.fi.cdii.common.model;
 
 import java.util.Set;
 
-public class Field implements InjectableLocation {
+public class MethodArgument implements InjectableLocation {
 	
-	private Class parent;
 	private Class type;
-	/**
-	 * null if field is not annotated by {@link @Produces}
-	 */
-	private Bean produces;
+	private Method parent;
 	
 	public Class getType() {
 		// TODO Auto-generated method stub
