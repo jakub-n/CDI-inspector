@@ -22,7 +22,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
         <jboss-tools-repo.url>http://download.jboss.org/jbosstools/updates/stable/kepler</jboss-tools-repo.url>
         <e4-tools-repo.url>http://download.eclipse.org/e4/downloads/drops/R-0.14-201306242200/repository</e4-tools-repo.url>
 	</properties>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>cz.muni.fi.cdii.common</groupId>
@@ -147,11 +147,18 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 					<artifactId>tycho-compiler-plugin</artifactId>
 					<version>${tycho.version}</version>
 					<configuration>
-						<compilerArguments>
-							<inlineJSR />
-							<enableJavadoc />
-							<encoding>ISO-8859-1</encoding>
-						</compilerArguments>
+<!-- 						<compilerArguments> -->
+<!-- 							<inlineJSR /> -->
+<!-- 							<enableJavadoc /> -->
+<!-- 							<encoding>ISO-8859-1</encoding> -->
+<!-- 						</compilerArguments> -->
+<!-- 						<extraClasspathElements> -->
+<!--                             <dependency> -->
+<!-- 					            <groupId>com.fasterxml.jackson.core</groupId> -->
+<!-- 					            <artifactId>jackson-annotations</artifactId> -->
+<!-- 					            <version>2.2.0</version> -->
+<!--                             </dependency> -->
+<!-- 						</extraClasspathElements> -->
 					</configuration>
 				</plugin>
 				<plugin>
