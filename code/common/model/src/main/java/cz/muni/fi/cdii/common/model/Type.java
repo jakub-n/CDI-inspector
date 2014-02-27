@@ -19,61 +19,134 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 	isGetterVisibility=Visibility.NONE, fieldVisibility=Visibility.DEFAULT)
 public class Type {
 	
-	/**
-	 * null iff {@link #wildcardType} is {@link TypeWildcardEnum#QUESTIONMARK}
-	 */
+//	/**
+//	 * null iff {@link #wildcardType} is {@link TypeWildcardEnum#QUESTIONMARK}
+//	 */
+//
+//	@JsonProperty
+//	private Class clazz;
+//	/**
+//	 * null if 
+//	 * <ul>
+//	 * <li>{@link #wildcardType} is {@link TypeWildcardEnum#QUESTIONMARK}
+//	 * <li>type is non-parametrized
+//	 * </ul>
+//	 */
 
-	@JsonProperty
-	private Class clazz;
-	/**
-	 * null if 
-	 * <ul>
-	 * <li>{@link #wildcardType} is {@link TypeWildcardEnum#QUESTIONMARK}
-	 * <li>type is non-parametrized
-	 * </ul>
-	 */
+//	@JsonProperty
+//	private List<Type> typeParameters;
 
-	@JsonProperty
+//	@JsonProperty
+//	private TypeWildcardEnum wildcardType;
+	
+	// ----------------------------------------------------------
+	
+	private String package_;
+	private String name;
 	private List<Type> typeParameters;
-
-	@JsonProperty
-	private TypeWildcardEnum wildcardType;
 	
 	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((clazz == null) ? 0 : clazz.hashCode());
-		result = prime * result
-				+ ((typeParameters == null) ? 0 : typeParameters.hashCode());
-		result = prime * result
-				+ ((wildcardType == null) ? 0 : wildcardType.hashCode());
-		return result;
-	}
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Type other = (Type) obj;
-		if (clazz == null) {
-			if (other.clazz != null)
-				return false;
-		} else if (!clazz.equals(other.clazz))
-			return false;
-		if (typeParameters == null) {
-			if (other.typeParameters != null)
-				return false;
-		} else if (!typeParameters.equals(other.typeParameters))
-			return false;
-		if (wildcardType != other.wildcardType)
-			return false;
-		return true;
-	}
+	
+	
+	
+	
+	public String getPackage() {
+        return package_;
+    }
+    public void setPackage(String package_) {
+        this.package_ = package_;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public List<Type> getTypeParameters() {
+        return typeParameters;
+    }
+    public void setTypeParameters(List<Type> typeParameters) {
+        this.typeParameters = typeParameters;
+    }
+    
+    private String toString(final boolean qualified) {
+        StringBuilder resultBuilder = new StringBuilder();
+        if (qualified) {
+            resultBuilder.append(this.package_).append(".");
+        }
+        resultBuilder.append(this.name);
+        if (! this.typeParameters.isEmpty()) {
+            resultBuilder.append("<");
+            for (Type param : this.typeParameters) {
+                resultBuilder.append(param.toString(qualified)).append(",");
+            }
+            resultBuilder.deleteCharAt(resultBuilder.length() - 1);
+            resultBuilder.append(">");
+        }
+        return resultBuilder.toString();
+    }
+    
+    @Override
+    public String toString() {
+        return this.toString(true);
+    }
+    
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((package_ == null) ? 0 : package_.hashCode());
+        for (Type param : this.getTypeParameters()) {
+            result = prime * result + param.hashCode();
+        }
+        return result;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Type other = (Type) obj;
+        if (name == null) {
+            if (other.name != null)
+                return false;
+        } else if (!name.equals(other.name))
+            return false;
+        if (package_ == null) {
+            if (other.package_ != null)
+                return false;
+        } else if (!package_.equals(other.package_))
+            return false;
+        if (typeParameters == null) {
+            if (other.typeParameters != null)
+                return false;
+        } else if (!paramEquals(this.typeParameters, other.typeParameters))
+            return false;
+        return true;
+    }
+    private static boolean paramEquals(List<Type> paramsA, List<Type> paramsB) {
+        if (paramsA.size() != paramsB.size()) {
+            return false;
+        }
+        for (int i = 0; i < paramsA.size(); i++) {
+            Type paramA = paramsA.get(i);
+            Type paramB = paramsB.get(i);
+            if (paramA == null && paramB != null) {
+                return false;
+            }
+            if (!paramA.equals(paramB)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+ 
 	
 	
 }

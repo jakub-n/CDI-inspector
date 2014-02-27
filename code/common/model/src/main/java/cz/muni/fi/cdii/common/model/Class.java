@@ -19,22 +19,25 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 	isGetterVisibility=Visibility.NONE, fieldVisibility=Visibility.DEFAULT)
 public class Class {
 	
-	public static final String IOPENABLE = "org.eclipse.jdt.core.IOpenable";
-
 	/**
 	 * can be null if anonymous
 	 */
+	// TODO v pripade anonymni tridy zmenit na cislo
 	@JsonProperty
 	private String name;
 	
 	/**
 	 * OuterClass$ThisClass
+	 * <p> {@code null} if this class is not nested
 	 */
 	@JsonProperty
 	private Class outerClass;
 
+	/**
+	 * null if this class is a primitive type
+	 */
 	@JsonProperty
-	private Package package_;
+	private String package_;
 	
 	/**
 	 * Value is obtained by calling {@link java.lang.Class#getName()}.
@@ -56,11 +59,6 @@ public class Class {
 	@JsonProperty
 	private Set<InjectionPoint> injectionPoints;
 	
-	// TODO mozna vytvorit jen lokalniho typove bezpecneho potomka Class a vnem vlastnost
-	// TODO neserializovat
-	@JsonProperty
-	private Map<String, Object> actions = new HashMap<String, Object>();
-	
 	public Class(final java.lang.Class<?> clazz) {
 		this.javaName = clazz.getName();
 	}
@@ -71,6 +69,67 @@ public class Class {
 	 */
 	public Class(final String name) {
 		this.javaName = name;
+	}
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Class getOuterClass() {
+		return outerClass;
+	}
+
+	public void setOuterClass(Class outerClass) {
+		this.outerClass = outerClass;
+	}
+
+	public String getPackage_() {
+		return package_;
+	}
+
+	public void setPackage_(String package_) {
+		this.package_ = package_;
+	}
+
+	public Set<Field> getFields() {
+		return fields;
+	}
+
+	public void setFields(Set<Field> fields) {
+		this.fields = fields;
+	}
+
+	public Set<Method> getMethods() {
+		return methods;
+	}
+
+	public void setMethods(Set<Method> methods) {
+		this.methods = methods;
+	}
+
+	public Set<InjectionPoint> getInjectionPoints() {
+		return injectionPoints;
+	}
+
+	public void setInjectionPoints(Set<InjectionPoint> injectionPoints) {
+		this.injectionPoints = injectionPoints;
+	}
+
+	public String getJavaName() {
+		return javaName;
+	}
+
+	@Override
+	public String toString() {
+		return this.outerClass == null
+				? ((this.package_ != null ? this.package_ : "")
+						+ "."
+						+ (this.name != null ? this.name : "-anonym-"))
+				: super.toString() + "$" + (this.name != null ? this.name : "-anonym-");
 	}
 
 	@Override
