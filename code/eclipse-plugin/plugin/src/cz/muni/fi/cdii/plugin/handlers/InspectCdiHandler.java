@@ -24,7 +24,7 @@ public class InspectCdiHandler {
 		System.out.println("E4 cdi handler");
 		System.out.println("selection: " + selection);
 		if (!selection.isEmpty()) {
-			Job job = new InspectionJob("Inspectiong CDI beans", broker, selection);
+			Job job = new InspectionJob("Inspection CDI beans", broker, selection);
 			job.setPriority(Job.SHORT);
 			job.schedule();
 		}

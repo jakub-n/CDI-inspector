@@ -53,7 +53,7 @@ public class InspectionJob extends Job {
 		IProject project = InspectionJob.getProjectFromPackageExplorerElement(selectedElement);
 		ICDIProject cdiProject = InspectionJob.getCdiProjectFromProject(project);
 		LocalCdiInspection inspection = LocalInspectionFactory.createInspection(cdiProject);
-		new Inspection(cdiProject);
+		Inspection inspection2 = new Inspection(cdiProject);
 		broker.post(CdiInspection.INSPECT_TOPIC, inspection);
 		System.out.println("showGraphByPackageExplorerSelection inspect event posted");
 		return Status.OK_STATUS;

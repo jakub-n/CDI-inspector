@@ -1,12 +1,14 @@
 package cz.muni.fi.cdii.common.model;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 /**
  * Represents java type. For non-parametrized types it is equal to {@link Class}. For parametrized 
@@ -43,9 +45,9 @@ public class Type {
 	
 	private String package_;
 	private String name;
-	private List<Type> typeParameters;
+	private List<Type> typeParameters = new ArrayList<Type>();
 	
-	
+	private Set<Member> members = new HashSet<Member>();
 	
 	
 	
@@ -62,16 +64,44 @@ public class Type {
     public void setName(String name) {
         this.name = name;
     }
+    
     public List<Type> getTypeParameters() {
         return typeParameters;
     }
+    
     public void setTypeParameters(List<Type> typeParameters) {
         this.typeParameters = typeParameters;
     }
     
+    public Set<Member> getMembers() {
+        return members;
+    }
+    
+    public void setMembers(Set<Member> members) {
+        this.members = members;
+    }
+    
+    /**
+     * Gets member by it's name.
+     * @param name requested member name
+     * @return requested member or null iff member of that time does not exist
+     */
+    public Member getMemberByName(final String name) {
+        for (Member member : this.members) {
+            if (name.equals(member.getName())) {
+                return member;
+            }
+        }
+        return null;
+    }
+    
+    public String getFullyQualifiedName() {
+        return this.package_.isEmpty() ? this.name : (this.package_ + "." + this.name);
+    }
+    
     private String toString(final boolean qualified) {
         StringBuilder resultBuilder = new StringBuilder();
-        if (qualified) {
+        if (qualified && !this.package_.isEmpty()) {
             resultBuilder.append(this.package_).append(".");
         }
         resultBuilder.append(this.name);
@@ -97,9 +127,7 @@ public class Type {
         int result = 1;
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         result = prime * result + ((package_ == null) ? 0 : package_.hashCode());
-        for (Type param : this.getTypeParameters()) {
-            result = prime * result + param.hashCode();
-        }
+        result = prime * result + ((typeParameters == null) ? 0 : typeParameters.hashCode());
         return result;
     }
     
@@ -125,28 +153,8 @@ public class Type {
         if (typeParameters == null) {
             if (other.typeParameters != null)
                 return false;
-        } else if (!paramEquals(this.typeParameters, other.typeParameters))
+        } else if (!typeParameters.equals(other.typeParameters))
             return false;
         return true;
     }
-    private static boolean paramEquals(List<Type> paramsA, List<Type> paramsB) {
-        if (paramsA.size() != paramsB.size()) {
-            return false;
-        }
-        for (int i = 0; i < paramsA.size(); i++) {
-            Type paramA = paramsA.get(i);
-            Type paramB = paramsB.get(i);
-            if (paramA == null && paramB != null) {
-                return false;
-            }
-            if (!paramA.equals(paramB)) {
-                return false;
-            }
-        }
-        return true;
-    }
-    
- 
-	
-	
 }
