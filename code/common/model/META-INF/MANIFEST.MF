@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1392173185102
+Bnd-LastModified: 1393787483484
 Build-Jdk: 1.7.0_51
 Built-By: watt
 Bundle-ClassPath: .,jars/jackson-annotations-2.3.0.jar,jars/jackson-data
