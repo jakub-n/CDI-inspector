@@ -17,12 +17,14 @@ Update site contains all necessary dependencies.
 
 ### Build
 
-* `cd code/cz.muni.fi.cdii.main`
+* `cd <reporoot>/code/common/model`
+* `mvn clean install -Posgi`
+* `cd <reporoot>/code/eclipse-plugin`
 * `mvn clean install`
 
 ### Installation
 
-1. Add *code/cz.muni.fi.cdii.repository/target/repository* directory as a new local update site in your Eclipse installation.
+1. Add *<reporoot>/code/eclipse-plugin/repository/target/repository/* directory as a new local update site in your Eclipse installation.
 2. Install all features from this update site.
 
 ## Usage
