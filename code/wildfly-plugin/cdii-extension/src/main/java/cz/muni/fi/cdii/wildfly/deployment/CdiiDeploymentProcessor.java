@@ -31,7 +31,7 @@ public class CdiiDeploymentProcessor implements DeploymentUnitProcessor {
         phaseContext.getDeploymentUnit().addToAttachmentList(
                 UndertowAttachments.UNDERTOW_OUTER_HANDLER_CHAIN_WRAPPERS, 
                 getCdiiHandler(phaseContext.getServiceRegistry()));
-        log.info("\"" + phaseContext.getDeploymentUnit().getName() + "\" injected");
+        log.info("\"" + phaseContext.getDeploymentUnit().getName() + "\" cdii attached");
     }
 
     @Override

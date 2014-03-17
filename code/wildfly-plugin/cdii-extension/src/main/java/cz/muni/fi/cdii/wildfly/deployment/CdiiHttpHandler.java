@@ -23,29 +23,49 @@ public class CdiiHttpHandler implements HttpHandler {
 
     @Override
     public void handleRequest(HttpServerExchange exchange) throws Exception {
-        final boolean isCdiiRequest = isCdiiRequest(exchange);
-        if (isCdiiRequest) {
-            this.handleCdiiRequest(exchange);
+        if (isCdiiStateRequest(exchange)) {
+            this.handleCdiiStateRequest(exchange);
+        } else if (isCdiiDataRequest(exchange)) {
+            this.handleCdiiDataRequest(exchange);
         } else {
             nextHandler.handleRequest(exchange);
         }
 
     }
 
-    private void handleCdiiRequest(final HttpServerExchange exchange) {
+    private void handleCdiiStateRequest(final HttpServerExchange exchange) {
+        exchange.getResponseHeaders().add(new HttpString("Content-Type"), 
+                "application/json");
+        exchange.getResponseSender().send("{\"status\": \"enabled\"}");
+    }
+
+    private void handleCdiiDataRequest(final HttpServerExchange exchange) {
         exchange.getResponseHeaders().add(new HttpString("Content-Type"), 
                 "application/json");
         exchange.getResponseSender().send("cdii demo: " + 
                 (beanManager == null ? "null" : beanManager));
-    
     }
     
-    private static boolean isCdiiRequest(final HttpServerExchange exchange) {
+    private static boolean isCdiiStateRequest(final HttpServerExchange exchange) {
+        return applicationPathsEqual(exchange) 
+                && getPathSuffix(exchange).matches("/cdii/status/?"); 
+    }
+
+    private static boolean isCdiiDataRequest(final HttpServerExchange exchange) {
+        return applicationPathsEqual(exchange)
+                   && getPathSuffix(exchange).matches("/cdii/?");
+    }
+    
+    private static String getPathSuffix(HttpServerExchange exchange) {
         final String resolvedPath = exchange.getResolvedPath();
         final String requestPath = exchange.getRequestPath();
-        return requestPath.substring(0, resolvedPath.length()).equals(resolvedPath) 
-                && requestPath.substring(resolvedPath.length(), requestPath.length())
-                   .matches("/cdii/?");
+        return requestPath.substring(resolvedPath.length(), requestPath.length());
+    }
+
+    private static boolean applicationPathsEqual(final HttpServerExchange exchange) {
+        final String resolvedPath = exchange.getResolvedPath();
+        final String requestPath = exchange.getRequestPath();
+        return requestPath.substring(0, resolvedPath.length()).equals(resolvedPath);
     }
 
 }
