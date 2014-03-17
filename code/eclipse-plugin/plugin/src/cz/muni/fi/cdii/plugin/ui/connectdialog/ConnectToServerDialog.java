@@ -1,23 +1,11 @@
 package cz.muni.fi.cdii.plugin.ui.connectdialog;
 
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -34,12 +22,10 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -48,13 +34,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
-import org.eclipse.wst.server.core.IModule;
-import org.eclipse.wst.server.core.IServer;
-import org.eclipse.wst.server.core.ServerCore;
-import org.eclipse.wst.server.core.model.IURLProvider;
-import org.jboss.ide.eclipse.as.core.server.internal.v7.Wildfly8Server;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ConnectToServerDialog extends Dialog {
     
@@ -83,7 +62,7 @@ public class ConnectToServerDialog extends Dialog {
     @Override
     protected Control createDialogArea(Composite parent) {
         Composite container = (Composite) super.createDialogArea(parent);
-        GridLayout gridLayout = (GridLayout) container.getLayout();
+        //GridLayout gridLayout = (GridLayout) container.getLayout();
         
         directRadioButton = new Button(container, SWT.RADIO);
         directRadioButton.setText("URL of application root context:");
@@ -94,7 +73,9 @@ public class ConnectToServerDialog extends Dialog {
         combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         comboViewer.setContentProvider(new ArrayContentProvider());
         comboViewer.setLabelProvider(new LabelProvider());
-        comboViewer.setInput(new String[] {"ahoj", "svete"});
+        comboViewer.setInput(ConnectToServerHistoryUtil.getHistory());
+        selectFirstComboElementIfExists();
+        combo.setFocus();
         combo.addFocusListener(new SelectionTypeFocusListener(this, SelectionType.DIRECT));
         
         treeRadioButton = new Button(container, SWT.RADIO);
@@ -117,6 +98,15 @@ public class ConnectToServerDialog extends Dialog {
         this.setSelectionType(SelectionType.DIRECT);
         
         return container;
+    }
+
+    private void selectFirstComboElementIfExists() {
+        Object firstElement = comboViewer.getElementAt(0);
+        if (firstElement != null) {
+            comboViewer.setSelection(new StructuredSelection(firstElement));
+            int textLength = comboViewer.getCombo().getText().length();
+            comboViewer.getCombo().setSelection(new Point(0, textLength - 1));
+        }
     }
 
     @Override
@@ -149,6 +139,7 @@ public class ConnectToServerDialog extends Dialog {
         if (this.selectedUrl == null) {
             return;
         }
+        ConnectToServerHistoryUtil.saveLast(selectedUrl.toString());
         super.okPressed();
     };
 
@@ -167,7 +158,7 @@ public class ConnectToServerDialog extends Dialog {
 
     private URL retrieveSelectedUrl() {
         if (this.directRadioButton.getSelection() && ! this.treeRadioButton.getSelection()) {
-            String text = this.comboViewer.getCombo().getText();
+            String text = this.comboViewer.getCombo().getText().trim();
             try {
                 URL url = new URL(text);
                 return url;
@@ -202,7 +193,7 @@ public class ConnectToServerDialog extends Dialog {
     /**
      * It has to be run in SWT UI thread.
      */
-    private void setTreeViewerInput(Server[] input) {
+    void setTreeViewerInput(Server[] input) {
         this.treeViewer.setInput(input);
         this.treeViewer.getTree().setEnabled(true);
         this.treeViewer.expandAll();
@@ -351,270 +342,9 @@ public class ConnectToServerDialog extends Dialog {
             if (element instanceof Module) {
                 return false;
             }
-            // TODO remove exception
-            throw new RuntimeException("unknown element");
+            throw new RuntimeException("Unknown parent element.");
         }
         
-    }
-    
-    private static class AsyncModelComputation implements Runnable {
-        
-        final ConnectToServerDialog dialog;
-        
-        public AsyncModelComputation(ConnectToServerDialog dialog) {
-            this.dialog = dialog;
-        }
-
-        @Override
-        public void run() {
-            Server[] model = this.computeModel();
-            this.setModel(model);
-        }
-
-        private Server[] computeModel() {
-            IServer[] servers = ServerCore.getServers();
-            List<IServer> wildflyServers = filterWildflyServers(servers);
-            List<IServer> runningServers = filterRunningServers(wildflyServers);
-            List<ServerAndModules> modules = extractModules(runningServers);
-            List<ServerAndModules> runningModules = filterRunningModuls(modules);
-            List<ServerAndModules> cdiiModules = filterCdiiModules(runningModules);
-            final Server[] input = createDialogModel(cdiiModules);
-            return input;
-        }
-
-        private Server[] createDialogModel(List<ServerAndModules> serversAndModules) {
-            List<Server> servers = new ArrayList<>();
-            for (ServerAndModules serverAndModules : serversAndModules) {
-                Server server = createServerModel(serverAndModules);
-                servers.add(server);
-            }
-            return servers.toArray(new Server[0]);
-        }
-
-        private Server createServerModel(ServerAndModules serverAndModules) {
-            Server server = new Server(serverAndModules.getServer().getName());
-            for (IModule iModule : serverAndModules.getModules()) {
-                String moduleName = iModule.getName();
-                URL moduleUrl = createCdiiStatusUrl(serverAndModules.getServer(), iModule);
-                if (moduleUrl == null) {
-                    continue;
-                }
-                Module module = new Module(moduleName, moduleUrl, server);
-                server.getModules().add(module);
-            }
-            return server;
-        }
-
-        private List<ServerAndModules> filterCdiiModules(List<ServerAndModules> serversAndModules) {
-            List<ServerAndModules> nonEmptyServers = new ArrayList<>();
-            List<IsCdiiEnabled> callables = new ArrayList<>();
-            for (ServerAndModules serverAndModules : serversAndModules) {
-                if (serverAndModules.getModules().isEmpty()) {
-                    continue;
-                }
-                URL cdiiStatusUrl = createCdiiStatusUrl(serverAndModules.getServer(), 
-                        serverAndModules.getModules().get(0));
-                if (cdiiStatusUrl == null) {
-                    continue;
-                }
-                callables.add(new IsCdiiEnabled(cdiiStatusUrl));
-                nonEmptyServers.add(serverAndModules);
-                
-            }
-            if (nonEmptyServers.isEmpty()) {
-                return Collections.emptyList();
-            }
-            
-            ExecutorService threadPool = Executors.newFixedThreadPool(
-                    Math.min(8, callables.size()));
-            List<Future<Boolean>> futureResults;
-            try {
-                futureResults = threadPool.invokeAll(callables, 5, TimeUnit.SECONDS);
-            } catch (InterruptedException e1) {
-                return Collections.emptyList();
-            }
-            threadPool.shutdownNow();
-            List<ServerAndModules> result = new ArrayList<>();
-            for (int i = 0; i < nonEmptyServers.size(); i++) {
-                try {
-                    if (futureResults.get(i).get()) {
-                        result.add(nonEmptyServers.get(i));
-                    }
-                } catch (InterruptedException | ExecutionException e) {
-                    // nothing
-                }
-            }
-            return result;
-        }
-        
-        /**
-         * @return null if creation fail 
-         */
-        private URL createCdiiStatusUrl(IServer server, IModule module) {
-            Wildfly8Server wildfly8Server = getWildfly8Server(server);
-            URL moduleUrl = wildfly8Server.getModuleRootURL(module);
-            String cdiiStatusUrlString = moduleUrl.toString() + "/cdii/status";
-            try {
-                URL cdiiStatusUrl = new URL(cdiiStatusUrlString);
-                return cdiiStatusUrl;
-            } catch (MalformedURLException e) {
-                return null;
-            }
-        }
-        
-        private Wildfly8Server getWildfly8Server(IServer server) {
-            IURLProvider urlProvider = (IURLProvider) server.getAdapter(IURLProvider.class);
-            if (urlProvider instanceof Wildfly8Server) {
-                return (Wildfly8Server) urlProvider;
-            }
-            throw new RuntimeException("Unexpected " + IURLProvider.class.getName() + ": " 
-                    + (urlProvider == null ? "null" : urlProvider.getClass().getCanonicalName()));
-        }
-
-        private List<ServerAndModules> filterRunningModuls(List<ServerAndModules> modules) {
-            List<ServerAndModules> result = new ArrayList<>();
-            for (ServerAndModules serverAndModules : modules) {
-                ServerAndModules serverAndRunningModules = 
-                        new ServerAndModules(serverAndModules.getServer());
-                serverAndRunningModules.getModules().addAll(filterRunningModules(serverAndModules));
-                result.add(serverAndRunningModules);
-            }
-            return result;
-        }
-
-        private List<IModule> filterRunningModules(ServerAndModules serverAndModules) {
-            List<IModule> result = new ArrayList<>();
-            for (IModule module : serverAndModules.getModules()) {
-                if (serverAndModules.getServer().getModuleState(new IModule[] {module}) 
-                        == IServer.STATE_STARTED) {
-                    result.add(module);
-                }
-            }
-            return result;
-        }
-
-        private List<ServerAndModules> extractModules(List<IServer> servers) {
-            List<ServerAndModules> result = new ArrayList<>();
-            for (IServer server : servers) {
-                ServerAndModules serverAndModules = new ServerAndModules(server);
-                serverAndModules.getModules().addAll(Arrays.asList(server.getModules()));
-                result.add(serverAndModules);
-            }
-            return result;
-        }
-
-        private List<IServer> filterRunningServers(List<IServer> servers) {
-            List<IServer> result = new ArrayList<>();
-            for (IServer server : servers) {
-                if (server.getServerState() == IServer.STATE_STARTED) {
-                    result.add(server);
-                }
-            }
-            return result;
-        }
-
-        private List<IServer> filterWildflyServers(IServer[] servers) {
-            List<IServer> result = new ArrayList<>();
-            for (IServer server : servers) {
-                IURLProvider urlProvider = (IURLProvider) server.getAdapter(IURLProvider.class);
-                if (urlProvider != null && urlProvider instanceof Wildfly8Server) {
-                    result.add(server);
-                }
-            }
-            return result;
-        }
-
-        private void setModel(final Server[] input) {
-            if (input.length == 0) {
-                return;
-            }
-            Display.getDefault().asyncExec(new Runnable() {
-            
-            @Override
-            public void run() {
-                dialog.setTreeViewerInput(input);
-            }
-        });
-            
-        }
-        
-        private static class IsCdiiEnabled implements Callable<Boolean> {
-            
-            private final URL cdiiEnabledUrl;
-            
-            public IsCdiiEnabled(URL cdiiEnabledUrl) {
-                this.cdiiEnabledUrl = cdiiEnabledUrl;
-            }
-
-            @Override
-            public Boolean call() throws Exception {
-                InputStream inputStream = this.cdiiEnabledUrl.openStream();
-                ObjectMapper mapper = new ObjectMapper();
-                boolean isEnabled = mapper.readTree(inputStream).get("status").asText()
-                        .equals("enabled");
-                return isEnabled;
-            }
-            
-        }
-        
-        private static class ServerAndModules {
-            
-            final private IServer server;
-            final private List<IModule> modules = new ArrayList<>();
-            
-            public ServerAndModules(IServer server) {
-                this.server = server;
-            }
-            public IServer getServer() {
-                return server;
-            }
-            public List<IModule> getModules() {
-                return modules;
-            }
-            
-            
-        }
-    }
-    
-    private static class Server {
-        private String name;
-        private List<Module> modules = new ArrayList<>();
-        
-        public Server(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public List<Module> getModules() {
-            return modules;
-        }
-    }
-    
-    private static class Module {
-        private String name;
-        private URL url;
-        private Server server;
-        
-        public Module(String name, URL url, Server server) {
-            this.name = name;
-            this.url = url;
-            this.server = server;
-        }
-        
-        public String getName() {
-            return name;
-        }
-        
-        public URL getUrl() {
-            return url;
-        }
-
-        public Server getServer() {
-            return server;
-        }
     }
     
     private static enum SelectionType {
