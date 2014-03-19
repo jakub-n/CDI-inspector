@@ -9,7 +9,6 @@ import org.jboss.as.controller.ServiceVerificationHandler;
 import org.jboss.as.server.AbstractDeploymentChainStep;
 import org.jboss.as.server.DeploymentProcessorTarget;
 import org.jboss.dmr.ModelNode;
-import org.jboss.logging.Logger;
 import org.jboss.msc.service.ServiceController;
 
 import cz.muni.fi.cdii.wildfly.deployment.CdiiDeploymentProcessor;
@@ -17,8 +16,6 @@ import cz.muni.fi.cdii.wildfly.deployment.CdiiDeploymentProcessor;
 class SubsystemAdd extends AbstractBoottimeAddStepHandler {
 
     static final SubsystemAdd INSTANCE = new SubsystemAdd();
-
-    private final Logger log = Logger.getLogger(SubsystemAdd.class);
 
     private SubsystemAdd() {
     }
@@ -33,9 +30,6 @@ class SubsystemAdd extends AbstractBoottimeAddStepHandler {
             ServiceVerificationHandler verificationHandler, List<ServiceController<?>> newControllers)
             throws OperationFailedException {
 
-        //Add deployment processors here
-        //Remove this if you don't need to hook into the deployers, or you can add as many as you like
-        //see SubDeploymentProcessor for explanation of the phases
         context.addStep(new AbstractDeploymentChainStep() {
             public void execute(DeploymentProcessorTarget processorTarget) {
                 processorTarget.addDeploymentProcessor(CdiiDeploymentProcessor.PHASE, 
@@ -43,6 +37,5 @@ class SubsystemAdd extends AbstractBoottimeAddStepHandler {
 
             }
         }, OperationContext.Stage.RUNTIME);
-
     }
 }
