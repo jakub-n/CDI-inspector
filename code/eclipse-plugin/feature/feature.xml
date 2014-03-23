@@ -692,10 +692,7 @@ Public License instead of this License.  But first, please read
    </license>
 
    <url>
-      <update label="CDI Inspector update site" url="https://raw.github.com/jakub-n/cdi-inspector-repo/master/repos/cdii_composite"/>
       <discovery label="CDI Inspector homepage" url="https://github.com/jakub-n/CDI-inspector"/>
-      <discovery label="Blog" url="http://cdiinspector.blogspot.com/"/>
-      <discovery label="Update site" url="https://raw.github.com/jakub-n/cdi-inspector-repo/master/repos/cdii_composite"/>
    </url>
 
    <plugin
