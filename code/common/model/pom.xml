@@ -68,6 +68,7 @@
 						<extensions>true</extensions>
 						<configuration>
 <!-- 						    <finalName>this-works</finalName> -->
+                            <!-- not necessary for tycho; for eclipse to be able to recognize this project -->
 							<manifestLocation>META-INF</manifestLocation>
 							<instructions>
 							    <Bundle-Version>${project.version}v${timestamp}</Bundle-Version>

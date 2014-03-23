@@ -27,7 +27,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.e4.tools.compat,
  cz.muni.fi.cdii.common.model,
  org.eclipse.wst.server.core,
- org.jboss.ide.eclipse.as.core
+ org.jboss.ide.eclipse.as.core,
+ cz.muni.fi.cdii.eclipse.libwrapper
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: javax.annotation;version="1.1.0",
