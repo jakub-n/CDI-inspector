@@ -2,9 +2,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>cz.muni.fi.cdii.common</groupId>
-	<artifactId>model</artifactId>
+	<artifactId>cz.muni.fi.cdii.common.model</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>CDI Inspector shared data model</name>
 	<packaging>${pack}</packaging>
 
 	<properties>

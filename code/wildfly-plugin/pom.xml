@@ -4,14 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>cz.muni.fi.cdii.wildfly</groupId>
-	<artifactId>parent</artifactId>
+	<artifactId>cz.muni.fi.cdii.wildfly.parent</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	
 	<modules>
 		<module>../common/model/pom.xml</module>
-		
 		<module>cdii-extension</module>
 	</modules>
-	<name>wildfly extension parent</name>
 </project>
