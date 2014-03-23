@@ -18,8 +18,4 @@
       http://jboss.org/schema/weld/beans 
       http://jboss.org/schema/weld/beans_1_1.xsd">
       
-      
-      <weld:scan>
-      	<weld:exclude name="cz.muni.fi.cdii.webapp.parametrized.specified.IntegerContainer" />
-      </weld:scan>
 </beans>
