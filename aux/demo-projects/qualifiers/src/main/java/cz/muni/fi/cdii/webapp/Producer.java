@@ -5,7 +5,7 @@ import javax.enterprise.inject.Produces;
 public class Producer {
 
 	@Produces
-	@ParamQualifier(number = 3, value = 3.14f)
+	@ParamQualifier(numbers = {3}, value = 3.14f)
 	Bean1 getBean1() {
 		return new Bean1();
 	}

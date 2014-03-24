@@ -11,7 +11,7 @@ public class HelloBean {
 	private Bean1 bean1;
 	
 	@Inject
-	@ParamQualifier(value = 3.14f, number = 3)
+	@ParamQualifier(value = 3.14f, numbers = {3})
 	private Bean1 bean2;
    
    public String getHello() {

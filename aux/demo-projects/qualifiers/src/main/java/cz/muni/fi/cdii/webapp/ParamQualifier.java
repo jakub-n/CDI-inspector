@@ -18,6 +18,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Documented
 public @interface ParamQualifier {
 	String word() default "Hello!";
-	int number();
+	int[] numbers();
 	float value();
 }
