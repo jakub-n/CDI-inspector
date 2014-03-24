@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1395619874968
+Bnd-LastModified: 1395625442747
 Build-Jdk: 1.7.0_51
 Built-By: watt
 Bundle-ClassPath: .,jars/frames-2.4.0.jar,jars/gremlin-groovy-2.4.0.jar,
@@ -180,5 +180,28 @@ Export-Package: com.tinkerpop.blueprints;version="0.0.1.SNAPSHOTvmavenbu
  ion="0.0.1.SNAPSHOTvmavenbuildtimestamp",com.tinkerpop.pipes.util;versi
  on="0.0.1.SNAPSHOTvmavenbuildtimestamp",com.tinkerpop.pipes.util.iterat
  ors;version="0.0.1.SNAPSHOTvmavenbuildtimestamp",com.tinkerpop.pipes.ut
- il.structures;version="0.0.1.SNAPSHOTvmavenbuildtimestamp"
+ il.structures;version="0.0.1.SNAPSHOTvmavenbuildtimestamp",com.fasterxm
+ l.jackson.annotation;version="2.1.1",com.fasterxml.jackson.core;version
+ ="2.1.2",com.fasterxml.jackson.core.base;version="2.1.2",com.fasterxml.
+ jackson.core.format;version="2.1.2",com.fasterxml.jackson.core.io;versi
+ on="2.1.2",com.fasterxml.jackson.core.json;version="2.1.2",com.fasterxm
+ l.jackson.core.sym;version="2.1.2",com.fasterxml.jackson.core.type;vers
+ ion="2.1.2",com.fasterxml.jackson.core.util;version="2.1.2",com.fasterx
+ ml.jackson.databind;version="2.1.2",com.fasterxml.jackson.databind.anno
+ tation;version="2.1.2",com.fasterxml.jackson.databind.cfg;version="2.1.
+ 2",com.fasterxml.jackson.databind.deser;version="2.1.2",com.fasterxml.j
+ ackson.databind.deser.impl;version="2.1.2",com.fasterxml.jackson.databi
+ nd.deser.std;version="2.1.2",com.fasterxml.jackson.databind.exc;version
+ ="2.1.2",com.fasterxml.jackson.databind.ext;version="2.1.2",com.fasterx
+ ml.jackson.databind.introspect;version="2.1.2",com.fasterxml.jackson.da
+ tabind.jsonFormatVisitors;version="2.1.2",com.fasterxml.jackson.databin
+ d.jsonschema;version="2.1.2",com.fasterxml.jackson.databind.jsontype;ve
+ rsion="2.1.2",com.fasterxml.jackson.databind.jsontype.impl;version="2.1
+ .2",com.fasterxml.jackson.databind.module;version="2.1.2",com.fasterxml
+ .jackson.databind.node;version="2.1.2",com.fasterxml.jackson.databind.s
+ er;version="2.1.2",com.fasterxml.jackson.databind.ser.impl;version="2.1
+ .2",com.fasterxml.jackson.databind.ser.std;version="2.1.2",com.fasterxm
+ l.jackson.databind.type;version="2.1.2",com.fasterxml.jackson.databind.
+ util;version="2.1.2",com.fasterxml.jackson.datatype.jsonorg;version="2.
+ 1.2"
 Tool: Bnd-2.1.0.20130426-122213

@@ -31,23 +31,28 @@ public class TmpAction1 extends Action {
     
     @Override
     public void run() {
+        System.out.println("class: " + com.tinkerpop.blueprints.Vertex.class.toString()
+                + System.lineSeparator()
+                + cz.muni.fi.cdii.common.model.Model.class.toString()
+                + System.lineSeparator()
+                + com.tinkerpop.blueprints.Vertex.class.toString());
         System.out.println("ahoj");
-        IServer[] servers = ServerCore.getServers();
-        for (IServer server : servers) {
-            System.out.println(server);
-            System.out.println("> name " + server.getName());
-            System.out.println("> server type " + server.getServerType());
-            System.out.println(server.getClass().getCanonicalName());
-            
-            //IServer server = ...
-            IURLProvider urlProvider = (IURLProvider) server.getAdapter(IURLProvider.class);
-            if (urlProvider instanceof Wildfly8Server) {
-                final Wildfly8Server wildfly8Server = (Wildfly8Server) urlProvider;
-                System.out.println("> management port " + wildfly8Server.getManagementPort());
-                printServerModules(server, wildfly8Server);
-                checkCdiiSubModule(wildfly8Server);
-            }
-        }
+//        IServer[] servers = ServerCore.getServers();
+//        for (IServer server : servers) {
+//            System.out.println(server);
+//            System.out.println("> name " + server.getName());
+//            System.out.println("> server type " + server.getServerType());
+//            System.out.println(server.getClass().getCanonicalName());
+//            
+//            //IServer server = ...
+//            IURLProvider urlProvider = (IURLProvider) server.getAdapter(IURLProvider.class);
+//            if (urlProvider instanceof Wildfly8Server) {
+//                final Wildfly8Server wildfly8Server = (Wildfly8Server) urlProvider;
+//                System.out.println("> management port " + wildfly8Server.getManagementPort());
+//                printServerModules(server, wildfly8Server);
+//                checkCdiiSubModule(wildfly8Server);
+//            }
+//        }
     }
 
     private void checkCdiiSubModule(Wildfly8Server wildfly8Server) {
