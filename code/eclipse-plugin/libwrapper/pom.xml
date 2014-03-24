@@ -32,11 +32,10 @@
 						<Embed-Transitive>true</Embed-Transitive>
 						<Embed-Directory>jars</Embed-Directory>
 						<_exportcontents>
-							com.tinkerpop.*
+							com.tinkerpop.*,
+							com.fasterxml.jackson.*
 						</_exportcontents>
-						<Import-Package>
-							com.tinkerpop.*
-						</Import-Package>
+						<Import-Package></Import-Package>
 						<_nouses>true</_nouses>
 						<_failok>true</_failok>
 					</instructions>
