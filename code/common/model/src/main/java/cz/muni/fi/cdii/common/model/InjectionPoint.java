@@ -5,11 +5,17 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+// TODO no equals a hashcode !
 public class InjectionPoint {
-	
+    
+    /**
+     * type required for injection
+     */
+    @JsonProperty
+    private Type type;
 
 	@JsonProperty
-	private Set<Qualifier> qualifiers;
+	private Set<Qualifier> qualifiers = new HashSet<>();
 
 	/**
 	 * typically contains exactly one element
@@ -18,6 +24,16 @@ public class InjectionPoint {
 	private Set<Bean> resolvedBeans = new HashSet<>();
 	
 	private String elName;
+	
+	
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
 
     public Set<Qualifier> getQualifiers() {
         return qualifiers;

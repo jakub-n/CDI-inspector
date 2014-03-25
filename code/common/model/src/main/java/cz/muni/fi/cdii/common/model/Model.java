@@ -19,9 +19,25 @@ public class Model {
 	@JsonProperty
 	private Set<Type> types;
 
-	@JsonProperty
-	private Set<Class> classes;
+    public Set<Bean> getBeans() {
+        return beans;
+    }
 
-	@JsonProperty
-	private Set<InjectionPoint> injectionPoints;
+    public void setBeans(Set<Bean> beans) {
+        this.beans = beans;
+    }
+
+    public Set<Type> getTypes() {
+        return types;
+    }
+
+    public void setTypes(Set<Type> types) {
+        this.types = types;
+    }
+	
+	@Override
+	public String toString() {
+	    return "cdii model; beans: " + this.beans.toString();
+	}
+
 }

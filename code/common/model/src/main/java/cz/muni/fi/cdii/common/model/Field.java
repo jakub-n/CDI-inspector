@@ -51,6 +51,7 @@ public class Field implements Member {
         this.injectionPoint = injectionPoint;
     }
 
+    // TODO upravit ... see equals
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -59,6 +60,7 @@ public class Field implements Member {
         return result;
     }
 
+    // TODO has to depend also on the type - due to serialization
     @Override
     public boolean equals(Object obj) {
         if (this == obj)

@@ -15,6 +15,7 @@ import org.jboss.tools.cdi.core.CDICoreNature;
 import org.jboss.tools.cdi.core.CDIUtil;
 import org.jboss.tools.cdi.core.ICDIProject;
 
+import cz.muni.fi.cdii.common.model.Model;
 import cz.muni.fi.cdii.plugin.Activator;
 import cz.muni.fi.cdii.plugin.common.model.CdiInspection;
 import cz.muni.fi.cdii.plugin.inspection2.Inspection;
@@ -54,6 +55,8 @@ public class InspectionJob extends Job {
 		ICDIProject cdiProject = InspectionJob.getCdiProjectFromProject(project);
 		LocalCdiInspection inspection = LocalInspectionFactory.createInspection(cdiProject);
 		Inspection inspection2 = new Inspection(cdiProject);
+		Model model = inspection2.getModel();
+		System.out.println(model);
 		broker.post(CdiInspection.INSPECT_TOPIC, inspection);
 		System.out.println("showGraphByPackageExplorerSelection inspect event posted");
 		return Status.OK_STATUS;

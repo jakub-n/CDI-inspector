@@ -46,6 +46,7 @@ public class Type {
 	private String package_;
 	private String name;
 	private List<Type> typeParameters = new ArrayList<Type>();
+	private boolean isArray;
 	
 	private Set<Member> members = new HashSet<Member>();
 	
@@ -81,6 +82,12 @@ public class Type {
         this.members = members;
     }
     
+    public boolean isArray() {
+        return isArray;
+    }
+    public void setArray(boolean isArray) {
+        this.isArray = isArray;
+    }
     /**
      * Gets member by it's name.
      * @param name requested member name
@@ -96,35 +103,39 @@ public class Type {
     }
     
     public String getFullyQualifiedName() {
-        return this.package_.isEmpty() ? this.name : (this.package_ + "." + this.name);
+        return this.toString(true, false);
     }
     
-    private String toString(final boolean qualified) {
+    private String toString(final boolean qualified, final boolean showTypeParams) {
         StringBuilder resultBuilder = new StringBuilder();
         if (qualified && !this.package_.isEmpty()) {
             resultBuilder.append(this.package_).append(".");
         }
         resultBuilder.append(this.name);
-        if (! this.typeParameters.isEmpty()) {
+        if ((!this.typeParameters.isEmpty()) && showTypeParams) {
             resultBuilder.append("<");
             for (Type param : this.typeParameters) {
-                resultBuilder.append(param.toString(qualified)).append(",");
+                resultBuilder.append(param.toString(qualified, true)).append(",");
             }
             resultBuilder.deleteCharAt(resultBuilder.length() - 1);
             resultBuilder.append(">");
+        }
+        if (this.isArray) {
+            resultBuilder.append("[]");
         }
         return resultBuilder.toString();
     }
     
     @Override
     public String toString() {
-        return this.toString(true);
+        return this.toString(true, true);
     }
     
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + (isArray ? 1231 : 1237);
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         result = prime * result + ((package_ == null) ? 0 : package_.hashCode());
         result = prime * result + ((typeParameters == null) ? 0 : typeParameters.hashCode());
@@ -140,6 +151,8 @@ public class Type {
         if (getClass() != obj.getClass())
             return false;
         Type other = (Type) obj;
+        if (isArray != other.isArray)
+            return false;
         if (name == null) {
             if (other.name != null)
                 return false;
