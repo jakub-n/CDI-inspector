@@ -1,4 +1,4 @@
-package cz.muni.fi.cdii.plugin.ui;
+package cz.muni.fi.cdii.eclipse.ui.parts;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -16,6 +16,9 @@ import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
 import cz.muni.fi.cdii.plugin.common.model.CdiInspection;
+import cz.muni.fi.cdii.plugin.ui.ColorManager;
+import cz.muni.fi.cdii.plugin.ui.GraphContentProvider;
+import cz.muni.fi.cdii.plugin.ui.GraphLabelProvider;
 
 @SuppressWarnings("restriction")
 public class InspectorPart {

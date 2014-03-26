@@ -1,4 +1,4 @@
-package cz.muni.fi.cdii.plugin;
+package cz.muni.fi.cdii.eclipse;
 
 import javax.inject.Inject;
 
@@ -11,8 +11,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.osgi.service.event.Event;
 
+import cz.muni.fi.cdii.ecilpse.ui.e3.InspectorPartE3Wrapper;
 import cz.muni.fi.cdii.plugin.common.model.CdiInspection;
-import cz.muni.fi.cdii.plugin.ui.e3compat.InspectorPartE3Wrapper;
 
 /**
  * Entry point for showing the the inspection graph

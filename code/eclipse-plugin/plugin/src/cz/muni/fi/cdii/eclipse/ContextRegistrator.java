@@ -1,4 +1,4 @@
-package cz.muni.fi.cdii.plugin;
+package cz.muni.fi.cdii.eclipse;
 
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;

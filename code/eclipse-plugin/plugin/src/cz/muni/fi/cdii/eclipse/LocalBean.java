@@ -1,4 +1,4 @@
-package cz.muni.fi.cdii.plugin;
+package cz.muni.fi.cdii.eclipse;
 
 import java.util.Arrays;
 import java.util.Collection;

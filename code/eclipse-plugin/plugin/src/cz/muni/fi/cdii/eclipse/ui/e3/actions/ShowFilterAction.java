@@ -1,13 +1,13 @@
-package cz.muni.fi.cdii.plugin.ui.e3compat;
+package cz.muni.fi.cdii.eclipse.ui.e3.actions;
 
 import org.eclipse.jface.action.Action;
 
-import cz.muni.fi.cdii.plugin.Activator;
+import cz.muni.fi.cdii.eclipse.Activator;
 
 
-public class FilterWindowAction extends Action {
+public class ShowFilterAction extends Action {
 
-    public FilterWindowAction() {
+    public ShowFilterAction() {
         super();
         this.setImageDescriptor(Activator.getImageDescriptor("icons/eclipse/filter_ps.gif"));
         this.setToolTipText("Show filter window");

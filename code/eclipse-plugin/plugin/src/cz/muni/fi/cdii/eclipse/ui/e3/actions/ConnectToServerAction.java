@@ -1,10 +1,10 @@
-package cz.muni.fi.cdii.plugin.ui.e3compat;
+package cz.muni.fi.cdii.eclipse.ui.e3.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.widgets.Shell;
 
-import cz.muni.fi.cdii.plugin.Activator;
+import cz.muni.fi.cdii.eclipse.Activator;
 import cz.muni.fi.cdii.plugin.ui.connectdialog.ConnectToServerDialog;
 
 

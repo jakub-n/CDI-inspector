@@ -10,7 +10,7 @@
       </fragment>
       <processor 
             beforefragment="true"
-            class="cz.muni.fi.cdii.plugin.ContextRegistrator" >
+            class="cz.muni.fi.cdii.eclipse.ContextRegistrator" >
        </processor>
    </extension>
    <extension
@@ -46,7 +46,7 @@
       <view
             allowMultiple="false"
             category="cz.muni.fi.cdii.plugin.category.cdi"
-            class="cz.muni.fi.cdii.plugin.ui.e3compat.InspectorPartE3Wrapper"
+            class="cz.muni.fi.cdii.ecilpse.ui.e3.InspectorPartE3Wrapper"
             icon="icons/cdii_icon.png"
             id="cz.muni.fi.cdii.plugin.cdiInspectorView"
             name="CDI Inspector"

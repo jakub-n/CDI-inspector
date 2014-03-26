@@ -17,7 +17,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
-import cz.muni.fi.cdii.plugin.Activator;
+import cz.muni.fi.cdii.eclipse.Activator;
 
 public class ConnectToServerHistoryUtil {
 

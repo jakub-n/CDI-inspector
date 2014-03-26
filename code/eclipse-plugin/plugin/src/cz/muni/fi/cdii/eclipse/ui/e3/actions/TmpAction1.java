@@ -1,4 +1,4 @@
-package cz.muni.fi.cdii.plugin.ui.e3compat;
+package cz.muni.fi.cdii.eclipse.ui.e3.actions;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -18,7 +18,7 @@ import org.jboss.ide.eclipse.as.core.server.internal.v7.Wildfly8Server;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import cz.muni.fi.cdii.plugin.Activator;
+import cz.muni.fi.cdii.eclipse.Activator;
 
 
 public class TmpAction1 extends Action {

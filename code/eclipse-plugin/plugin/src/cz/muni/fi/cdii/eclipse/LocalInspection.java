@@ -1,4 +1,4 @@
-package cz.muni.fi.cdii.plugin;
+package cz.muni.fi.cdii.eclipse;
 
 import java.util.Collection;
 import java.util.HashSet;

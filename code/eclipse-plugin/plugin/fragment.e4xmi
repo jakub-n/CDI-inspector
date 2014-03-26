@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="ASCII"?>
-<fragment:ModelFragments xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:fragment="http://www.eclipse.org/ui/2010/UIModel/fragment" xmlns:menu="http://www.eclipse.org/ui/2010/UIModel/application/ui/menu" xmlns:ui="http://www.eclipse.org/ui/2010/UIModel/application/ui" xmi:id="_50OVYKFeEeKusqZ8Ky_Jpw">
+<fragment:ModelFragments xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:basic="http://www.eclipse.org/ui/2010/UIModel/application/descriptor/basic" xmlns:fragment="http://www.eclipse.org/ui/2010/UIModel/fragment" xmlns:menu="http://www.eclipse.org/ui/2010/UIModel/application/ui/menu" xmlns:ui="http://www.eclipse.org/ui/2010/UIModel/application/ui" xmi:id="_50OVYKFeEeKusqZ8Ky_Jpw">
   <fragments xsi:type="fragment:StringModelFragment" xmi:id="_2bKngKFhEeKusqZ8Ky_Jpw" featurename="menuContributions" parentElementId="org.eclipse.e4.legacy.ide.application">
     <elements xsi:type="menu:MenuContribution" xmi:id="_Mw_gIKIJEeKvIKmkebZ9mA" elementId="cz.muni.fi.cdii.plugin.menuContribution.pagkageExplorer" positionInParent="after=additions" parentId="org.eclipse.jdt.ui.PackageExplorer">
-      <children xsi:type="menu:DirectMenuItem" xmi:id="_X827oKIJEeKvIKmkebZ9mA" elementId="cz.muni.fi.cdii.plugin.packageManagerMenuItem.inspectCdi" label="Inspect CDI beans" contributionURI="bundleclass://cz.muni.fi.cdii.eclipse.plugin/cz.muni.fi.cdii.plugin.handlers.InspectCdiHandler">
+      <children xsi:type="menu:DirectMenuItem" xmi:id="_X827oKIJEeKvIKmkebZ9mA" elementId="cz.muni.fi.cdii.plugin.packageManagerMenuItem.inspectCdi" label="Inspect CDI beans" contributionURI="bundleclass://cz.muni.fi.cdii.eclipse.plugin/cz.muni.fi.cdii.eclipse.handlers.InspectCdiHandler">
         <visibleWhen xsi:type="ui:CoreExpression" xmi:id="_ZAiiAKIQEeKvIKmkebZ9mA" coreExpressionId="cz.muni.fi.cdii.plugin.coreExpr.inspectCdi"/>
       </children>
     </elements>
+  </fragments>
+  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_bF6fwLRUEeOEC9P0y6-skQ" featurename="descriptors" parentElementId="org.eclipse.e4.legacy.ide.application">
+    <elements xsi:type="basic:PartDescriptor" xmi:id="_wawg8LRVEeOEC9P0y6-skQ" elementId="cz.muni.fi.cdii.eclipse.plugin.partdescriptor.Details" label="CDII details" iconURI="platform:/plugin/cz.muni.fi.cdii.eclipse.plugin/icons/eclipse/properties.gif" closeable="true" contributionURI="bundleclass://cz.muni.fi.cdii.eclipse.plugin/cz.muni.fi.cdii.eclipse.ui.parts.DetailsPart"/>
   </fragments>
 </fragment:ModelFragments>

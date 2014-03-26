@@ -6,7 +6,7 @@ import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.e4.ui.model.application.ui.menu.MToolBar;
 import org.eclipse.e4.ui.workbench.modeling.EPartService;
 
-import cz.muni.fi.cdii.plugin.ui.InspectorPart;
+import cz.muni.fi.cdii.eclipse.ui.parts.InspectorPart;
 
 public class OnPartMenuItem {
 	@Execute

@@ -1,4 +1,4 @@
-package cz.muni.fi.cdii.plugin.ui.detailview;
+package cz.muni.fi.cdii.eclipse.ui.detailview;
 
 import java.util.List;
 

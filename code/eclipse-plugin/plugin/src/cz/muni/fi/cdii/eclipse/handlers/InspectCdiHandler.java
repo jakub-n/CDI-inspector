@@ -1,4 +1,4 @@
-package cz.muni.fi.cdii.plugin.handlers;
+package cz.muni.fi.cdii.eclipse.handlers;
 
 import javax.inject.Named;
 import javax.inject.Provider;

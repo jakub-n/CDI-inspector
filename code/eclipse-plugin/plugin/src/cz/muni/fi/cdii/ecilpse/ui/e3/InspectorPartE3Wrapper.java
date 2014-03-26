@@ -1,16 +1,23 @@
-package cz.muni.fi.cdii.plugin.ui.e3compat;
+package cz.muni.fi.cdii.ecilpse.ui.e3;
 
-import org.eclipse.core.runtime.Plugin;
+import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.tools.compat.parts.DIViewPart;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Composite;
 
-import cz.muni.fi.cdii.plugin.Activator;
-import cz.muni.fi.cdii.plugin.ui.InspectorPart;
+import cz.muni.fi.cdii.eclipse.ui.e3.actions.CollapseAllAction;
+import cz.muni.fi.cdii.eclipse.ui.e3.actions.ConnectToServerAction;
+import cz.muni.fi.cdii.eclipse.ui.e3.actions.ExpandAllAction;
+import cz.muni.fi.cdii.eclipse.ui.e3.actions.RelayoutAction;
+import cz.muni.fi.cdii.eclipse.ui.e3.actions.ReloadModelAction;
+import cz.muni.fi.cdii.eclipse.ui.e3.actions.ResetZoom;
+import cz.muni.fi.cdii.eclipse.ui.e3.actions.ShowDetailsAction;
+import cz.muni.fi.cdii.eclipse.ui.e3.actions.ShowFilterAction;
+import cz.muni.fi.cdii.eclipse.ui.e3.actions.TmpAction1;
+import cz.muni.fi.cdii.eclipse.ui.e3.actions.ZoomInAction;
+import cz.muni.fi.cdii.eclipse.ui.e3.actions.ZoomOutAction;
+import cz.muni.fi.cdii.eclipse.ui.parts.InspectorPart;
 
 /**
  * Encapsulation of standard e4 POJO part model class. It allows to utilize standard eclipse 3.x 
@@ -56,10 +63,15 @@ public class InspectorPartE3Wrapper extends DIViewPart<InspectorPart> {
         toolBarManager.add(new ReloadModelAction());
         toolBarManager.add(new ConnectToServerAction(this.getSite().getShell()));
         toolBarManager.add(new Separator());
-        toolBarManager.add(new DetailsWindowAction());
-        toolBarManager.add(new FilterWindowAction());
+        toolBarManager.add(this.injectInto(new ShowDetailsAction()));
+        toolBarManager.add(this.injectInto(new ShowFilterAction()));
         toolBarManager.add(new Separator());
         toolBarManager.add(new TmpAction1());
+    }
+    
+    private <T> T injectInto(T objectToInject) {
+        ContextInjectionFactory.inject(objectToInject, this.getContext());
+        return objectToInject;
     }
 
 }

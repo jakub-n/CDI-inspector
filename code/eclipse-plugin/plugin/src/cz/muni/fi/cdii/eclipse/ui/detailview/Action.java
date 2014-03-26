@@ -1,4 +1,4 @@
-package cz.muni.fi.cdii.plugin.ui.detailview;
+package cz.muni.fi.cdii.eclipse.ui.detailview;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 

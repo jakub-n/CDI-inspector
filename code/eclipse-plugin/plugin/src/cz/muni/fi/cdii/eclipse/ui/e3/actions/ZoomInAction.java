@@ -1,8 +1,8 @@
-package cz.muni.fi.cdii.plugin.ui.e3compat;
+package cz.muni.fi.cdii.eclipse.ui.e3.actions;
 
 import org.eclipse.jface.action.Action;
 
-import cz.muni.fi.cdii.plugin.Activator;
+import cz.muni.fi.cdii.eclipse.Activator;
 
 
 public class ZoomInAction extends Action {

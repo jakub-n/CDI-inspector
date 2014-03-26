@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: CDI Inspector plugin
 Bundle-SymbolicName: cz.muni.fi.cdii.eclipse.plugin;singleton:=true
 Bundle-Version: 0.0.1.qualifier
-Bundle-Activator: cz.muni.fi.cdii.plugin.Activator
+Bundle-Activator: cz.muni.fi.cdii.eclipse.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
