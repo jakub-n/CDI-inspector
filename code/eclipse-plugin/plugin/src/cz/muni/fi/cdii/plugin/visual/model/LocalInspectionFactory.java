@@ -57,7 +57,7 @@ public class LocalInspectionFactory {
 		 * SessionBean
 		 */
 		for (IBean bean : cdiProject.getBeans()) {
-			System.out.println(bean.getClass().getName());
+//			System.out.println(bean.getClass().getName());
 			if (bean instanceof IClassBean) {
 				final IClassBean iClassBean = (IClassBean) bean;
 				processIClassBean(iClassBean);

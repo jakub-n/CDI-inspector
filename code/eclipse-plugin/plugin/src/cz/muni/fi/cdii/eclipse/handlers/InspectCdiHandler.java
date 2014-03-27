@@ -21,8 +21,6 @@ public class InspectCdiHandler {
 			@Optional @Named(IServiceConstants.ACTIVE_SELECTION) IStructuredSelection selection, 
 			IEventBroker broker,
 			Provider<StatusReporter> reporter) {
-		System.out.println("E4 cdi handler");
-		System.out.println("selection: " + selection);
 		if (!selection.isEmpty()) {
 			Job job = new InspectionJob("Inspection CDI beans", broker, selection);
 			job.setPriority(Job.SHORT);

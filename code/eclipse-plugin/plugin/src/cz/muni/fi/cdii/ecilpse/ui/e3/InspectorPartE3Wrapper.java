@@ -34,7 +34,7 @@ public class InspectorPartE3Wrapper extends DIViewPart<InspectorPart> {
 	/**
 	 * View ID as defined in {@code plugin.xml} descriptor
 	 */
-	public static String VIEW_ID = "cz.muni.fi.cdii.plugin.cdiInspectorView";
+	public static String VIEW_ID = "cz.muni.fi.cdii.eclipse.e3viewparts.cdii";
 
 	public InspectorPartE3Wrapper() {
 		super(InspectorPart.class);

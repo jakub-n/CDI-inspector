@@ -17,6 +17,7 @@ public class ContextRegistrator {
 	 */
 	@Execute
 	public void execute(IEclipseContext context, IEventBroker broker) {
+	    // TODO delete
 		System.out.println("ContextRegistrator.execute()");
 		final CdiInspector inspector = ContextInjectionFactory.make(CdiInspector.class, context);
 		context.set(ICdiInspector.class, inspector);
