@@ -24,13 +24,7 @@
                   operator="or">
                <or>
                   <adapt
-                        type="org.eclipse.jdt.core.ICompilationUnit">
-                  </adapt>
-                  <adapt
                         type="org.eclipse.jdt.core.IJavaProject">
-                  </adapt>
-                  <adapt
-                        type="org.eclipse.jdt.core.IPackageFragment">
                   </adapt>
                </or>
             </iterate>
