@@ -6,6 +6,11 @@
         <visibleWhen xsi:type="ui:CoreExpression" xmi:id="_ZAiiAKIQEeKvIKmkebZ9mA" coreExpressionId="cz.muni.fi.cdii.plugin.coreExpr.inspectCdi"/>
       </children>
     </elements>
+    <elements xsi:type="menu:MenuContribution" xmi:id="_InHi8LU1EeOEC9P0y6-skQ" elementId="cz.muni.fi.cdii.eclipse.menuContribution.projectExplorer" positionInParent="after=additions" parentId="org.eclipse.ui.navigator.ProjectExplorer#PopupMenu">
+      <children xsi:type="menu:DirectMenuItem" xmi:id="_0BU4wLU2EeOEC9P0y6-skQ" elementId="cz.muni.fi.cdii.plugin.projectExplorerMenuItem.inspectCdi" label="Inspect CDI beans" contributionURI="bundleclass://cz.muni.fi.cdii.eclipse.plugin/cz.muni.fi.cdii.eclipse.handlers.InspectCdiHandler">
+        <visibleWhen xsi:type="ui:CoreExpression" xmi:id="_EWFesLVNEeOEC9P0y6-skQ" coreExpressionId="cz.muni.fi.cdii.plugin.coreExpr.inspectCdi"/>
+      </children>
+    </elements>
   </fragments>
   <fragments xsi:type="fragment:StringModelFragment" xmi:id="_bF6fwLRUEeOEC9P0y6-skQ" featurename="descriptors" parentElementId="org.eclipse.e4.legacy.ide.application">
     <elements xsi:type="basic:PartDescriptor" xmi:id="_wawg8LRVEeOEC9P0y6-skQ" elementId="cz.muni.fi.cdii.eclipse.plugin.partdescriptor.details" label="CDII details" iconURI="platform:/plugin/cz.muni.fi.cdii.eclipse.plugin/icons/eclipse/properties.gif" category="org.eclipse.e4.secondaryDataStack" closeable="true" contributionURI="bundleclass://cz.muni.fi.cdii.eclipse.plugin/cz.muni.fi.cdii.eclipse.ui.parts.DetailsPart"/>
