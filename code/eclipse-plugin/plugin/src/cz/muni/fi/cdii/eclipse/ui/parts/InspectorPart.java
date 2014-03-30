@@ -14,11 +14,18 @@ import org.eclipse.e4.ui.model.application.ui.basic.MPartStack;
 import org.eclipse.e4.ui.workbench.modeling.EModelService;
 import org.eclipse.e4.ui.workbench.modeling.EPartService;
 import org.eclipse.e4.ui.workbench.modeling.EPartService.PartState;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.zest.core.viewers.GraphViewer;
 import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
@@ -75,7 +82,28 @@ public class InspectorPart {
 		this.graphViewer.setLabelProvider(new GraphLabelProvider(this.colorManager));
 		this.graphViewer.setLayoutAlgorithm(new TreeLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING));
 
-		
+		// TODO delete  context menu
+		MenuManager menuManager = new MenuManager("#PopupMenu");
+		menuManager.setRemoveAllWhenShown(true);
+		menuManager.addMenuListener(new IMenuListener() {
+            
+            @Override
+            public void menuAboutToShow(IMenuManager manager) {
+                IStructuredSelection graphSelection = (IStructuredSelection) InspectorPart.this
+                        .graphViewer.getSelection();
+                if (! graphSelection.isEmpty()) {
+                    String name = graphSelection.getFirstElement().toString();
+                    Action action = new Action(name) {
+                        public void run() {
+                            System.out.println("action " + this.getText() + " activated");
+                        }
+                    };
+                    manager.add(action);
+                }
+            }
+        });
+		Menu contextMenu = menuManager.createContextMenu(this.graphViewer.getControl());
+		this.graphViewer.getControl().setMenu(contextMenu);
 	}
 
 	private void setMPartPosition(MPart mPart, IEclipsePreferences preferences, 
