@@ -17,8 +17,8 @@ import org.jboss.tools.cdi.core.ICDIProject;
 
 import cz.muni.fi.cdii.common.model.Model;
 import cz.muni.fi.cdii.eclipse.Activator;
+import cz.muni.fi.cdii.eclipse.inspection2.Inspection;
 import cz.muni.fi.cdii.plugin.common.model.CdiInspection;
-import cz.muni.fi.cdii.plugin.inspection2.Inspection;
 import cz.muni.fi.cdii.plugin.visual.LocalInspectionException;
 import cz.muni.fi.cdii.plugin.visual.model.LocalCdiInspection;
 import cz.muni.fi.cdii.plugin.visual.model.LocalInspectionFactory;
