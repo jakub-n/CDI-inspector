@@ -5,6 +5,7 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.e4.core.services.events.IEventBroker;
 
+import cz.muni.fi.cdii.eclipse.ui.e3.actions.TmpAction1;
 import cz.muni.fi.cdii.plugin.common.model.CdiInspection;
 
 
@@ -23,6 +24,11 @@ public class ContextRegistrator {
 		context.set(ICdiInspector.class, inspector);
 		// TODO remove after https://bugs.eclipse.org/bugs/show_bug.cgi?id=412554 resolution
 		broker.subscribe(CdiInspection.INSPECT_TOPIC, inspector);
+		
+		// TODO delete
+		TmpSubscriber tmpSubscriber = ContextInjectionFactory.make(TmpSubscriber.class, context);
+		context.set(TmpSubscriber.class, tmpSubscriber);
+		broker.subscribe(TmpAction1.EVENT, tmpSubscriber);
 	}
 
 }

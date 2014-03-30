@@ -66,7 +66,7 @@ public class InspectorPartE3Wrapper extends DIViewPart<InspectorPart> {
         toolBarManager.add(this.injectInto(new ShowDetailsAction()));
         toolBarManager.add(this.injectInto(new ShowFilterAction()));
         toolBarManager.add(new Separator());
-        toolBarManager.add(new TmpAction1());
+        toolBarManager.add(this.injectInto(new TmpAction1()));
     }
     
     private <T> T injectInto(T objectToInject) {

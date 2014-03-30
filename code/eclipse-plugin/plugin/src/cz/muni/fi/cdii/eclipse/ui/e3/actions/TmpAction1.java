@@ -1,27 +1,40 @@
 package cz.muni.fi.cdii.eclipse.ui.e3.actions;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.eclipse.core.resources.IFolder;
+import javax.inject.Inject;
+
+import org.eclipse.e4.core.contexts.ContextInjectionFactory;
+import org.eclipse.e4.core.contexts.IEclipseContext;
+import org.eclipse.e4.core.di.annotations.Optional;
+import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.jface.action.Action;
 import org.eclipse.wst.server.core.IModule;
 import org.eclipse.wst.server.core.IServer;
-import org.eclipse.wst.server.core.ServerCore;
-import org.eclipse.wst.server.core.model.IURLProvider;
 import org.jboss.ide.eclipse.as.core.server.internal.v7.Wildfly8Server;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import cz.muni.fi.cdii.eclipse.Activator;
+import cz.muni.fi.cdii.eclipse.TmpSubscriber;
 
 
 public class TmpAction1 extends Action {
+    
+    public static final String EVENT = "tmpActionEvent";
+    
+    @Inject
+    private IEventBroker broker;
+    
+    @Inject
+    private IEclipseContext context;
+    
+    @Inject
+    @Optional
+    private TmpSubscriber subscriber;
 
     public TmpAction1() {
         super();
@@ -31,6 +44,10 @@ public class TmpAction1 extends Action {
     
     @Override
     public void run() {
+        broker.post(EVENT, "ahoj");
+        TmpSubscriber newSubscriber = ContextInjectionFactory.make(TmpSubscriber.class, context);
+        broker.post(EVENT, "svete");
+        
         System.out.println("class: " + com.tinkerpop.blueprints.Vertex.class.toString()
                 + System.lineSeparator()
                 + cz.muni.fi.cdii.common.model.Model.class.toString()
