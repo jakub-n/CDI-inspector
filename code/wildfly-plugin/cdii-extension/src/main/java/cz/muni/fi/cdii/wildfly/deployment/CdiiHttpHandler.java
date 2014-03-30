@@ -1,10 +1,10 @@
 package cz.muni.fi.cdii.wildfly.deployment;
 
-import javax.enterprise.inject.spi.BeanManager;
-
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HttpString;
+
+import javax.enterprise.inject.spi.BeanManager;
 
 /**
  * It handles http request of request path matching "<context_root>/cdii/?", other requests are 
@@ -43,7 +43,8 @@ public class CdiiHttpHandler implements HttpHandler {
         exchange.getResponseHeaders().add(new HttpString("Content-Type"), 
                 "application/json");
         exchange.getResponseSender().send("cdii demo: " + 
-                (beanManager == null ? "null" : beanManager));
+                (beanManager == null ? "null" : beanManager)
+                + " " + cz.muni.fi.cdii.wildfly.extraction.Utils.serialize(null));
     }
     
     private static boolean isCdiiStateRequest(final HttpServerExchange exchange) {
