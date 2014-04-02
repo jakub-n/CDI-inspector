@@ -181,6 +181,10 @@ public class InspectorPart {
         this.graphViewer.resetZoom();
     }
 
+    public void relayout() {
+        this.graphViewer.applyLayout();
+    }
+
     private void updateGraph() {
         this.graphViewer.setInput(this.inspection.getFramedGraph());
         this.graphViewer.applyLayout();

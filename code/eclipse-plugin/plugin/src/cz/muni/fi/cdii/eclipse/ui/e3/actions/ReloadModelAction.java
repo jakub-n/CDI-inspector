@@ -14,7 +14,7 @@ public class ReloadModelAction extends Action {
         super();
         this.part = inspectorPart;
         this.setImageDescriptor(Activator.getImageDescriptor("icons/eclipse/refresh.gif"));
-        this.setToolTipText("Reload model");
+        this.setToolTipText("Reload data");
     }
     
     @Override

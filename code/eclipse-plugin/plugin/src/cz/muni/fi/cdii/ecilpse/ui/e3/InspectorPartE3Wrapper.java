@@ -59,7 +59,7 @@ public class InspectorPartE3Wrapper extends DIViewPart<InspectorPart> {
         toolBarManager.add(new ExpandAllAction());
         toolBarManager.add(new CollapseAllAction());
         toolBarManager.add(new Separator());
-        toolBarManager.add(new RelayoutAction());
+        toolBarManager.add(new RelayoutAction(this.getComponent()));
         toolBarManager.add(new ReloadModelAction(this.getComponent()));
         toolBarManager.add(new ConnectToServerAction(this.getSite().getShell()));
         toolBarManager.add(new Separator());
