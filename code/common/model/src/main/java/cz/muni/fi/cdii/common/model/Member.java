@@ -13,4 +13,8 @@ public interface Member {
     public void setName(final String elementName);
 
     public void setType(final Type type);
+    
+    public String getNodeText();
+    
+    public Type getSurroundingType();
 }

@@ -53,14 +53,14 @@ public class InspectorPartE3Wrapper extends DIViewPart<InspectorPart> {
 
     private void addToolBarActions() {
         IToolBarManager toolBarManager = this.getViewSite().getActionBars().getToolBarManager();
-        toolBarManager.add(new ZoomInAction());
-        toolBarManager.add(new ZoomOutAction());
-        toolBarManager.add(new ResetZoom());
+        toolBarManager.add(new ZoomInAction(this.getComponent()));
+        toolBarManager.add(new ZoomOutAction(this.getComponent()));
+        toolBarManager.add(new ResetZoom(this.getComponent()));
         toolBarManager.add(new ExpandAllAction());
         toolBarManager.add(new CollapseAllAction());
         toolBarManager.add(new Separator());
         toolBarManager.add(new RelayoutAction());
-        toolBarManager.add(new ReloadModelAction());
+        toolBarManager.add(new ReloadModelAction(this.getComponent()));
         toolBarManager.add(new ConnectToServerAction(this.getSite().getShell()));
         toolBarManager.add(new Separator());
         toolBarManager.add(this.injectInto(new ShowDetailsAction()));

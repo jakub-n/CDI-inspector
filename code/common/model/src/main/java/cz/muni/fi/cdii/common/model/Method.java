@@ -17,6 +17,10 @@ public class Method implements Member {
     private Type type;
     private Bean producedBean;
     private List<MethodParameter> parameters = new ArrayList<>();
+    /**
+     * the only purpose of this field is equality computation
+     */
+    private Type surroundingType;
     
     public String getName() {
         return name;
@@ -48,6 +52,50 @@ public class Method implements Member {
 
     public void setParameters(List<MethodParameter> parameters) {
         this.parameters = parameters;
+    }
+
+    public Type getSurroundingType() {
+        return surroundingType;
+    }
+
+    public void setSurroundingType(Type surroundingType) {
+        this.surroundingType = surroundingType;
+    }
+
+    @Override
+    public String getNodeText() {
+        return this.getType().toString(false, true) + " " + this.getName() + "()";
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((surroundingType == null) ? 0 : surroundingType.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Method other = (Method) obj;
+        if (name == null) {
+            if (other.name != null)
+                return false;
+        } else if (!name.equals(other.name))
+            return false;
+        if (surroundingType == null) {
+            if (other.surroundingType != null)
+                return false;
+        } else if (!surroundingType.equals(other.surroundingType))
+            return false;
+        return true;
     }
     
 }

@@ -27,6 +27,7 @@ import org.jboss.tools.cdi.core.IProducer;
 import org.jboss.tools.cdi.core.IProducerField;
 import org.jboss.tools.cdi.core.IProducerMethod;
 import org.jboss.tools.cdi.core.IQualifierDeclaration;
+import org.jboss.tools.cdi.core.IScope;
 import org.jboss.tools.common.java.IParametedType;
 
 import cz.muni.fi.cdii.common.model.AnnotationMemeber;
@@ -39,16 +40,19 @@ import cz.muni.fi.cdii.common.model.Method;
 import cz.muni.fi.cdii.common.model.MethodParameter;
 import cz.muni.fi.cdii.common.model.Model;
 import cz.muni.fi.cdii.common.model.Qualifier;
+import cz.muni.fi.cdii.common.model.Scope;
 import cz.muni.fi.cdii.common.model.Type;
 
-public class Inspection {
+// TODO rename local inspection
+public class Inspector {
 
     private Model model;
     private Set<Type> foundTypes = new HashSet<>();
     private Map<IBean,Bean> foundBeans = new HashMap<>();
+    private Set<Scope> foundScopes = new HashSet<>();
     private final ICDIProject project;
 
-    public Inspection(ICDIProject project) {
+    public Inspector(ICDIProject project) {
         this.project = project;
         this.model = new Model();
         IBean[] beans = project.getBeans();
@@ -84,12 +88,6 @@ public class Inspection {
         }
     }
 
-    /**
-     * 
-     * @param enclosingModelBean
-     * @param producerJbossBean
-     * @param producerEclipseType
-     */
     private void addProducer(Bean enclosingModelBean, IProducer producerJbossBean, 
             IType producerEclipseType) {
         final Type enclosingBeanType = enclosingModelBean.getType();
@@ -143,13 +141,23 @@ public class Inspection {
         Collection<IParametedType> jbossTypes = jbossBean.getLegalTypes();
         Set<Type> cdiiTypes = addTypes(jbossTypes);
         Type declaredType = selectMostSpecificType(mainEclipseType, cdiiTypes);
+        Scope scope = getScope(jbossBean.getScope());
         Bean bean = new Bean();
         bean.setType(declaredType);
         bean.setTypeSet(cdiiTypes);
+        bean.setScope(scope);
         copyInjectionPointsToType(bean, jbossBean);
         // TODO add other bean properties
         this.foundBeans.put(jbossBean, bean);
         return bean;
+    }
+
+    private static Scope getScope(IScope jbossScope) {
+        Scope result = new Scope();
+        result.setPseudo(!jbossScope.isNorlmalScope());
+        result.setPackage(jbossScope.getSourceType().getPackageFragment().getElementName());
+        result.setName(jbossScope.getSourceType().getElementName());
+        return result;
     }
 
     private void copyInjectionPointsToType(Bean outputBean, IBean inputBean) {
@@ -243,7 +251,7 @@ public class Inspection {
         case (IMemberValuePair.K_SIMPLE_NAME):
             return "simple name";
         case (IMemberValuePair.K_STRING):
-            return "string";
+            return "String";
         default:
             return "unknown";
         }

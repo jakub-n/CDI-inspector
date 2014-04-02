@@ -22,5 +22,8 @@ public class AnnotationType {
         this.name = name;
     }
     
-    
+    @Override
+    public String toString() {
+        return this.getPackage() + "." + this.getName();
+    }
 }

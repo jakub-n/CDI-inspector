@@ -12,7 +12,7 @@ import cz.muni.fi.cdii.plugin.common.model.CdiInspection;
 public class ContextRegistrator {
 	
 	/**
-	 * This method is executed at startup to create and register {@link CdiInspector} instance for
+	 * This method is executed at startup to create and register {@link InspectionSubscriber} instance for
 	 * listening for {@link CdiInspection#INSPECT_TOPIC} e4 events. 
 	 * @param context
 	 */
@@ -20,10 +20,10 @@ public class ContextRegistrator {
 	public void execute(IEclipseContext context, IEventBroker broker) {
 	    // TODO delete
 		System.out.println("ContextRegistrator.execute()");
-		final CdiInspector inspector = ContextInjectionFactory.make(CdiInspector.class, context);
-		context.set(ICdiInspector.class, inspector);
+		final InspectionSubscriber inspectionSubscriber = ContextInjectionFactory.make(InspectionSubscriber.class, context);
+		context.set(InspectionSubscriber.class, inspectionSubscriber);
 		// TODO remove after https://bugs.eclipse.org/bugs/show_bug.cgi?id=412554 resolution
-		broker.subscribe(CdiInspection.INSPECT_TOPIC, inspector);
+		broker.subscribe(CdiiEventTopics.INSPECT, inspectionSubscriber);
 		
 		// TODO delete
 		TmpSubscriber tmpSubscriber = ContextInjectionFactory.make(TmpSubscriber.class, context);

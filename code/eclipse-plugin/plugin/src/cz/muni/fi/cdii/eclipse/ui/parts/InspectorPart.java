@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.e4.core.di.extensions.Preference;
+import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.e4.core.services.log.Logger;
 import org.eclipse.e4.ui.di.Focus;
 import org.eclipse.e4.ui.model.application.MApplication;
@@ -18,7 +19,6 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -31,10 +31,14 @@ import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 import org.osgi.service.prefs.BackingStoreException;
 
-import cz.muni.fi.cdii.plugin.common.model.CdiInspection;
+import cz.muni.fi.cdii.eclipse.CdiiEventTopics;
+import cz.muni.fi.cdii.eclipse.inspection.GraphInspection;
+import cz.muni.fi.cdii.eclipse.ui.graph.CdiiGraphViewer;
+import cz.muni.fi.cdii.eclipse.ui.graph.GraphContentProvider;
+import cz.muni.fi.cdii.eclipse.ui.graph.GraphLabelProvider;
 import cz.muni.fi.cdii.plugin.ui.ColorManager;
-import cz.muni.fi.cdii.plugin.ui.GraphContentProvider;
-import cz.muni.fi.cdii.plugin.ui.GraphLabelProvider;
+//import cz.muni.fi.cdii.plugin.ui.GraphContentProvider;
+//import cz.muni.fi.cdii.plugin.ui.GraphLabelProvider;
 
 @SuppressWarnings("restriction")
 public class InspectorPart {
@@ -45,11 +49,16 @@ public class InspectorPart {
 	
 	@Inject
 	private Logger log;
+	
+	@Inject
+	private IEventBroker broker;
 
 	private Label inspectionPartLabel;
-	private GraphViewer graphViewer;
+	private CdiiGraphViewer graphViewer;
 	private ColorManager colorManager;
 	private Composite parent;
+
+    private GraphInspection inspection;
 
 	public InspectorPart() {
 		System.out.println("Inspector part init()");
@@ -76,10 +85,10 @@ public class InspectorPart {
 		if (this.log != null) {
 			log.info("log injected into inspection part");
 		}
-		this.graphViewer = new GraphViewer(parent, SWT.BORDER);
+		this.graphViewer = new CdiiGraphViewer(parent, SWT.BORDER);
 		this.graphViewer.getGraphControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		this.graphViewer.setContentProvider(new GraphContentProvider());
-		this.graphViewer.setLabelProvider(new GraphLabelProvider(this.colorManager));
+		this.graphViewer.setLabelProvider(new GraphLabelProvider());
 		this.graphViewer.setLayoutAlgorithm(new TreeLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING));
 
 		// TODO delete  context menu
@@ -145,16 +154,45 @@ public class InspectorPart {
 		this.graphViewer.getGraphControl().setFocus();
 	}
 	
-	public void inspect(CdiInspection inspection) {
-		log.info("inspectionPart.inspect() called");
-		
-		cz.muni.fi.cdii.plugin.common.model.Class[] classes = inspection.getClasses().toArray(
-				new cz.muni.fi.cdii.plugin.common.model.Class[0]);
-		this.graphViewer.setInput(classes);
-		this.graphViewer.applyLayout();
-		this.setFocus();
-		this.parent.redraw();
-		this.parent.update();
+	public void inspect(GraphInspection inspection) {
+	    // TODO smazat
+		log.debug("inspectionPart.inspect() called");
+		this.inspection = inspection;
+		this.updateFilterWindow();
+		this.updateGraph();
 	}
+
+    private void updateFilterWindow() {
+        broker.post(CdiiEventTopics.UPDATE_FILTER_LABELS, this.inspection);
+    }
+    
+    /**
+     * Rerun inspection. It collects and draw new data.
+     */
+    public void reinspect() {
+        if (this.inspection != null) {
+            this.inspection.getTask().run();
+        }
+    }
+    
+    public void zoomIn() {
+        this.graphViewer.zoomIn();
+    }
+    
+    public void zoomOut() {
+        this.graphViewer.zoomOut();
+    }
+    
+    public void resetZoom() {
+        this.graphViewer.resetZoom();
+    }
+
+    private void updateGraph() {
+        this.graphViewer.setInput(this.inspection.getFramedGraph());
+        this.graphViewer.applyLayout();
+        this.setFocus();
+        this.parent.redraw();
+        this.parent.update();
+    }
 
 }

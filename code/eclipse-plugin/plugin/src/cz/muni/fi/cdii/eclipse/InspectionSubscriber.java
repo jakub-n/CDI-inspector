@@ -10,16 +10,19 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.osgi.service.event.Event;
+import org.osgi.service.event.EventHandler;
 
 import cz.muni.fi.cdii.ecilpse.ui.e3.InspectorPartE3Wrapper;
-import cz.muni.fi.cdii.plugin.common.model.CdiInspection;
+import cz.muni.fi.cdii.eclipse.inspection.GraphInspection;
 
 /**
  * Entry point for showing the the inspection graph
+ * <br>
+ * Extension of {@link EventHandler} is hack to overcome malfunctioning {@link UIEventTopic}
+ * @see <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=412554"> https://bugs.eclipse.org/bugs/show_bug.cgi?id=412554</a>
  *
  */
-@SuppressWarnings("restriction")
-public class CdiInspector implements ICdiInspector {
+public class InspectionSubscriber implements EventHandler {
 	
 	@Inject
 	private Logger log;
@@ -30,7 +33,7 @@ public class CdiInspector implements ICdiInspector {
 	 */
 	@Inject
 	@Optional
-	public void inspect(@UIEventTopic(CdiInspection.INSPECT_TOPIC) CdiInspection inspection) {
+	public void inspect(@UIEventTopic(CdiiEventTopics.INSPECT) GraphInspection inspection) {
 		this.log.info("CdiInspector.inspect()");
 	
 		/* <e3specific> */
@@ -40,7 +43,7 @@ public class CdiInspector implements ICdiInspector {
 		
 	}
 
-	private void passInspection(CdiInspection inspection, IViewPart viewPart) {
+	private void passInspection(GraphInspection inspection, IViewPart viewPart) {
 		if (viewPart instanceof InspectorPartE3Wrapper) {
 			final InspectorPartE3Wrapper inspectorViewPart = (InspectorPartE3Wrapper) viewPart;
 			inspectorViewPart.getComponent().inspect(inspection);
@@ -66,7 +69,7 @@ public class CdiInspector implements ICdiInspector {
 
 	@Override
 	public void handleEvent(Event event) {
-		final CdiInspection inspection = (CdiInspection) event.getProperty(IEventBroker.DATA);
+		final GraphInspection inspection = (GraphInspection) event.getProperty(IEventBroker.DATA);
 		this.inspect(inspection);
 	}
 }

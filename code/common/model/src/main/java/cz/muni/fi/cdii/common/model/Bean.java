@@ -1,5 +1,6 @@
 package cz.muni.fi.cdii.common.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -37,7 +38,7 @@ public class Bean {
 	private Set<Type> typeSet;
 	
 	@JsonProperty
-	private Set<Qualifier> effectiveQualifierSet;
+	private Set<Qualifier> effectiveQualifierSet = new HashSet<>();
 	
 	@JsonProperty
 	private Scope scope;
@@ -67,11 +68,11 @@ public class Bean {
         this.typeSet = typeSet;
     }
 
-    public Set<Qualifier> getEffectiveQualifierSet() {
+    public Set<Qualifier> getQualifiers() {
         return effectiveQualifierSet;
     }
 
-    public void setEffectiveQualifierSet(Set<Qualifier> effectiveQualifierSet) {
+    public void setQualifiers(Set<Qualifier> effectiveQualifierSet) {
         this.effectiveQualifierSet = effectiveQualifierSet;
     }
 
@@ -151,6 +152,12 @@ public class Bean {
         } else if (!typeSet.equals(other.typeSet))
             return false;
         return true;
+    }
+
+    public String getNodeText() {
+        // TODO try to recover full declaration
+        return "bean: " + this.getType().toString(false, true);
+        
     };
 	
 	

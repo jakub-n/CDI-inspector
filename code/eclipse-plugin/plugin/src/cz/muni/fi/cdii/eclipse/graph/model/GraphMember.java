@@ -4,7 +4,6 @@ import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.frames.Adjacency;
 import com.tinkerpop.frames.Property;
 
-import cz.muni.fi.cdii.common.model.Bean;
 import cz.muni.fi.cdii.common.model.Member;
 
 public interface GraphMember {
@@ -16,13 +15,14 @@ public interface GraphMember {
     public void setOrigin(Member origin);
     
     @Adjacency(label="produces", direction=Direction.OUT)
-    public Bean getProduced();
+    public GraphBean getProduced();
 
     @Adjacency(label="produces", direction=Direction.OUT)
-    public void setProduced(Bean bean);
+    public void setProduced(GraphBean bean);
 
     @Adjacency(label="hasInjectionPoints", direction=Direction.OUT)
     public Iterable<GraphInjectionPoint> getInjectionPoints();
     
-    // TODO add some setter for injection point
+    @Adjacency(label="hasInjectionPoints", direction=Direction.OUT)
+    public void setInjectionPoints(Iterable<GraphInjectionPoint> injectionPoints);
 }

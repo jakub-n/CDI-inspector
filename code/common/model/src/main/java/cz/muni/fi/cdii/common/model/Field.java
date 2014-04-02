@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 /**
  * 
- * equality base on {@code name}
+ * equality base on {@code name} and {@code surroundingType}
  */
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 @JsonAutoDetect(getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE, 
@@ -18,6 +18,10 @@ public class Field implements Member {
     private Type type;
     private Bean producedBean;
     private InjectionPoint injectionPoint;
+    /**
+     * the only purpose of this field is equality computation
+     */
+    private Type surroundingType;
     
     public String getName() {
         return name;
@@ -51,16 +55,23 @@ public class Field implements Member {
         this.injectionPoint = injectionPoint;
     }
 
-    // TODO upravit ... see equals
+    public Type getSurroundingType() {
+        return surroundingType;
+    }
+
+    public void setSurroundingType(Type surroundingType) {
+        this.surroundingType = surroundingType;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((surroundingType == null) ? 0 : surroundingType.hashCode());
         return result;
     }
 
-    // TODO has to depend also on the type - due to serialization
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -75,7 +86,17 @@ public class Field implements Member {
                 return false;
         } else if (!name.equals(other.name))
             return false;
+        if (surroundingType == null) {
+            if (other.surroundingType != null)
+                return false;
+        } else if (!surroundingType.equals(other.surroundingType))
+            return false;
         return true;
+    }
+
+    @Override
+    public String getNodeText() {
+        return this.getType().toString(false, true) + " " + this.getName();
     }
     
     

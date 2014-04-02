@@ -106,7 +106,13 @@ public class Type {
         return this.toString(true, false);
     }
     
-    private String toString(final boolean qualified, final boolean showTypeParams) {
+    /**
+     * 
+     * @param qualified show names in qualified form
+     * @param showTypeParams show type parameters
+     * @return string representation of type
+     */
+    public String toString(final boolean qualified, final boolean showTypeParams) {
         StringBuilder resultBuilder = new StringBuilder();
         if (qualified && !this.package_.isEmpty()) {
             resultBuilder.append(this.package_).append(".");
@@ -169,5 +175,8 @@ public class Type {
         } else if (!typeParameters.equals(other.typeParameters))
             return false;
         return true;
+    }
+    public String getNodeText() {
+        return this.toString(false, true);
     }
 }

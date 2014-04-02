@@ -33,7 +33,8 @@
 						<Embed-Directory>jars</Embed-Directory>
 						<_exportcontents>
 							com.tinkerpop.*,
-							com.fasterxml.jackson.*
+							com.fasterxml.jackson.*,
+							javassist.*
 						</_exportcontents>
 						<Import-Package></Import-Package>
 						<_nouses>true</_nouses>

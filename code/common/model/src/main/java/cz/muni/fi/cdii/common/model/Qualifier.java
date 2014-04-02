@@ -1,12 +1,14 @@
 package cz.muni.fi.cdii.common.model;
 
-import java.util.HashSet;
+import java.util.Comparator;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 @JsonAutoDetect(getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE, 
@@ -15,7 +17,10 @@ public class Qualifier {
 
     private AnnotationType type;
     
-    private Set<AnnotationMemeber> members = new HashSet<>();
+    /**
+     * Set is sorted in order to keep toString output static.
+     */
+    private SortedSet<AnnotationMemeber> members = new TreeSet<>(new AnnotationMemberComparator());
 
     public AnnotationType getType() {
         return type;
@@ -30,7 +35,24 @@ public class Qualifier {
     }
 
     public void setMembers(Set<AnnotationMemeber> members) {
-        this.members = members;
+        this.members = new TreeSet<>(new AnnotationMemberComparator());
+        this.members.addAll(members);
+    }
+    
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        result.append("@" + this.getType().toString());
+        if (! this.members.isEmpty()) {
+            result.append("(");
+            for (AnnotationMemeber member : this.getMembers()) {
+                result.append(member.toString());
+                result.append(", ");
+            }
+            result.delete(result.length() - 2, result.length());
+            result.append(")");
+        }
+        return result.toString();
     }
 
     @Override
@@ -58,7 +80,16 @@ public class Qualifier {
         return true;
     }
     
-    
-    
+    /**
+     * Alphabetical order besed on member names. 
+     */
+    private static class AnnotationMemberComparator implements Comparator<AnnotationMemeber> {
+
+        @Override
+        public int compare(AnnotationMemeber o1, AnnotationMemeber o2) {
+            return o1.getName().compareTo(o2.getName());
+        }
+        
+    }
     
 }
