@@ -11,10 +11,8 @@ import org.eclipse.e4.core.services.log.Logger;
 import org.eclipse.e4.ui.di.Focus;
 import org.eclipse.e4.ui.model.application.MApplication;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
-import org.eclipse.e4.ui.model.application.ui.basic.MPartStack;
 import org.eclipse.e4.ui.workbench.modeling.EModelService;
 import org.eclipse.e4.ui.workbench.modeling.EPartService;
-import org.eclipse.e4.ui.workbench.modeling.EPartService.PartState;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -26,10 +24,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.zest.core.viewers.GraphViewer;
 import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
-import org.osgi.service.prefs.BackingStoreException;
 
 import cz.muni.fi.cdii.eclipse.CdiiEventTopics;
 import cz.muni.fi.cdii.eclipse.inspection.GraphInspection;
@@ -37,15 +33,13 @@ import cz.muni.fi.cdii.eclipse.ui.graph.CdiiGraphViewer;
 import cz.muni.fi.cdii.eclipse.ui.graph.GraphContentProvider;
 import cz.muni.fi.cdii.eclipse.ui.graph.GraphLabelProvider;
 import cz.muni.fi.cdii.plugin.ui.ColorManager;
-//import cz.muni.fi.cdii.plugin.ui.GraphContentProvider;
-//import cz.muni.fi.cdii.plugin.ui.GraphLabelProvider;
 
 @SuppressWarnings("restriction")
 public class InspectorPart {
 	
 	public static final String ID = "cz.muni.fi.cdii.plugin.InspectorPartDescriptor";
 
-    private static final String OPEN_FIRST_TIME = "open-first-time";
+//    private static final String OPEN_FIRST_TIME = "open-first-time";
 	
 	@Inject
 	private Logger log;
@@ -75,7 +69,7 @@ public class InspectorPart {
 	        EModelService modelService,
 	        EPartService partService
 	        ) {
-	    setMPartPosition(mPart, preferences, modelService, partService, application);
+	    //setMPartPosition(mPart, preferences, modelService, partService, application);
 	    this.parent = parent;
 		this.colorManager = new ColorManager();
 		parent.setLayout(new GridLayout(1, true));
@@ -115,34 +109,34 @@ public class InspectorPart {
 		this.graphViewer.getControl().setMenu(contextMenu);
 	}
 
-	private void setMPartPosition(MPart mPart, IEclipsePreferences preferences, 
-	        EModelService modelService, EPartService partService, MApplication application) {
-	    boolean isOpenedForTheFirstTime = preferences.getBoolean(OPEN_FIRST_TIME, true);
-        if (isOpenedForTheFirstTime) {
-            setFirstOpenFlag(preferences);
-            showPartInPrimaryStack(mPart, modelService, partService, application);
-        }
-        
-    }
+//	private void setMPartPosition(MPart mPart, IEclipsePreferences preferences, 
+//	        EModelService modelService, EPartService partService, MApplication application) {
+//	    boolean isOpenedForTheFirstTime = preferences.getBoolean(OPEN_FIRST_TIME, true);
+//        if (isOpenedForTheFirstTime) {
+//            setFirstOpenFlag(preferences);
+//            showPartInPrimaryStack(mPart, modelService, partService, application);
+//        }
+//        
+//    }
 
-    private static void showPartInPrimaryStack(MPart mPart, EModelService modelService,
-            EPartService partService, MApplication application) {
-        final String primaryPartStackId = "org.eclipse.e4.primaryDataStack";
-        MPartStack partStack = (MPartStack) modelService.find(primaryPartStackId, application);
-        if (partStack != null) {
-            partStack.getChildren().add(mPart);
-            partService.showPart(mPart, PartState.ACTIVATE);
-        }
-    }
+//    private static void showPartInPrimaryStack(MPart mPart, EModelService modelService,
+//            EPartService partService, MApplication application) {
+//        final String primaryPartStackId = "org.eclipse.e4.primaryDataStack";
+//        MPartStack partStack = (MPartStack) modelService.find(primaryPartStackId, application);
+//        if (partStack != null) {
+//            partStack.getChildren().add(mPart);
+//            partService.showPart(mPart, PartState.ACTIVATE);
+//        }
+//    }
 
-    private void setFirstOpenFlag(IEclipsePreferences preferences) {
-        preferences.putBoolean(OPEN_FIRST_TIME, false);
-        try {
-            preferences.flush();
-        } catch (BackingStoreException e) {
-            this.log.warn(e, "preferences flush failed");
-        }
-    }
+//    private void setFirstOpenFlag(IEclipsePreferences preferences) {
+//        preferences.putBoolean(OPEN_FIRST_TIME, false);
+//        try {
+//            preferences.flush();
+//        } catch (BackingStoreException e) {
+//            this.log.warn(e, "preferences flush failed");
+//        }
+//    }
 
     @PreDestroy
 	public void dispose() {
