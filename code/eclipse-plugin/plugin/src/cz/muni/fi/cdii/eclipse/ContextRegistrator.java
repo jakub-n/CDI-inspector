@@ -5,8 +5,6 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.e4.core.services.events.IEventBroker;
 
-import cz.muni.fi.cdii.plugin.common.model.CdiInspection;
-
 
 public class ContextRegistrator {
 	

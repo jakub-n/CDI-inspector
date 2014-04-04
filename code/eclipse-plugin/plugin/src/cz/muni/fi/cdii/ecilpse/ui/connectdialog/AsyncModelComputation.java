@@ -1,4 +1,4 @@
-package cz.muni.fi.cdii.plugin.ui.connectdialog;
+package cz.muni.fi.cdii.ecilpse.ui.connectdialog;
 
 import java.io.InputStream;
 import java.net.MalformedURLException;

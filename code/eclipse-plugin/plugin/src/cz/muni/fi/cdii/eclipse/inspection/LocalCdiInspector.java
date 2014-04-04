@@ -1,4 +1,4 @@
-package cz.muni.fi.cdii.eclipse.inspection2;
+package cz.muni.fi.cdii.eclipse.inspection;
 
 import java.util.ArrayList;
 import java.util.Arrays;

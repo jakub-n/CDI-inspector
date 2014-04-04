@@ -17,8 +17,6 @@ import org.jboss.tools.cdi.core.ICDIProject;
 import cz.muni.fi.cdii.common.model.Model;
 import cz.muni.fi.cdii.eclipse.Activator;
 import cz.muni.fi.cdii.eclipse.CdiiEventTopics;
-import cz.muni.fi.cdii.eclipse.inspection2.LocalCdiInspector;
-import cz.muni.fi.cdii.plugin.visual.LocalInspectionException;
 
 /**
  * Eclipse fashion thread encapsulation of local project cdi metadata extraction.
@@ -44,7 +42,7 @@ public class LocalInspectionJob extends Job {
 	protected IStatus run(IProgressMonitor monitor) {
 		try {
 			return checkedRun();
-		} catch (LocalInspectionException ex) {
+		} catch (RuntimeException ex) {
 			return new Status(Status.ERROR, Activator.PLUGIN_ID, "Local inspection failed", 
 					ex);
 		}
