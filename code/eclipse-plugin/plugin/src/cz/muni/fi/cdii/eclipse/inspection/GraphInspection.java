@@ -140,7 +140,7 @@ public class GraphInspection {
         graphBean.setTypeSet(typeSet);
         graphBean.setElName(bean.getElName());
         graphBean.setOrigin(bean);
-        graphBean.setScope(bean.getScope().toString());
+        graphBean.setScope(bean.getScope().toQualifiedString());
         graphBean.setQualifiers(qualifiers);
         this.beanCache.put(bean, graphBean);
         return graphBean;

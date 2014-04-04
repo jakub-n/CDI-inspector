@@ -100,6 +100,19 @@ public class Field implements Member {
     }
     
     @Override
+    public String getNodeTooltipText() {
+        StringBuilder result = new StringBuilder();
+        if (this.getProducedBean() != null) {
+            result.append("@Produces").append("\n");
+        }
+        if (this.getInjectionPoint() != null) {
+            result.append("@Inject").append("\n");
+        }
+        result.append(this.getType().toString(true, true));
+        return result.toString();
+    }
+
+    @Override
     public String toString() {
         return this.getNodeText();
     }

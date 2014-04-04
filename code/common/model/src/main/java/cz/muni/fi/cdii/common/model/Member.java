@@ -1,6 +1,6 @@
 package cz.muni.fi.cdii.common.model;
 
-public interface Member {
+public interface Member extends Viewable {
     
     public String getName();
     

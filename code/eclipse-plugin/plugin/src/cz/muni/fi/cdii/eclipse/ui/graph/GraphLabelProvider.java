@@ -13,6 +13,7 @@ import org.eclipse.zest.core.widgets.ZestStyles;
 import cz.muni.fi.cdii.common.model.Field;
 import cz.muni.fi.cdii.common.model.Member;
 import cz.muni.fi.cdii.eclipse.graph.model.GraphBean;
+import cz.muni.fi.cdii.eclipse.graph.model.GraphElement;
 import cz.muni.fi.cdii.eclipse.graph.model.GraphMember;
 import cz.muni.fi.cdii.eclipse.graph.model.GraphType;
 import cz.muni.fi.cdii.eclipse.ui.graph.ColorManager.GraphColorEnum;
@@ -28,19 +29,9 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 
     @Override
     public String getText(Object element) {
-        if (element instanceof GraphBean) {
-            GraphBean graphBean = (GraphBean) element;
-            String result = graphBean.getOrigin().getNodeText();
-            return result;
-        }
-        if (element instanceof GraphType) {
-            GraphType graphType = (GraphType) element;
-            String result = graphType.getOrigin().getNodeText();
-            return result;
-        }
-        if (element instanceof GraphMember) {
-            GraphMember graphMember = (GraphMember) element;
-            String result = graphMember.getOrigin().getNodeText();
+        if (element instanceof GraphElement) {
+            GraphElement graphElement = (GraphElement) element;
+            String result = graphElement.getOrigin().getNodeText();
             return result;
         }
         return null;
@@ -128,6 +119,12 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 
     @Override
     public IFigure getTooltip(Object entity) {
+        if (entity instanceof GraphElement) {
+            GraphElement graphElement = (GraphElement) entity;
+            String tooltipText = graphElement.getOrigin().getNodeTooltipText();
+            Label label = new Label(tooltipText);
+            return label;
+        }
         return null;
     }
 
@@ -182,5 +179,5 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
         PRODUCES,
         INJECT
     }
-
+    
 }

@@ -29,7 +29,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 @JsonAutoDetect(getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE, 
 	isGetterVisibility=Visibility.NONE, fieldVisibility=Visibility.DEFAULT)
-public class Bean {
+public class Bean implements Viewable {
 
 	@JsonProperty
 	private Type type;
@@ -154,12 +154,23 @@ public class Bean {
         return true;
     }
 
+    @Override
     public String getNodeText() {
-        // TODO try to recover full declaration
-        return "bean: " + this.getType().toString(false, true);
-        
+        StringBuilder result = new StringBuilder();
+        for (Qualifier qualifier : this.getQualifiers()) {
+            result.append(qualifier.toString()).append("\n");
+        }
+        if (this.getElName() != null) {
+            result.append("@Named(\"" + this.getElName() + "\")").append("\n");
+        }
+        result.append(this.getScope().toString()).append("\n");
+        result.append(this.getType().toString(false, true));
+        return result.toString();
+    }
+
+    @Override
+    public String getNodeTooltipText() {
+        return this.getType().toString(true, true);
     };
-	
-	
-	
+    
 }

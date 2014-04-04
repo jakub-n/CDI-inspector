@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 @JsonAutoDetect(getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE, 
 	isGetterVisibility=Visibility.NONE, fieldVisibility=Visibility.DEFAULT)
-public class Type {
+public class Type implements Viewable {
 	
 //	/**
 //	 * null iff {@link #wildcardType} is {@link TypeWildcardEnum#QUESTIONMARK}
@@ -179,4 +179,10 @@ public class Type {
     public String getNodeText() {
         return this.toString(false, true);
     }
+    @Override
+    public String getNodeTooltipText() {
+        return this.toString(true, true);
+    }
+    
+    
 }

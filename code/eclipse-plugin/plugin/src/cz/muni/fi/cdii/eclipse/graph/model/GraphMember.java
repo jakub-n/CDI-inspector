@@ -6,7 +6,7 @@ import com.tinkerpop.frames.Property;
 
 import cz.muni.fi.cdii.common.model.Member;
 
-public interface GraphMember {
+public interface GraphMember extends GraphElement {
     
     @Property("origin")
     public Member getOrigin();

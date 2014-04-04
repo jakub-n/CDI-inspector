@@ -49,8 +49,12 @@ public class Scope {
 	
 	@Override
 	public String toString() {
-	    return "@" + this.getPackage() + "." + this.getName();
-	}
+	    return "@" + this.getName();
+	}  
+    
+    public String toQualifiedString() {
+        return "@" + this.getPackage() + "." + this.getName();
+    }
 
     @Override
     public int hashCode() {

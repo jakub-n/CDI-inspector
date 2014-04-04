@@ -86,12 +86,31 @@ public class Method implements Member {
             result.append(" ");
         }
         result.append(this.getName());
-        if (this.getParameters().isEmpty()) {
-            result.append("()");
-        } else {
-            printParameterToBuilder(result);
-        }
+        printParameterToBuilder(result);
         return result.toString();
+    }
+    
+    @Override
+    public String getNodeTooltipText() {
+        StringBuilder result = new StringBuilder();
+        if (this.getProducedBean() != null) {
+            result.append("@Produces").append("\n");
+        } else if (this.hasInjectionPoints()) {
+            result.append("@Inject").append("\n");
+        }
+        result.append(this.getType() != null ? this.getType().toString(true, true) : "void");
+        result.append(" ").append(this.getName());
+        printParameterToBuilder(result);
+        return result.toString();
+    }
+    
+    private boolean hasInjectionPoints() {
+        for (MethodParameter parameter : this.getParameters()) {
+            if (parameter.getInjectionPoint() != null) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void printParameterToBuilder(StringBuilder builder) {

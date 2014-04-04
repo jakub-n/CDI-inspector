@@ -14,6 +14,8 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
  * Represents entity 1:1 matching to some *.class file
  *
  */
+// TODO likely delete
+@Deprecated
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 @JsonAutoDetect(getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE, 
 	isGetterVisibility=Visibility.NONE, fieldVisibility=Visibility.DEFAULT)

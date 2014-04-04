@@ -11,7 +11,7 @@ import com.tinkerpop.frames.modules.javahandler.JavaHandlerContext;
 import cz.muni.fi.cdii.common.model.Type;
 
 @JavaHandlerClass(GraphType.Impl.class)
-public interface GraphType {
+public interface GraphType extends GraphElement {
 
     public static final String VERTEX_TYPE_NAME = "type";
     
