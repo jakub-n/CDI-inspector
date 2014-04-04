@@ -17,22 +17,27 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.zest.layouts.LayoutStyles;
+import org.eclipse.zest.layouts.LayoutAlgorithm;
+import org.eclipse.zest.layouts.algorithms.CompositeLayoutAlgorithm;
+import org.eclipse.zest.layouts.algorithms.DirectedGraphLayoutAlgorithm;
+import org.eclipse.zest.layouts.algorithms.SpringLayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
 import cz.muni.fi.cdii.eclipse.CdiiEventTopics;
 import cz.muni.fi.cdii.eclipse.inspection.GraphInspection;
 import cz.muni.fi.cdii.eclipse.ui.graph.CdiiGraphViewer;
+import cz.muni.fi.cdii.eclipse.ui.graph.ColorManager;
 import cz.muni.fi.cdii.eclipse.ui.graph.GraphContentProvider;
 import cz.muni.fi.cdii.eclipse.ui.graph.GraphLabelProvider;
-import cz.muni.fi.cdii.plugin.ui.ColorManager;
 
 @SuppressWarnings("restriction")
 public class InspectorPart {
@@ -82,8 +87,12 @@ public class InspectorPart {
 		this.graphViewer = new CdiiGraphViewer(parent, SWT.BORDER);
 		this.graphViewer.getGraphControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		this.graphViewer.setContentProvider(new GraphContentProvider());
-		this.graphViewer.setLabelProvider(new GraphLabelProvider());
-		this.graphViewer.setLayoutAlgorithm(new TreeLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING));
+		this.graphViewer.setLabelProvider(new GraphLabelProvider(this.colorManager));
+		CompositeLayoutAlgorithm layoutAlgorithm = new CompositeLayoutAlgorithm(
+		        new LayoutAlgorithm[] { 
+		                new TreeLayoutAlgorithm() /*new SpringLayoutAlgorithm()*/, 
+		                new DirectedGraphLayoutAlgorithm(DirectedGraphLayoutAlgorithm.VERTICAL) });
+		this.graphViewer.setLayoutAlgorithm(new TreeLayoutAlgorithm());
 
 		// TODO delete  context menu
 		MenuManager menuManager = new MenuManager("#PopupMenu");
@@ -107,6 +116,16 @@ public class InspectorPart {
         });
 		Menu contextMenu = menuManager.createContextMenu(this.graphViewer.getControl());
 		this.graphViewer.getControl().setMenu(contextMenu);
+		
+		// TODO delete selection listener
+		this.graphViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            
+            @Override
+            public void selectionChanged(SelectionChangedEvent event) {
+                System.out.println("new graph selection: " + event.getSelection() + " | " 
+                        + event.getSelection().getClass());
+            }
+        });
 	}
 
 //	private void setMPartPosition(MPart mPart, IEclipsePreferences preferences, 

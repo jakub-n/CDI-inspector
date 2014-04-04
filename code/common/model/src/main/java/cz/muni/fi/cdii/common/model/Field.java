@@ -99,6 +99,9 @@ public class Field implements Member {
         return this.getType().toString(false, true) + " " + this.getName();
     }
     
-    
+    @Override
+    public String toString() {
+        return this.getNodeText();
+    }
     
 }

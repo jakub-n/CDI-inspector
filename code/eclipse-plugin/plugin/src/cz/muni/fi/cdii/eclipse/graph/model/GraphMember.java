@@ -15,14 +15,14 @@ public interface GraphMember {
     public void setOrigin(Member origin);
     
     @Adjacency(label="produces", direction=Direction.OUT)
-    public GraphBean getProduced();
+    public GraphBean getProducedBean();
 
     @Adjacency(label="produces", direction=Direction.OUT)
-    public void setProduced(GraphBean bean);
+    public void setProducedBean(GraphBean bean);
 
-    @Adjacency(label="hasInjectionPoints", direction=Direction.OUT)
+    @Adjacency(label="hasInjectionPoint", direction=Direction.OUT)
     public Iterable<GraphInjectionPoint> getInjectionPoints();
     
-    @Adjacency(label="hasInjectionPoints", direction=Direction.OUT)
+    @Adjacency(label="hasInjectionPoint", direction=Direction.OUT)
     public void setInjectionPoints(Iterable<GraphInjectionPoint> injectionPoints);
 }

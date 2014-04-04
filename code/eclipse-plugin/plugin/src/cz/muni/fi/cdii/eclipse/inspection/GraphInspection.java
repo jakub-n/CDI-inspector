@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.tinkerpop.blueprints.Graph;
-import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 import com.tinkerpop.frames.FramedGraph;
 import com.tinkerpop.frames.FramedGraphFactory;
@@ -38,9 +37,21 @@ public class GraphInspection {
     private final InspectionTask task;
     
     // TODO hashset or treeset
+    /**
+     * for filter part
+     */
     private Set<String> packageNames = new TreeSet<>();
+    /**
+     * for filter part
+     */
     private Set<Type> types = new HashSet<>();
+    /**
+     * for filter part
+     */
     private Set<String> elNames = new TreeSet<>();
+    /**
+     * for filter part
+     */
     private Set<Qualifier> qualifiers = new HashSet<>();
     
     private FramedGraph<Graph> framedGraph;
@@ -49,6 +60,15 @@ public class GraphInspection {
     private Map<Type, GraphType> typeCache = new HashMap<>();
     private Map<InjectionPoint, GraphInjectionPoint> injectionPointCache = new HashMap<>();
     private Map<Member, GraphMember> memberCache = new HashMap<>();
+    /**
+     * This allows to break cyclic dependencies:
+     * <br>
+     * bean -> has Type -> has Member -> has InjectionPoint -> injects Bean
+     * <br>
+     * last part of the chain is left to the end of whole processing procedure
+     */
+    private Map<GraphInjectionPoint, Set<Bean>> deferredInjectedBeans = new HashMap<>();
+    private Map<GraphMember, Bean> deferredProducedBeans = new HashMap<>();
     
     public GraphInspection (Inspection inspection) {
         this.model = inspection.getModel();
@@ -56,7 +76,31 @@ public class GraphInspection {
         
         createGraph();
         browseModel();
+        processDeferred();
         cleanCreationalCaches();
+    }
+
+    private void processDeferred() {
+        for (Map.Entry<GraphInjectionPoint, Set<Bean>> entry : 
+            this.deferredInjectedBeans.entrySet()) {
+            addBeansToInjectionPoint(entry.getKey(), entry.getValue());
+        }
+        for (Map.Entry<GraphMember, Bean> entry : this.deferredProducedBeans.entrySet()) {
+            addProducedBeanToMember(entry.getKey(), entry.getValue());
+        }
+    }
+
+    private void addProducedBeanToMember(GraphMember graphMember, Bean bean) {
+        GraphBean graphBean = this.addBean(bean);
+        graphMember.setProducedBean(graphBean);
+    }
+
+    private void addBeansToInjectionPoint(GraphInjectionPoint graphInjectionPoint,
+            Set<Bean> beans) {
+        for (Bean bean : beans) {
+            GraphBean graphBean = this.addBean(bean);
+            graphInjectionPoint.addInjectedBean(graphBean);
+        }
     }
 
     private void cleanCreationalCaches() {
@@ -64,6 +108,8 @@ public class GraphInspection {
         this.typeCache = null;
         this.injectionPointCache = null;
         this.memberCache = null;
+        this.deferredInjectedBeans = null;
+        this.deferredProducedBeans = null;
     }
 
     private void createGraph() {
@@ -144,7 +190,7 @@ public class GraphInspection {
         Set<GraphInjectionPoint> graphInjectionPoints = addInjectionPoints(member);
         graphMember.setOrigin(member);
         if (producedBean != null) {
-            graphMember.setProduced(addBean(producedBean));
+            this.deferredProducedBeans.put(graphMember, producedBean);
         }
         graphMember.setInjectionPoints(graphInjectionPoints);
         this.memberCache.put(member, graphMember);
@@ -154,9 +200,12 @@ public class GraphInspection {
     private Set<GraphInjectionPoint> addInjectionPoints(Member member) {
         if (member instanceof Field) {
             final Field field = (Field) member;
+            if (field.getInjectionPoint() == null) {
+                return Collections.emptySet();
+            }
             return Collections.singleton(addInjectionPoint(field.getInjectionPoint()));
         }
-        if (member instanceof Member) {
+        if (member instanceof Method) {
             final Method method = (Method) member;
             Set<GraphInjectionPoint> result = new HashSet<>();
             for (MethodParameter paremeter : method.getParameters()) {
@@ -180,10 +229,12 @@ public class GraphInspection {
         }
         this.qualifiers.addAll(injectionPoint.getQualifiers());
         List<String> stringQualifiers = qualifiersToList(injectionPoint.getQualifiers());
+        Set<Bean> resolvedBeans = injectionPoint.getResolvedBeans();
         GraphInjectionPoint graphInjectionPoint = this.framedGraph.addVertex(null, GraphInjectionPoint.class);
         graphInjectionPoint.setOrigin(injectionPoint);
         graphInjectionPoint.setQualifiers(stringQualifiers);
         this.injectionPointCache.put(injectionPoint, graphInjectionPoint);
+        this.deferredInjectedBeans.put(graphInjectionPoint, resolvedBeans);
         return graphInjectionPoint;
     }
 

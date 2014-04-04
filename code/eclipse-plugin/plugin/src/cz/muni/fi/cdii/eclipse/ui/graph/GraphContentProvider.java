@@ -8,7 +8,9 @@ import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
 import org.eclipse.zest.core.viewers.INestedContentProvider;
 
 import com.tinkerpop.blueprints.Graph;
+import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.frames.FramedGraph;
+import com.tinkerpop.gremlin.java.GremlinPipeline;
 
 import cz.muni.fi.cdii.eclipse.graph.model.Constants;
 import cz.muni.fi.cdii.eclipse.graph.model.GraphBean;
@@ -55,10 +57,9 @@ public class GraphContentProvider implements IGraphEntityContentProvider, INeste
             GraphType typeVertex = (GraphType) element;
             List<GraphMember> children = iterableToList(typeVertex.getMembers());
             return children.toArray();
-        } else {
-            throw new RuntimeException("Unexpected element type: "
-                    + (element == null ? "null" : element.getClass()));
         }
+        throw new RuntimeException("Unexpected element type: "
+                + (element == null ? "null" : element.getClass()));
     }
 
     @Override
@@ -68,12 +69,26 @@ public class GraphContentProvider implements IGraphEntityContentProvider, INeste
         }
         List<GraphBean> beans = iterableToList(this.input.getVertices(
                 Constants.VERTEX_TYPE_PROPERTY, GraphBean.VERTEX_TYPE_NAME, GraphBean.class));
-        List<GraphType> types = iterableToList(this.input.getVertices(
-                Constants.VERTEX_TYPE_PROPERTY, GraphType.VERTEX_TYPE_NAME, GraphType.class));
+        List<GraphType> types = getMainTypeNodes(); 
         ArrayList<Object> result = new ArrayList<>();
         result.addAll(beans);
         result.addAll(types);
         return result.toArray();
+    }
+    
+    public double getWeight(Object entity1, Object entity2) {
+        // TODO edit
+        System.out.println("weight called");
+        return 0;
+    }
+
+    private List<GraphType> getMainTypeNodes() {
+        GremlinPipeline<Vertex, Vertex> mainTypesPipeline = new GremlinPipeline<Vertex, Vertex>()
+                .has(Constants.VERTEX_TYPE_PROPERTY, GraphBean.VERTEX_TYPE_NAME).out("mainType");
+        mainTypesPipeline.setStarts(this.input.getVertices());
+        List<GraphType> types = iterableToList(
+                this.input.frameVertices(mainTypesPipeline, GraphType.class));
+        return types;
     }
 
     @Override
@@ -86,14 +101,14 @@ public class GraphContentProvider implements IGraphEntityContentProvider, INeste
             ArrayList<Object> result = new ArrayList<>();
             result.add(type);
             result.addAll(injectionTargetMembers);
-            return new Object[] { type };
+            return result.toArray();
         }
         if (entity instanceof GraphType) {
             return new Object[0];
         }
         if (entity instanceof GraphMember) {
             GraphMember member = (GraphMember) entity;
-            GraphBean producedBean = member.getProduced();
+            GraphBean producedBean = member.getProducedBean();
             if (producedBean != null) {
                 return new Object[] { producedBean };
             } else {

@@ -10,6 +10,7 @@ import org.eclipse.zest.core.viewers.ISelfStyleProvider;
 import org.eclipse.zest.core.widgets.GraphConnection;
 import org.eclipse.zest.core.widgets.GraphNode;
 
+import cz.muni.fi.cdii.eclipse.ui.graph.ColorManager;
 import cz.muni.fi.cdii.plugin.common.model.Bean;
 import cz.muni.fi.cdii.plugin.common.model.LabelText;
 
@@ -107,7 +108,6 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 
 	@Override
 	public void selfStyleNode(Object element, GraphNode node) {
-		// nothing
 	}
 
 }

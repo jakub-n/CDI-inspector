@@ -43,16 +43,20 @@ import cz.muni.fi.cdii.common.model.Qualifier;
 import cz.muni.fi.cdii.common.model.Scope;
 import cz.muni.fi.cdii.common.model.Type;
 
-// TODO rename local inspection
-public class Inspector {
+public class LocalCdiInspector {
 
     private Model model;
     private Set<Type> foundTypes = new HashSet<>();
     private Map<IBean,Bean> foundBeans = new HashMap<>();
-    private Set<Scope> foundScopes = new HashSet<>();
     private final ICDIProject project;
+    
+    public static Model inspect(ICDIProject project) {
+        LocalCdiInspector inspector = new LocalCdiInspector(project);
+        Model result = inspector.getModel();
+        return result;
+    }
 
-    public Inspector(ICDIProject project) {
+    private LocalCdiInspector(ICDIProject project) {
         this.project = project;
         this.model = new Model();
         IBean[] beans = project.getBeans();
@@ -105,14 +109,16 @@ public class Inspector {
         Member result = null;
         if (producerBean instanceof IProducerField) {
             result = new Field();
+            final IProducerField producerField = (IProducerField) producerBean;
+            result.setName(producerField.getField().getElementName());
         }
         if (producerBean instanceof IProducerMethod) {
             final Method method = new Method();
+            result = method;
             final IProducerMethod producerMethod = (IProducerMethod) producerBean;
             this.copyMethodParameters(method, producerMethod);
-            result = method;
+            result.setName(producerMethod.getMethod().getElementName());
         }
-        result.setName(producerBean.getElementName());
         result.setType(type);
         return result;
     }
@@ -315,16 +321,27 @@ public class Inspector {
             addMethodParameterIPToType(cdiiType, cdiiInjectionPoint, jbossIpParameter);
         }
     }
-
+    
     private void addMethodParameterIPToType(Type cdiiType, InjectionPoint cdiiInjectionPoint,
             final IInjectionPointParameter jbossIpParameter) {
-        String methodName = jbossIpParameter.getBeanMethod().getElementName();
+        try {
+            addMethodParameterIPToTypeUnchecked(cdiiType, cdiiInjectionPoint, jbossIpParameter);
+        } catch (JavaModelException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private void addMethodParameterIPToTypeUnchecked(Type cdiiType, 
+            InjectionPoint cdiiInjectionPoint, final IInjectionPointParameter jbossIpParameter) 
+            throws JavaModelException {
+        String methodName = jbossIpParameter.getBeanMethod().getMethod().getElementName();
         Method method = (Method) cdiiType.getMemberByName(methodName);
         if (method == null) {
             Type methodType = addType(jbossIpParameter.getBeanMethod().getMemberType());
             method = new Method();
             method.setName(methodName);
             method.setType(methodType);
+            method.setConstructor(jbossIpParameter.getBeanMethod().getMethod().isConstructor());
             this.copyMethodParameters(method, jbossIpParameter.getBeanMethod());
             cdiiType.getMembers().add(method);
         }
@@ -334,7 +351,7 @@ public class Inspector {
 
     private void addFieldIPToType(Type type, InjectionPoint modelIP,
             final IInjectionPointField jbossIPField) {
-        String fieldName = jbossIPField.getElementName();
+        String fieldName = jbossIPField.getField().getElementName();
         Field cdiiField = (Field) type.getMemberByName(fieldName);
         if (cdiiField == null) {
             Type cdiiIpType = addType(jbossIPField.getType());
@@ -388,7 +405,15 @@ public class Inspector {
         return result;
     }
 
+    /**
+     * 
+     * @param jbossType {@code null} means void type
+     * @return corresponding cdii type or {@code null} (~ void)
+     */
     private Type addType(IParametedType jbossType) {
+        if (jbossType == null) {
+            return null;
+        }
         Type type = extractType(jbossType);
         boolean typeAdded = this.foundTypes.add(type);
         if (typeAdded) {

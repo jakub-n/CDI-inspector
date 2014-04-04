@@ -14,9 +14,13 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 public class Method implements Member {
 
     private String name;
+    /**
+     * null iff method is a constructor or returns void
+     */
     private Type type;
     private Bean producedBean;
     private List<MethodParameter> parameters = new ArrayList<>();
+    private boolean isConstructor = false;
     /**
      * the only purpose of this field is equality computation
      */
@@ -62,9 +66,47 @@ public class Method implements Member {
         this.surroundingType = surroundingType;
     }
 
+    public boolean isConstructor() {
+        return isConstructor;
+    }
+
+    public void setConstructor(boolean isConstructor) {
+        this.isConstructor = isConstructor;
+    }
+
     @Override
     public String getNodeText() {
-        return this.getType().toString(false, true) + " " + this.getName() + "()";
+        StringBuilder result = new StringBuilder();
+        if (!this.isConstructor) {
+            if (this.type == null) {
+                result.append("void");
+            } else {
+                result.append(this.type.toString(false, true));   
+            }
+            result.append(" ");
+        }
+        result.append(this.getName());
+        if (this.getParameters().isEmpty()) {
+            result.append("()");
+        } else {
+            printParameterToBuilder(result);
+        }
+        return result.toString();
+    }
+
+    private void printParameterToBuilder(StringBuilder builder) {
+        builder.append("(");
+        for (MethodParameter param : this.parameters) {
+            builder.append(param.getType().toString(false, true));
+            builder.append(", ");
+        }
+        builder.delete(builder.length()-2, builder.length());
+        builder.append(")");
+    }
+    
+    @Override
+    public String toString() {
+        return this.getNodeText();
     }
 
     @Override

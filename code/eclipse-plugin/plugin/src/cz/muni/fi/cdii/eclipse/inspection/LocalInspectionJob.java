@@ -17,7 +17,7 @@ import org.jboss.tools.cdi.core.ICDIProject;
 import cz.muni.fi.cdii.common.model.Model;
 import cz.muni.fi.cdii.eclipse.Activator;
 import cz.muni.fi.cdii.eclipse.CdiiEventTopics;
-import cz.muni.fi.cdii.eclipse.inspection2.Inspector;
+import cz.muni.fi.cdii.eclipse.inspection2.LocalCdiInspector;
 import cz.muni.fi.cdii.plugin.visual.LocalInspectionException;
 
 /**
@@ -52,14 +52,11 @@ public class LocalInspectionJob extends Job {
 
 	public IStatus checkedRun() {
 		ICDIProject cdiProject = LocalInspectionJob.getCdiProjectFromProject(this.project);
-		//LocalCdiInspection inspection = LocalInspectionFactory.createInspection(cdiProject);
-		Inspector inspector = new Inspector(cdiProject); // TODO wrap into static method
-		Model model = inspector.getModel();
+		Model model = LocalCdiInspector.inspect(cdiProject);
 		InspectionTask task = new LocalInspectionTask(this.project, this.context);
 		Inspection inspection = new Inspection(model, task);
 		GraphInspection graphInspection = new GraphInspection(inspection);
 		// TODO delete
-		System.out.println("inspection to pass: " + inspection);
 		System.out.println(model);
 		broker.post(CdiiEventTopics.INSPECT, graphInspection);
 		return Status.OK_STATUS;
