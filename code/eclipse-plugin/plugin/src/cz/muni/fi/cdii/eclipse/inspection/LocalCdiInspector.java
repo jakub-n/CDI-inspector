@@ -42,12 +42,13 @@ import cz.muni.fi.cdii.common.model.Model;
 import cz.muni.fi.cdii.common.model.Qualifier;
 import cz.muni.fi.cdii.common.model.Scope;
 import cz.muni.fi.cdii.common.model.Type;
+import cz.muni.fi.cdii.eclipse.model.LocalBean;
 
 public class LocalCdiInspector {
 
     private Model model;
     private Set<Type> foundTypes = new HashSet<>();
-    private Map<IBean,Bean> foundBeans = new HashMap<>();
+    private Map<IBean,LocalBean> foundBeans = new HashMap<>();
     private final ICDIProject project;
     
     public static Model inspect(ICDIProject project) {
@@ -148,10 +149,11 @@ public class LocalCdiInspector {
         Set<Type> cdiiTypes = addTypes(jbossTypes);
         Type declaredType = selectMostSpecificType(mainEclipseType, cdiiTypes);
         Scope scope = getScope(jbossBean.getScope());
-        Bean bean = new Bean();
+        LocalBean bean = new LocalBean();
         bean.setType(declaredType);
         bean.setTypeSet(cdiiTypes);
         bean.setScope(scope);
+        bean.setJbossBean(jbossBean);
         copyInjectionPointsToType(bean, jbossBean);
         // TODO add other bean properties
         this.foundBeans.put(jbossBean, bean);

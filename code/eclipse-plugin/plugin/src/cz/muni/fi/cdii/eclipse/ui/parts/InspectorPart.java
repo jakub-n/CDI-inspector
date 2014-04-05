@@ -29,11 +29,13 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.zest.layouts.LayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.CompositeLayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.DirectedGraphLayoutAlgorithm;
-import org.eclipse.zest.layouts.algorithms.SpringLayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
+import cz.muni.fi.cdii.common.model.Bean;
 import cz.muni.fi.cdii.eclipse.CdiiEventTopics;
+import cz.muni.fi.cdii.eclipse.graph.model.GraphBean;
 import cz.muni.fi.cdii.eclipse.inspection.GraphInspection;
+import cz.muni.fi.cdii.eclipse.model.LocalBean;
 import cz.muni.fi.cdii.eclipse.ui.graph.CdiiGraphViewer;
 import cz.muni.fi.cdii.eclipse.ui.graph.ColorManager;
 import cz.muni.fi.cdii.eclipse.ui.graph.GraphContentProvider;
@@ -41,32 +43,32 @@ import cz.muni.fi.cdii.eclipse.ui.graph.GraphLabelProvider;
 
 @SuppressWarnings("restriction")
 public class InspectorPart {
-	
-	public static final String ID = "cz.muni.fi.cdii.plugin.InspectorPartDescriptor";
 
-//    private static final String OPEN_FIRST_TIME = "open-first-time";
-	
-	@Inject
-	private Logger log;
-	
-	@Inject
-	private IEventBroker broker;
+    public static final String ID = "cz.muni.fi.cdii.plugin.InspectorPartDescriptor";
 
-	private Label inspectionPartLabel;
-	private CdiiGraphViewer graphViewer;
-	private ColorManager colorManager;
-	private Composite parent;
+    // private static final String OPEN_FIRST_TIME = "open-first-time";
+
+    @Inject
+    private Logger log;
+
+    @Inject
+    private IEventBroker broker;
+
+    private Label inspectionPartLabel;
+    private CdiiGraphViewer graphViewer;
+    private ColorManager colorManager;
+    private Composite parent;
 
     private GraphInspection inspection;
 
-	public InspectorPart() {
-		System.out.println("Inspector part init()");
-	}
+    public InspectorPart() {
+        System.out.println("Inspector part init()");
+    }
 
-	/**
-	 * Create contents of the view part.
-	 */
-	@PostConstruct
+    /**
+     * Create contents of the view part.
+     */
+    @PostConstruct
 	public void createControls(Composite parent 
 	        ,MPart mPart, 
 	        @Preference(nodePath="cz.muni.fi.cdii.eclipse") IEclipsePreferences preferences,
@@ -93,29 +95,7 @@ public class InspectorPart {
 		                new TreeLayoutAlgorithm() /*new SpringLayoutAlgorithm()*/, 
 		                new DirectedGraphLayoutAlgorithm(DirectedGraphLayoutAlgorithm.VERTICAL) });
 		this.graphViewer.setLayoutAlgorithm(new TreeLayoutAlgorithm());
-
-		// TODO delete  context menu
-		MenuManager menuManager = new MenuManager("#PopupMenu");
-		menuManager.setRemoveAllWhenShown(true);
-		menuManager.addMenuListener(new IMenuListener() {
-            
-            @Override
-            public void menuAboutToShow(IMenuManager manager) {
-                IStructuredSelection graphSelection = (IStructuredSelection) InspectorPart.this
-                        .graphViewer.getSelection();
-                if (! graphSelection.isEmpty()) {
-                    String name = graphSelection.getFirstElement().toString();
-                    Action action = new Action(name) {
-                        public void run() {
-                            System.out.println("action " + this.getText() + " activated");
-                        }
-                    };
-                    manager.add(action);
-                }
-            }
-        });
-		Menu contextMenu = menuManager.createContextMenu(this.graphViewer.getControl());
-		this.graphViewer.getControl().setMenu(contextMenu);
+		addGraphContextMenu();
 		
 		// TODO delete selection listener
 		this.graphViewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -128,57 +108,103 @@ public class InspectorPart {
         });
 	}
 
-//	private void setMPartPosition(MPart mPart, IEclipsePreferences preferences, 
-//	        EModelService modelService, EPartService partService, MApplication application) {
-//	    boolean isOpenedForTheFirstTime = preferences.getBoolean(OPEN_FIRST_TIME, true);
-//        if (isOpenedForTheFirstTime) {
-//            setFirstOpenFlag(preferences);
-//            showPartInPrimaryStack(mPart, modelService, partService, application);
-//        }
-//        
-//    }
+    private void addGraphContextMenu() {
+        MenuManager menuManager = new MenuManager("#PopupMenu");
+		menuManager.setRemoveAllWhenShown(true);
+		menuManager.addMenuListener(new IMenuListener() {
+            
+            @Override
+            public void menuAboutToShow(IMenuManager manager) {
+                
+                IStructuredSelection graphSelection = (IStructuredSelection) InspectorPart.this
+                        .graphViewer.getSelection();
+                if (graphSelection.size() == 1) {
+                    final LocalBean localBean = getLocalBeanFromSelection(graphSelection);
+                    if (localBean == null) {
+                        return;
+                    }
+                    String actionName = "Open in editor";
+                    Action action = new Action(actionName) {
+                        public void run() {
+                            localBean.open();
+                        }
+                    };
+                    manager.add(action);
+                }
+            }
 
-//    private static void showPartInPrimaryStack(MPart mPart, EModelService modelService,
-//            EPartService partService, MApplication application) {
-//        final String primaryPartStackId = "org.eclipse.e4.primaryDataStack";
-//        MPartStack partStack = (MPartStack) modelService.find(primaryPartStackId, application);
-//        if (partStack != null) {
-//            partStack.getChildren().add(mPart);
-//            partService.showPart(mPart, PartState.ACTIVATE);
-//        }
-//    }
+            private LocalBean getLocalBeanFromSelection(IStructuredSelection selection) {
+                Object element = selection.getFirstElement();
+                if (element instanceof GraphBean) {
+                    GraphBean graphBean = (GraphBean) element;
+                    return getLocalBean(graphBean);
+                }
+                return null;
+            }
 
-//    private void setFirstOpenFlag(IEclipsePreferences preferences) {
-//        preferences.putBoolean(OPEN_FIRST_TIME, false);
-//        try {
-//            preferences.flush();
-//        } catch (BackingStoreException e) {
-//            this.log.warn(e, "preferences flush failed");
-//        }
-//    }
+            private LocalBean getLocalBean(GraphBean graphBean) {
+                Bean bean = graphBean.getOrigin();
+                if (bean instanceof LocalBean) {
+                    return (LocalBean) bean;
+                }
+                return null;
+            }
+        });
+		Menu contextMenu = menuManager.createContextMenu(this.graphViewer.getControl());
+		this.graphViewer.getControl().setMenu(contextMenu);
+    }
+
+    // private void setMPartPosition(MPart mPart, IEclipsePreferences preferences,
+    // EModelService modelService, EPartService partService, MApplication application) {
+    // boolean isOpenedForTheFirstTime = preferences.getBoolean(OPEN_FIRST_TIME, true);
+    // if (isOpenedForTheFirstTime) {
+    // setFirstOpenFlag(preferences);
+    // showPartInPrimaryStack(mPart, modelService, partService, application);
+    // }
+    //
+    // }
+
+    // private static void showPartInPrimaryStack(MPart mPart, EModelService modelService,
+    // EPartService partService, MApplication application) {
+    // final String primaryPartStackId = "org.eclipse.e4.primaryDataStack";
+    // MPartStack partStack = (MPartStack) modelService.find(primaryPartStackId, application);
+    // if (partStack != null) {
+    // partStack.getChildren().add(mPart);
+    // partService.showPart(mPart, PartState.ACTIVATE);
+    // }
+    // }
+
+    // private void setFirstOpenFlag(IEclipsePreferences preferences) {
+    // preferences.putBoolean(OPEN_FIRST_TIME, false);
+    // try {
+    // preferences.flush();
+    // } catch (BackingStoreException e) {
+    // this.log.warn(e, "preferences flush failed");
+    // }
+    // }
 
     @PreDestroy
-	public void dispose() {
-		this.colorManager.dispose();
-	}
+    public void dispose() {
+        this.colorManager.dispose();
+    }
 
-	@Focus
-	public void setFocus() {
-		this.graphViewer.getGraphControl().setFocus();
-	}
-	
-	public void inspect(GraphInspection inspection) {
-	    // TODO smazat
-		log.debug("inspectionPart.inspect() called");
-		this.inspection = inspection;
-		this.updateFilterWindow();
-		this.updateGraph();
-	}
+    @Focus
+    public void setFocus() {
+        this.graphViewer.getGraphControl().setFocus();
+    }
+
+    public void inspect(GraphInspection inspection) {
+        // TODO smazat
+        log.debug("inspectionPart.inspect() called");
+        this.inspection = inspection;
+        this.updateFilterWindow();
+        this.updateGraph();
+    }
 
     private void updateFilterWindow() {
         broker.post(CdiiEventTopics.UPDATE_FILTER_LABELS, this.inspection);
     }
-    
+
     /**
      * Rerun inspection. It collects and draw new data.
      */
@@ -187,15 +213,15 @@ public class InspectorPart {
             this.inspection.getTask().run();
         }
     }
-    
+
     public void zoomIn() {
         this.graphViewer.zoomIn();
     }
-    
+
     public void zoomOut() {
         this.graphViewer.zoomOut();
     }
-    
+
     public void resetZoom() {
         this.graphViewer.resetZoom();
     }
