@@ -1,10 +1,16 @@
 package cz.muni.fi.cdii.eclipse.ui.graph;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.zest.core.viewers.GraphViewer;
 import org.eclipse.zest.core.viewers.IEntityStyleProvider;
+import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
 import org.eclipse.zest.core.viewers.ISelfStyleProvider;
 import org.eclipse.zest.core.widgets.GraphConnection;
 import org.eclipse.zest.core.widgets.GraphNode;
@@ -22,9 +28,11 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
         ISelfStyleProvider {
     
     final private ColorManager colorManager;
+    final private GraphViewer graphViewer;
     
-    public GraphLabelProvider(ColorManager colorManager) {
+    public GraphLabelProvider(ColorManager colorManager, GraphViewer graphViewer) {
         this.colorManager = colorManager;
+        this.graphViewer = graphViewer;
     }
 
     @Override
@@ -39,27 +47,35 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 
     @Override
     public void selfStyleConnection(Object element, GraphConnection connection) {
-//        connection.setWeight(weight);(weight);
         ConnectionType connectionType = classifyConnection(connection);
         switch (connectionType) {
         case MAIN_TYPE:
             setConnectionColor(connection, GraphColorEnum.TYPE_CONNECTION);
             connection.setConnectionStyle(ZestStyles.CONNECTIONS_SOLID);
-            connection.setWeight(1);
             connection.setTooltip(new Label("type"));
             break;
         case INJECT:
+        case AUX_INJECT:
             setConnectionColor(connection, GraphColorEnum.INJECT_CONNECTION);
             connection.setConnectionStyle(ZestStyles.CONNECTIONS_DIRECTED);
-            connection.setWeight(0.2);
             connection.setTooltip(new Label("@inject"));
             break;
         case PRODUCES:
+        case AUX_PRODUCES:
             setConnectionColor(connection, GraphColorEnum.PRODUCES_CONNECTION);
             connection.setConnectionStyle(ZestStyles.CONNECTIONS_DIRECTED);
-            connection.setWeight(0.2);
             connection.setTooltip(new Label("@produces"));
             break;
+        }
+        
+        switch (connectionType) {
+        case AUX_INJECT:
+        case AUX_PRODUCES:
+            connection.setVisible(false);
+            break;
+        case MAIN_TYPE:
+        case INJECT:
+        case PRODUCES:
         }
     }
 
@@ -75,19 +91,16 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 
     @Override
     public Color getNodeHighlightColor(Object entity) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public Color getBorderColor(Object entity) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public Color getBorderHighlightColor(Object entity) {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -159,7 +172,13 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
         FIELD
     }
     
-    private static ConnectionType classifyConnection(GraphConnection connection) {
+    /**
+     * Classifies connection and if it is auxiliary, sets {@link AuxiliaryConnectionMarker#INSTANCE}
+     * marker
+     * @param connection to determine the type of
+     * @return
+     */
+    private ConnectionType classifyConnection(GraphConnection connection) {
         Object sourceElement = connection.getSource().getData();
         Object destinationElement = connection.getDestination().getData();
         if (sourceElement instanceof GraphMember && destinationElement instanceof GraphBean) {
@@ -168,16 +187,127 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
         if (sourceElement instanceof GraphBean && destinationElement instanceof GraphMember) {
             return ConnectionType.INJECT;
         }
+        if (sourceElement instanceof GraphType && destinationElement instanceof GraphBean) {
+            connection.setData(AuxiliaryConnectionMarker.INSTANCE);
+            return ConnectionType.AUX_PRODUCES;
+        }
         if (sourceElement instanceof GraphBean && destinationElement instanceof GraphType) {
-            return ConnectionType.MAIN_TYPE;
+            if (AuxiliaryConnectionMarker.INSTANCE.equals(connection.getData())) {
+                return ConnectionType.AUX_INJECT;
+            }
+            GraphBean bean = (GraphBean) sourceElement;
+            GraphType type = (GraphType) destinationElement;
+            if (!bean.getMainType().equals(type)) {
+                connection.setData(AuxiliaryConnectionMarker.INSTANCE);
+                return ConnectionType.AUX_INJECT;
+            }
+            return resolveBeanToTypeEdge(bean, type, connection);
         }
         throw new RuntimeException("Unknown connection type");
     }
     
+    /**
+     * There could be from one to two (or more in case of wrong data collection) edges form bean to 
+     * type node. Either 'mainType' edge only, or
+     * 'mainType' and 'auxInclude'. Information about which is which is lost in 
+     * {@link IGraphEntityContentProvider} instance.
+     * <p>
+     * If this is the case, his method randomly pick one and mark is using 
+     * {@link AuxiliaryConnectionMarker#INSTANCE} to be the auxiliary one.
+     * @param bean source bean
+     * @param type destination type
+     * @param connection type of which should be determined
+     * @return type of connection currently asked 
+     */
+    private ConnectionType resolveBeanToTypeEdge(GraphBean bean, GraphType type, 
+            GraphConnection connection) {
+        GraphNode targetTypeNode = (GraphNode) this.graphViewer.findGraphItem(type);
+        List<GraphConnection> connectionsToType = 
+                Utils.toCheckedList(targetTypeNode.getTargetConnections(), GraphConnection.class);
+        Set<GraphConnection> connectionsFromBeanToTheType = filterConnectionsFromBean(bean,
+                connectionsToType);
+        if (connectionsFromBeanToTheType.size() <= 1) {
+            return ConnectionType.MAIN_TYPE;
+        }
+        return resolveBeanToTypeConnections(connectionsFromBeanToTheType, connection);
+    }
+
+    private Set<GraphConnection> filterConnectionsFromBean(GraphBean bean,
+            List<GraphConnection> connections) {
+        Set<GraphConnection> result = new HashSet<>();
+        for (GraphConnection connection : connections) {
+            if (bean.equals(connection.getSource().getData())) {
+                result.add(connection);
+            }
+        }
+        return result;
+    }
+
+    private ConnectionType resolveBeanToTypeConnections(Set<GraphConnection> connections, 
+            GraphConnection connection) {
+        if (!connections.contains(connection)) {
+            throw new IllegalArgumentException("Connection is not contained in provided set.");
+        }
+        GraphConnection auxConnection = getAuxiliaryMarkedConnection(connections);
+        if (auxConnection == null) {
+            connection.setData(AuxiliaryConnectionMarker.INSTANCE);
+            return ConnectionType.AUX_INJECT;
+        }
+        if (auxConnection.equals(connection)) {
+            return ConnectionType.AUX_INJECT;
+        }
+        return ConnectionType.MAIN_TYPE;
+    }
+
+    private GraphConnection getAuxiliaryMarkedConnection(Set<GraphConnection> connections) {
+        for (GraphConnection connection : connections) {
+            if (AuxiliaryConnectionMarker.INSTANCE.equals(connection.getData())) {
+                return connection;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 
+     * @param type
+     * @param connections
+     * @return subset of input {@code connections} such that it ends in node that represents 
+     * {@code type}
+     */
+    // TODO delete
+//    private Set<GraphConnection> filterConnectionsToType(GraphType type, 
+//            List<GraphConnection> connections) {
+//        Set<GraphConnection> result = new HashSet<>();
+//        for (GraphConnection connection : connections) {
+//            if (type.equals(connection.getDestination().getData())) {
+//                result.add(connection);
+//            }
+//        }
+//        return result;
+//    }
+
     private static enum ConnectionType {
+        /**
+         * bean -> type
+         */
         MAIN_TYPE,
+        /**
+         * member -> bean
+         */
         PRODUCES,
-        INJECT
+        /**
+         * bean -> member
+         */
+        INJECT,
+        /**
+         * type -> bean
+         */
+        AUX_PRODUCES,
+        /**
+         * bean-> type
+         */
+        AUX_INJECT
     }
     
 }

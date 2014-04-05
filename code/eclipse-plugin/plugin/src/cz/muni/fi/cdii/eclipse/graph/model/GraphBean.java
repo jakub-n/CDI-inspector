@@ -65,6 +65,12 @@ public interface GraphBean extends VertexFrame, GraphElement {
     @GremlinGroovy("it.out('injectedInto').in('hasInjectionPoint').dedup()")
     public Iterable<GraphMember> getInjectionTargetMembers();
     
+    /**
+     * @return types that has some member hat injects this bean
+     */
+    @GremlinGroovy("it.out('injectedInto').in('hasInjectionPoint').in('hasMember').dedup()")
+    public Iterable<GraphType> getAuxiliaryInjectionTargetTypes();
+    
     @JavaHandler
     public String getTooltipText();
     

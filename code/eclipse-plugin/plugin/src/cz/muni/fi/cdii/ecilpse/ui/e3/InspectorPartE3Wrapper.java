@@ -24,8 +24,8 @@ import cz.muni.fi.cdii.eclipse.ui.parts.InspectorPart;
  * features like:
  * <ul>
  * <li>Show View dialog (shift-alt-q q)</>
- * <li>Outline view</li>
- * <li>Properties view</li>
+ * <li>Outline view (unused)</li>
+ * <li>Properties view (unused)</li>
  * </ul>
  *
  */
@@ -56,8 +56,8 @@ public class InspectorPartE3Wrapper extends DIViewPart<InspectorPart> {
         toolBarManager.add(new ZoomInAction(this.getComponent()));
         toolBarManager.add(new ZoomOutAction(this.getComponent()));
         toolBarManager.add(new ResetZoom(this.getComponent()));
-        toolBarManager.add(new ExpandAllAction());
-        toolBarManager.add(new CollapseAllAction());
+        toolBarManager.add(new ExpandAllAction(this.getComponent()));
+        toolBarManager.add(new CollapseAllAction(this.getComponent()));
         toolBarManager.add(new Separator());
         toolBarManager.add(new RelayoutAction(this.getComponent()));
         toolBarManager.add(new ReloadModelAction(this.getComponent()));

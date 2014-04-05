@@ -87,9 +87,11 @@ public class InspectorPart {
 			log.info("log injected into inspection part");
 		}
 		this.graphViewer = new CdiiGraphViewer(parent, SWT.BORDER);
-		this.graphViewer.getGraphControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		this.graphViewer.getGraphControl().setLayoutData(
+		        new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		this.graphViewer.setContentProvider(new GraphContentProvider());
-		this.graphViewer.setLabelProvider(new GraphLabelProvider(this.colorManager));
+		this.graphViewer.setLabelProvider(
+		        new GraphLabelProvider(this.colorManager, this.graphViewer));
 		CompositeLayoutAlgorithm layoutAlgorithm = new CompositeLayoutAlgorithm(
 		        new LayoutAlgorithm[] { 
 		                new TreeLayoutAlgorithm() /*new SpringLayoutAlgorithm()*/, 
@@ -194,8 +196,6 @@ public class InspectorPart {
     }
 
     public void inspect(GraphInspection inspection) {
-        // TODO smazat
-        log.debug("inspectionPart.inspect() called");
         this.inspection = inspection;
         this.updateFilterWindow();
         this.updateGraph();
@@ -228,6 +228,14 @@ public class InspectorPart {
 
     public void relayout() {
         this.graphViewer.applyLayout();
+    }
+    
+    public void expandAllNodes() {
+        this.graphViewer.openAllContainer();
+    }
+    
+    public void collapseAllNode() {
+        this.graphViewer.closeAllContainer();
     }
 
     private void updateGraph() {

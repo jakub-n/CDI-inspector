@@ -109,6 +109,8 @@ public class Field implements Member {
             result.append("@Inject").append("\n");
         }
         result.append(this.getType().toString(true, true));
+        result.append(" ");
+        result.append(this.getName());
         return result.toString();
     }
 

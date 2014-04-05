@@ -14,16 +14,16 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 public class Model {
 
 	@JsonProperty
-	private Set<Bean> beans;
+	private Set<? extends Bean> beans;
 
 	@JsonProperty
 	private Set<Type> types;
 
-    public Set<Bean> getBeans() {
+    public Set<? extends Bean> getBeans() {
         return beans;
     }
 
-    public void setBeans(Set<Bean> beans) {
+    public void setBeans(Set<? extends Bean> beans) {
         this.beans = beans;
     }
 

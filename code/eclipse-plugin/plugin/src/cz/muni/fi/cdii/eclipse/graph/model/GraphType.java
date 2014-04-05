@@ -4,6 +4,7 @@ import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.frames.Adjacency;
 import com.tinkerpop.frames.Property;
+import com.tinkerpop.frames.annotations.gremlin.GremlinGroovy;
 import com.tinkerpop.frames.modules.javahandler.Initializer;
 import com.tinkerpop.frames.modules.javahandler.JavaHandlerClass;
 import com.tinkerpop.frames.modules.javahandler.JavaHandlerContext;
@@ -56,6 +57,9 @@ public interface GraphType extends GraphElement {
     
     @Adjacency(label="hasMember", direction=Direction.OUT)
     public void setMembers(Iterable<GraphMember> member);
+    
+    @GremlinGroovy("it.out('hasMember').out('produces').dedup()")
+    public Iterable<GraphBean> getAuxiliaryProducesTargets();
     
     public static abstract class Impl implements JavaHandlerContext<Vertex>, GraphType {
         

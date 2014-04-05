@@ -86,7 +86,7 @@ public class Method implements Member {
             result.append(" ");
         }
         result.append(this.getName());
-        printParameterToBuilder(result);
+        printParameterToBuilder(result, false);
         return result.toString();
     }
     
@@ -100,7 +100,7 @@ public class Method implements Member {
         }
         result.append(this.getType() != null ? this.getType().toString(true, true) : "void");
         result.append(" ").append(this.getName());
-        printParameterToBuilder(result);
+        printParameterToBuilder(result, true);
         return result.toString();
     }
     
@@ -113,11 +113,18 @@ public class Method implements Member {
         return false;
     }
 
-    private void printParameterToBuilder(StringBuilder builder) {
+    /**
+     * 
+     * @param builder where to print to
+     * @param verbose if true, parameters has qualified names and each one is on separate line
+     *                <br> otherwise parameters are unqualified and comma-space separated
+     */
+    private void printParameterToBuilder(StringBuilder builder, boolean verbose) {
         builder.append("(");
         for (MethodParameter param : this.parameters) {
-            builder.append(param.getType().toString(false, true));
-            builder.append(", ");
+            builder.append(param.getType().toString(verbose, true));
+            builder.append(",");
+            builder.append(verbose ? "\n" : " ");
         }
         builder.delete(builder.length()-2, builder.length());
         builder.append(")");

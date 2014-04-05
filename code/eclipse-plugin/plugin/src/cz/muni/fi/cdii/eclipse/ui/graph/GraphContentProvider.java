@@ -14,6 +14,7 @@ import com.tinkerpop.gremlin.java.GremlinPipeline;
 
 import cz.muni.fi.cdii.eclipse.graph.model.Constants;
 import cz.muni.fi.cdii.eclipse.graph.model.GraphBean;
+import cz.muni.fi.cdii.eclipse.graph.model.GraphElement;
 import cz.muni.fi.cdii.eclipse.graph.model.GraphMember;
 import cz.muni.fi.cdii.eclipse.graph.model.GraphType;
 
@@ -76,6 +77,7 @@ public class GraphContentProvider implements IGraphEntityContentProvider, INeste
         return result.toArray();
     }
     
+    // TODO smazat
     public double getWeight(Object entity1, Object entity2) {
         // TODO edit
         System.out.println("weight called");
@@ -98,13 +100,19 @@ public class GraphContentProvider implements IGraphEntityContentProvider, INeste
             GraphType type = bean.getMainType();
             List<GraphMember> injectionTargetMembers = iterableToList(bean
                     .getInjectionTargetMembers());
-            ArrayList<Object> result = new ArrayList<>();
+            List<GraphType> auxInjectionTargetTypes = iterableToList(
+                    bean.getAuxiliaryInjectionTargetTypes());
+            ArrayList<GraphElement> result = new ArrayList<>();
             result.add(type);
             result.addAll(injectionTargetMembers);
+            result.addAll(auxInjectionTargetTypes);
             return result.toArray();
         }
         if (entity instanceof GraphType) {
-            return new Object[0];
+            GraphType graphType = (GraphType) entity;
+            List<GraphBean> auxProcudesTragets = iterableToList(
+                    graphType.getAuxiliaryProducesTargets());
+            return auxProcudesTragets.toArray();
         }
         if (entity instanceof GraphMember) {
             GraphMember member = (GraphMember) entity;
