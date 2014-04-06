@@ -62,8 +62,6 @@ public class ConnectToServerDialog extends Dialog {
     @Override
     protected Control createDialogArea(Composite parent) {
         Composite container = (Composite) super.createDialogArea(parent);
-        //GridLayout gridLayout = (GridLayout) container.getLayout();
-        
         directRadioButton = new Button(container, SWT.RADIO);
         directRadioButton.setText("URL of application root context:");
         

@@ -165,5 +165,11 @@ public class Method implements Member {
             return false;
         return true;
     }
+
+    @Override
+    public DetailsElement getDetails() {
+        // TODO
+        return new DetailsElement();
+    }
     
 }

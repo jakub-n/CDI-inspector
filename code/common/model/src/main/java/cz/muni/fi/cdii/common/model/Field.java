@@ -118,5 +118,22 @@ public class Field implements Member {
     public String toString() {
         return this.getNodeText();
     }
+
+    @Override
+    public DetailsElement getDetails() {
+        DetailsElement root = new DetailsElement();
+        DetailsElement type = new DetailsElement("Type", this.getType().toString(true, true));
+        root.addSubElement(type);
+        DetailsElement name = new DetailsElement("Name", this.getType().toString(true, true));
+        root.addSubElement(name);
+        DetailsElement surroundingType = new DetailsElement("Surrounding type", 
+                this.getType().toString(true, true));
+        root.addSubElement(surroundingType);
+        DetailsElement producedBean = new DetailsElement("Produced bean", this.getProducedBean());
+        root.addSubElement(producedBean);
+        // TODO
+        
+        return root;
+    }
     
 }

@@ -184,5 +184,14 @@ public class Type implements Viewable {
         return this.toString(true, true);
     }
     
+    // TODO
+    @Override
+    public DetailsElement getDetails() {
+        DetailsElement root = new DetailsElement();
+        root.addSubElement(new DetailsElement("Package:", this.getPackage()));
+        root.addSubElement(new DetailsElement("Name:", this.getName()));
+        return root;
+    }
+    
     
 }

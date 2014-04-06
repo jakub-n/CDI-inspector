@@ -17,9 +17,11 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -30,10 +32,19 @@ import org.eclipse.zest.layouts.LayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.CompositeLayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.DirectedGraphLayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventHandler;
 
 import cz.muni.fi.cdii.common.model.Bean;
+import cz.muni.fi.cdii.common.model.DetailsElement;
+import cz.muni.fi.cdii.common.model.Member;
+import cz.muni.fi.cdii.common.model.Type;
+import cz.muni.fi.cdii.common.model.Viewable;
 import cz.muni.fi.cdii.eclipse.CdiiEventTopics;
 import cz.muni.fi.cdii.eclipse.graph.model.GraphBean;
+import cz.muni.fi.cdii.eclipse.graph.model.GraphElement;
+import cz.muni.fi.cdii.eclipse.graph.model.GraphMember;
+import cz.muni.fi.cdii.eclipse.graph.model.GraphType;
 import cz.muni.fi.cdii.eclipse.inspection.GraphInspection;
 import cz.muni.fi.cdii.eclipse.model.LocalBean;
 import cz.muni.fi.cdii.eclipse.ui.graph.CdiiGraphViewer;
@@ -42,7 +53,7 @@ import cz.muni.fi.cdii.eclipse.ui.graph.GraphContentProvider;
 import cz.muni.fi.cdii.eclipse.ui.graph.GraphLabelProvider;
 
 @SuppressWarnings("restriction")
-public class InspectorPart {
+public class InspectorPart implements ISelectionChangedListener, EventHandler {
 
     public static final String ID = "cz.muni.fi.cdii.plugin.InspectorPartDescriptor";
 
@@ -77,6 +88,8 @@ public class InspectorPart {
 	        EPartService partService
 	        ) {
 	    //setMPartPosition(mPart, preferences, modelService, partService, application);
+        this.broker.subscribe(CdiiEventTopics.SELECT_NODE, this);
+        this.broker.subscribe(CdiiEventTopics.UPDATE_DETAILS_REQUEST, this);
 	    this.parent = parent;
 		this.colorManager = new ColorManager();
 		parent.setLayout(new GridLayout(1, true));
@@ -98,17 +111,49 @@ public class InspectorPart {
 		                new DirectedGraphLayoutAlgorithm(DirectedGraphLayoutAlgorithm.VERTICAL) });
 		this.graphViewer.setLayoutAlgorithm(new TreeLayoutAlgorithm());
 		addGraphContextMenu();
-		
-		// TODO delete selection listener
-		this.graphViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-            
-            @Override
-            public void selectionChanged(SelectionChangedEvent event) {
-                System.out.println("new graph selection: " + event.getSelection() + " | " 
-                        + event.getSelection().getClass());
-            }
-        });
+		this.graphViewer.addSelectionChangedListener(this);
+		updateDetailsPart();
 	}
+	
+    /**
+     * Graph selection listener
+     */
+    @Override
+    public void selectionChanged(SelectionChangedEvent event) {
+        GraphElement selectedElement = getCurrentGraphSelection();
+        updateDetailsPart(selectedElement);
+        updateNeighborHighlights(selectedElement);
+    }
+    
+    private void updateNeighborHighlights(GraphElement selectedElement) {
+//        cleanHingligh
+        
+    }
+
+    private GraphElement getCurrentGraphSelection() {
+        ISelection selection = this.graphViewer.getSelection();
+        if (selection instanceof IStructuredSelection) {
+            IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+            if (structuredSelection.size() == 1 
+                    && structuredSelection.getFirstElement() instanceof GraphElement) {
+                GraphElement graphElement = (GraphElement) structuredSelection.getFirstElement();
+                return graphElement;
+            }
+        }
+        return null;
+    }
+
+    public void updateDetailsPart() {
+        GraphElement selectedElement = getCurrentGraphSelection();
+        if (selectedElement != null) {
+            updateDetailsPart(selectedElement);
+        }
+    }
+
+    private void updateDetailsPart(GraphElement graphElement) {
+        DetailsElement details = graphElement.getOrigin().getDetails();
+        broker.post(CdiiEventTopics.UPDATE_DETAILS, details);
+    }
 
     private void addGraphContextMenu() {
         MenuManager menuManager = new MenuManager("#PopupMenu");
@@ -188,6 +233,7 @@ public class InspectorPart {
     @PreDestroy
     public void dispose() {
         this.colorManager.dispose();
+        this.broker.unsubscribe(this);
     }
 
     @Focus
@@ -244,6 +290,59 @@ public class InspectorPart {
         this.setFocus();
         this.parent.redraw();
         this.parent.update();
+    }
+
+    /**
+     * On {@link CdiiEventTopics#SELECT_NODE}
+     * On {@link CdiiEventTopics#UPDATE_DETAILS_REQUEST}
+     */
+    @Override
+    public void handleEvent(Event event) {
+        String topic = event.getTopic();
+        if (CdiiEventTopics.SELECT_NODE.equals(topic)) {
+            final Viewable modelElement = (Viewable) event.getProperty(IEventBroker.DATA);
+            selectNode(modelElement);
+            return;
+        }
+        if (CdiiEventTopics.UPDATE_DETAILS_REQUEST.equals(topic)) {
+            this.updateDetailsPart();
+            return;
+        }
+    }
+
+    private void selectNode(Viewable modelElement) {
+        GraphElement graphElement = getGraphElementByModelElement(modelElement);
+        StructuredSelection selection = new StructuredSelection(graphElement);
+        this.graphViewer.setSelection(selection, true);
+        this.updateDetailsPart();
+    }
+    
+    private GraphElement getGraphElementByModelElement(Viewable modelElement) {
+        if (modelElement instanceof Bean) {
+            Bean bean = (Bean) modelElement;
+            GraphBean graphBean = this.inspection.getBeanMap().get(bean);
+            if (graphBean == null) {
+                throw new RuntimeException("Unknown bean to select.");
+            }
+            return graphBean;
+        }
+        if (modelElement instanceof Type) {
+            Type type = (Type) modelElement;
+            GraphType graphType = this.inspection.getTypeMap().get(type);
+            if (graphType == null) {
+                throw new RuntimeException("Unknown bean to select.");
+            }
+            return graphType;
+        }
+        if (modelElement instanceof Member) {
+            Member member = (Member) modelElement;
+            GraphMember graphMember = this.inspection.getMemberMap().get(member);
+            if (graphMember == null) {
+                throw new RuntimeException("Unknown bean to select.");
+            }
+            return graphMember;
+        }
+        throw new RuntimeException("Unknown bean to select.");
     }
 
 }

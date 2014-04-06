@@ -14,7 +14,7 @@ import cz.muni.fi.cdii.eclipse.ui.parts.DetailsPart;
 public class ShowDetailsAction extends Action {
     
     @Inject
-    private IEclipseContext context; 
+    private IEclipseContext context;
 
     public ShowDetailsAction() {
         super();
@@ -24,26 +24,11 @@ public class ShowDetailsAction extends Action {
     
     @Override
     public void run() {
-//        MPart detailsMPart = this.getDetailsMPart();
-//        System.out.println("on top " + detailsMPart.isOnTop() + ", to be rendered " + detailsMPart.isToBeRendered() + ", visible " + detailsMPart.isVisible());
 
 
         EPartService partService = context.get(EPartService.class);
         partService.showPart(DetailsPart.PART_ID, PartState.ACTIVATE);
-//        boolean isToBeRendered = detailsMPart.isToBeRendered();
-//        if (isToBeRendered) {
-//            partService.hidePart(detailsMPart);
-//        } else {
-//            partService.showPart(detailsMPart, PartState.ACTIVATE);
-//        }
+
     }
-    
-//    private MPart getDetailsMPart() {
-//        EPartService partService = context.get(EPartService.class);
-//        MPart detailsMPart = partService.findPart(DetailsPart.PART_ID);
-//        if (detailsMPart == null) {
-//            detailsMPart = partService.createPart(DetailsPart.PART_ID);
-//        }
-//        return detailsMPart;
-//    }
+
 }

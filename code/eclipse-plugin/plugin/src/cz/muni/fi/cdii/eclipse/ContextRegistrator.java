@@ -9,13 +9,15 @@ import org.eclipse.e4.core.services.events.IEventBroker;
 public class ContextRegistrator {
 	
 	/**
-	 * This method is executed at startup to create and register {@link InspectionSubscriber} instance for
+	 * This method is executed at startup to create and register {@link InspectionSubscriber} 
+	 * instance for
 	 * listening for {@link CdiInspection#INSPECT_TOPIC} e4 events. 
 	 * @param context
 	 */
 	@Execute
 	public void execute(IEclipseContext context, IEventBroker broker) {
-		final InspectionSubscriber inspectionSubscriber = ContextInjectionFactory.make(InspectionSubscriber.class, context);
+		final InspectionSubscriber inspectionSubscriber = ContextInjectionFactory
+		        .make(InspectionSubscriber.class, context);
 		context.set(InspectionSubscriber.class, inspectionSubscriber);
 		// remove after https://bugs.eclipse.org/bugs/show_bug.cgi?id=412554 resolution
 		broker.subscribe(CdiiEventTopics.INSPECT, inspectionSubscriber);

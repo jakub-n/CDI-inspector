@@ -104,10 +104,7 @@ public class GraphInspection {
     }
 
     private void cleanCreationalCaches() {
-        this.beanCache = null;
-        this.typeCache = null;
         this.injectionPointCache = null;
-        this.memberCache = null;
         this.deferredInjectedBeans = null;
         this.deferredProducedBeans = null;
     }
@@ -253,5 +250,17 @@ public class GraphInspection {
 
     public InspectionTask getTask() {
         return task;
+    }
+
+    public Map<Bean, GraphBean> getBeanMap() {
+        return beanCache;
+    }
+
+    public Map<Type, GraphType> getTypeMap() {
+        return typeCache;
+    }
+
+    public Map<Member, GraphMember> getMemberMap() {
+        return memberCache;
     }
 }

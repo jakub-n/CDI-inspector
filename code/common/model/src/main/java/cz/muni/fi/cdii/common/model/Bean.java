@@ -171,6 +171,16 @@ public class Bean implements Viewable {
     @Override
     public String getNodeTooltipText() {
         return this.getType().toString(true, true);
+    }
+
+    // TODO
+    @Override
+    public DetailsElement getDetails() {
+        DetailsElement root = new DetailsElement();
+        root.addSubElement(new DetailsElement("Type", this.getType()));
+        root.addSubElement(new DetailsElement("EL name", 
+                this.getElName() == null ? "" : this.getElName()));
+        return root;
     };
     
 }
