@@ -35,6 +35,12 @@ import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 
+import com.tinkerpop.blueprints.Vertex;
+import com.tinkerpop.gremlin.groovy.Gremlin;
+import com.tinkerpop.gremlin.java.GremlinPipeline;
+import com.tinkerpop.pipes.PipeFunction;
+import com.tinkerpop.pipes.sideeffect.SideEffectFunctionPipe;
+
 import cz.muni.fi.cdii.common.model.Bean;
 import cz.muni.fi.cdii.common.model.DetailsElement;
 import cz.muni.fi.cdii.common.model.Member;
@@ -90,12 +96,13 @@ public class InspectorPart implements ISelectionChangedListener, EventHandler {
 	    //setMPartPosition(mPart, preferences, modelService, partService, application);
         this.broker.subscribe(CdiiEventTopics.SELECT_NODE, this);
         this.broker.subscribe(CdiiEventTopics.UPDATE_DETAILS_REQUEST, this);
+        this.broker.subscribe(CdiiEventTopics.UPDATE_FILTER_LABELS_REQUEST, this);
 	    this.parent = parent;
 		this.colorManager = new ColorManager();
 		parent.setLayout(new GridLayout(1, true));
 		
 		this.inspectionPartLabel = new Label(parent, SWT.NONE);
-		this.inspectionPartLabel.setText("Inspector part");
+		this.inspectionPartLabel.setText("Inspector part"); // TODO smazat
 		if (this.log != null) {
 			log.info("log injected into inspection part");
 		}
@@ -118,17 +125,33 @@ public class InspectorPart implements ISelectionChangedListener, EventHandler {
     /**
      * Graph selection listener
      */
+    // TODO reimplement, edges only
     @Override
     public void selectionChanged(SelectionChangedEvent event) {
         GraphElement selectedElement = getCurrentGraphSelection();
         updateDetailsPart(selectedElement);
-        updateNeighborHighlights(selectedElement);
+//        updateNeighborHighlights(selectedElement);
     }
     
-    private void updateNeighborHighlights(GraphElement selectedElement) {
-//        cleanHingligh
-        
-    }
+//    private void updateNeighborHighlights(GraphElement selectedElement) {
+//        cleanNeighborHighlights();
+//        if (selectedElement != null) {
+//            highlightHeighborOf(selectedElement);
+//        }
+//        this.graphViewer.refresh();
+//    }
+
+//    private void cleanNeighborHighlights() {
+//        GremlinPipeline<Vertex, Vertex> gremlinPipeline = new GremlinPipeline<>(
+//                this.inspection.getFramedGraph().getVertices());
+//        gremlinPipeline.sideEffect(new PipeFunction<Vertex, Void>() {
+//
+//            @Override
+//            public Void compute(Vertex vertex) {
+//                vertex.setProperty(GraphElement.NEIGHBOR_HIGHLIGHT, false);
+//            }
+//        }).iterate();
+//    }
 
     private GraphElement getCurrentGraphSelection() {
         ISelection selection = this.graphViewer.getSelection();
@@ -145,13 +168,13 @@ public class InspectorPart implements ISelectionChangedListener, EventHandler {
 
     public void updateDetailsPart() {
         GraphElement selectedElement = getCurrentGraphSelection();
-        if (selectedElement != null) {
-            updateDetailsPart(selectedElement);
-        }
+        updateDetailsPart(selectedElement);
     }
 
     private void updateDetailsPart(GraphElement graphElement) {
-        DetailsElement details = graphElement.getOrigin().getDetails();
+        DetailsElement details = graphElement == null 
+                ? null 
+                : graphElement.getOrigin().getDetails();
         broker.post(CdiiEventTopics.UPDATE_DETAILS, details);
     }
 
@@ -243,11 +266,11 @@ public class InspectorPart implements ISelectionChangedListener, EventHandler {
 
     public void inspect(GraphInspection inspection) {
         this.inspection = inspection;
-        this.updateFilterWindow();
+        this.updateFilterPart();
         this.updateGraph();
     }
 
-    private void updateFilterWindow() {
+    private void updateFilterPart() {
         broker.post(CdiiEventTopics.UPDATE_FILTER_LABELS, this.inspection);
     }
 
@@ -306,6 +329,10 @@ public class InspectorPart implements ISelectionChangedListener, EventHandler {
         }
         if (CdiiEventTopics.UPDATE_DETAILS_REQUEST.equals(topic)) {
             this.updateDetailsPart();
+            return;
+        }
+        if (CdiiEventTopics.UPDATE_FILTER_LABELS_REQUEST.equals(topic)) {
+            this.updateFilterPart();
             return;
         }
     }

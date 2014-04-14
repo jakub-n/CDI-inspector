@@ -263,4 +263,21 @@ public class GraphInspection {
     public Map<Member, GraphMember> getMemberMap() {
         return memberCache;
     }
+
+    public Set<String> getPackageNames() {
+        return packageNames;
+    }
+
+    public Set<Type> getTypes() {
+        return types;
+    }
+
+    public Set<String> getElNames() {
+        return elNames;
+    }
+
+    public Set<Qualifier> getQualifiers() {
+        return qualifiers;
+    }
+
 }

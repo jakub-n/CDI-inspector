@@ -60,6 +60,9 @@ public class DetailsPart implements EventHandler {
         this.treeViewer.getTree().setFocus();
     }
 
+    /**
+     * {@link CdiiEventTopics#UPDATE_DETAILS}
+     */
     @Override
     public void handleEvent(Event event) {
         this.valueLabelProvider.disposeWidgets();

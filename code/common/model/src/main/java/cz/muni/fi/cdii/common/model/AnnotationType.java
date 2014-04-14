@@ -22,8 +22,12 @@ public class AnnotationType {
         this.name = name;
     }
     
+    public String toString(boolean qualified) {
+        return (qualified ? this.getPackage() + "." : "") + this.getName();
+    }
+    
     @Override
     public String toString() {
-        return this.getPackage() + "." + this.getName();
+        return this.toString(true);
     }
 }

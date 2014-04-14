@@ -14,5 +14,7 @@ public interface CdiiEventTopics {
     public static final String SELECT_NODE = "cz/muni/fi/cdii/eclipse/events/selectNode";
     public static final String UPDATE_DETAILS_REQUEST = 
             "cz/muni/fi/cdii/eclipse/events/updateDetailsRequest";
+    public static final String UPDATE_FILTER_LABELS_REQUEST = 
+            "cz/muni/fi/cdii/eclipse/events/updateFilterLabelsRequest";
     
 }

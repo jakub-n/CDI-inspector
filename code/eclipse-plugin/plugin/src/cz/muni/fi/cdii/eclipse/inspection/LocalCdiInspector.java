@@ -12,6 +12,7 @@ import java.util.Set;
 import org.eclipse.jdt.core.IAnnotation;
 import org.eclipse.jdt.core.IMemberValuePair;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.ITypeHierarchy;
 import org.eclipse.jdt.core.JavaModelException;
 import org.jboss.tools.cdi.core.IBean;
 import org.jboss.tools.cdi.core.IBeanMember;
@@ -147,7 +148,7 @@ public class LocalCdiInspector {
         
         Collection<IParametedType> jbossTypes = jbossBean.getLegalTypes();
         Set<Type> cdiiTypes = addTypes(jbossTypes);
-        Type declaredType = selectMostSpecificType(mainEclipseType, cdiiTypes);
+        Type declaredType = getDeclaredType(mainEclipseType, cdiiTypes, new HashSet<>(jbossTypes));
         Scope scope = getScope(jbossBean.getScope());
         LocalBean bean = new LocalBean();
         bean.setType(declaredType);
@@ -158,6 +159,64 @@ public class LocalCdiInspector {
         // TODO add other bean properties
         this.foundBeans.put(jbossBean, bean);
         return bean;
+    }
+    
+    private Type getDeclaredType(IType eclipseTypeHint, Set<Type> cdiiTypes, 
+            Set<IParametedType> jbossTypes) {
+        if (eclipseTypeHint == null) {
+            return selectMostSpecificType(jbossTypes);
+        } else {
+            return selectMostSpecificType(eclipseTypeHint, cdiiTypes);
+        }
+    }
+    
+    private Type selectMostSpecificType(Set<IParametedType> jbossTypes) {
+        try {
+            return selectMostSpecificTypeUnchecked(jbossTypes);
+        } catch (JavaModelException ex) {
+            throw new RuntimeException("Most specific type can't be find.", ex);
+        }
+    }
+    
+    private Type selectMostSpecificTypeUnchecked(Set<IParametedType> jbossTypes) 
+            throws JavaModelException {
+        Map<IType, IParametedType> eclipseJbossTypesMap = eclipseTypesMap(jbossTypes);
+        List<IType> typeList = new ArrayList<>(eclipseJbossTypesMap.keySet());
+        for (IType type = typeList.get(0); 
+                type != null; 
+                type = getNextItemOrNull(typeList, type)) {
+            ITypeHierarchy typeHierarchy = type.newSupertypeHierarchy(null);
+            IType[] superTypes = typeHierarchy.getAllSupertypes(type);
+            for (IType superType : superTypes) {
+                if (typeList.contains(superType) && !superType.equals(type)) {
+                    typeList.remove(superType);
+                }
+            }
+        }
+        if (typeList.size() != 1) {
+            throw new RuntimeException("Most specific type can't be find.");
+        }
+        IType eclipseMostSpecificType = typeList.get(0);
+        IParametedType jbossMostSpecificType = eclipseJbossTypesMap.get(eclipseMostSpecificType);
+        Type cdiiMostSpecificType = addType(jbossMostSpecificType);
+        return cdiiMostSpecificType;
+    }
+
+    private static <T> T getNextItemOrNull(List<T> list, T currentItem) {
+        int currentIndex = list.indexOf(currentItem);
+        if (currentIndex >= 0 && currentIndex < (list.size() - 1)) {
+            return list.get(currentIndex + 1);
+        }
+        return null;
+    }
+
+    private static Map<IType, IParametedType> eclipseTypesMap(Set<IParametedType> jbossTypes) {
+        Map<IType, IParametedType> result = new HashMap<>();
+        for (IParametedType jbossType : jbossTypes) {
+            IType eclipseType = jbossType.getType();
+            result.put(eclipseType, jbossType);
+        }
+        return result;
     }
 
     private static Scope getScope(IScope jbossScope) {
@@ -178,7 +237,7 @@ public class LocalCdiInspector {
             cdiiInjectionPoint.setType(cdiiInjectedType);
             cdiiInjectionPoint.setElName(jbossInjectionPoint.getBeanName());
             Collection<IBean> jbossBeansEligibleForInjection = this.project.getBeans(true, jbossInjectionPoint);
-            Set<Bean> beans = addBeans(jbossBeansEligibleForInjection, jbossInjectedType.getType());
+            Set<Bean> beans = addBeans(jbossBeansEligibleForInjection, null);
             cdiiInjectionPoint.setResolvedBeans(beans);
             // TODO add qualifiers
             

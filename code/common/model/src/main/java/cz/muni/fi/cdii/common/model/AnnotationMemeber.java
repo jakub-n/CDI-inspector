@@ -2,8 +2,6 @@ package cz.muni.fi.cdii.common.model;
 
 public class AnnotationMemeber {
     
-    private static final String STRING_TYPE_NAME = "String";
-    
     private String name;
     private String type;
     private String value;
@@ -34,9 +32,6 @@ public class AnnotationMemeber {
     
     @Override
     public String toString() {
-        return this.getName() + "="
-                + (STRING_TYPE_NAME.equals(this.type) ? "\"" : "")
-                + this.getValue()
-                + (STRING_TYPE_NAME.equals(this.type) ? "\"" : "");
+        return this.getName() + "=" + this.getValue();
     }
 }

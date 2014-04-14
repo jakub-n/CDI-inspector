@@ -7,24 +7,9 @@ import cz.muni.fi.cdii.common.model.DetailsElement;
 
 public class DetailsContentProvider implements ITreeContentProvider {
     
-    private DetailsElement input;
-
     @Override
     public void dispose() {
         // do nothing
-    }
-
-    @Override
-    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-        if (newInput instanceof DetailsElement) {
-            this.input = (DetailsElement) newInput;
-            return;
-        }
-        if (newInput == null) {
-            this.input = null;
-            return;
-        }
-        throw new RuntimeException("Unexpected input type.");
     }
 
     @Override
@@ -32,7 +17,7 @@ public class DetailsContentProvider implements ITreeContentProvider {
         if (inputElement instanceof DetailsElement) {
             return this.getChildren(inputElement);
         }
-        throw new RuntimeException("Unexpected element type.");
+        return new Object[0];
     }
 
     @Override
@@ -60,6 +45,10 @@ public class DetailsContentProvider implements ITreeContentProvider {
             return !detailsElement.getChildren().isEmpty();
         }
         throw new RuntimeException("Unexpected element type.");
+    }
+
+    @Override
+    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
     }
 
 }

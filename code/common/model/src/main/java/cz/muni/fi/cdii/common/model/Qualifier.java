@@ -39,10 +39,9 @@ public class Qualifier {
         this.members.addAll(members);
     }
     
-    @Override
-    public String toString() {
+    public String toString(boolean qualified) {
         StringBuilder result = new StringBuilder();
-        result.append("@" + this.getType().toString());
+        result.append(this.getType().toString(qualified));
         if (! this.members.isEmpty()) {
             result.append("(");
             for (AnnotationMemeber member : this.getMembers()) {
@@ -53,6 +52,11 @@ public class Qualifier {
             result.append(")");
         }
         return result.toString();
+    }
+    
+    @Override
+    public String toString() {
+        return toString(true);
     }
 
     @Override
