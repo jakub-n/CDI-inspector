@@ -63,8 +63,6 @@ public class InspectorPart implements ISelectionChangedListener, EventHandler {
 
     public static final String ID = "cz.muni.fi.cdii.plugin.InspectorPartDescriptor";
 
-    // private static final String OPEN_FIRST_TIME = "open-first-time";
-
     @Inject
     private Logger log;
 
@@ -223,35 +221,6 @@ public class InspectorPart implements ISelectionChangedListener, EventHandler {
 		Menu contextMenu = menuManager.createContextMenu(this.graphViewer.getControl());
 		this.graphViewer.getControl().setMenu(contextMenu);
     }
-
-    // private void setMPartPosition(MPart mPart, IEclipsePreferences preferences,
-    // EModelService modelService, EPartService partService, MApplication application) {
-    // boolean isOpenedForTheFirstTime = preferences.getBoolean(OPEN_FIRST_TIME, true);
-    // if (isOpenedForTheFirstTime) {
-    // setFirstOpenFlag(preferences);
-    // showPartInPrimaryStack(mPart, modelService, partService, application);
-    // }
-    //
-    // }
-
-    // private static void showPartInPrimaryStack(MPart mPart, EModelService modelService,
-    // EPartService partService, MApplication application) {
-    // final String primaryPartStackId = "org.eclipse.e4.primaryDataStack";
-    // MPartStack partStack = (MPartStack) modelService.find(primaryPartStackId, application);
-    // if (partStack != null) {
-    // partStack.getChildren().add(mPart);
-    // partService.showPart(mPart, PartState.ACTIVATE);
-    // }
-    // }
-
-    // private void setFirstOpenFlag(IEclipsePreferences preferences) {
-    // preferences.putBoolean(OPEN_FIRST_TIME, false);
-    // try {
-    // preferences.flush();
-    // } catch (BackingStoreException e) {
-    // this.log.warn(e, "preferences flush failed");
-    // }
-    // }
 
     @PreDestroy
     public void dispose() {
