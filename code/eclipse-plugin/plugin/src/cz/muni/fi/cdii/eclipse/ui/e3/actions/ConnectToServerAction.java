@@ -4,8 +4,8 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.widgets.Shell;
 
-import cz.muni.fi.cdii.ecilpse.ui.connectdialog.ConnectToServerDialog;
 import cz.muni.fi.cdii.eclipse.Activator;
+import cz.muni.fi.cdii.eclipse.ui.connectdialog.ConnectToServerDialog;
 
 
 public class ConnectToServerAction extends Action {

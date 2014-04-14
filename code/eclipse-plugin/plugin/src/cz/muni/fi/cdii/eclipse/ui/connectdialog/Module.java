@@ -1,4 +1,4 @@
-package cz.muni.fi.cdii.ecilpse.ui.connectdialog;
+package cz.muni.fi.cdii.eclipse.ui.connectdialog;
 
 import java.net.URL;
 

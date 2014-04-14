@@ -1,4 +1,4 @@
-package cz.muni.fi.cdii.ecilpse.ui.e3;
+package cz.muni.fi.cdii.eclipse.ui.e3;
 
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.tools.compat.parts.DIViewPart;

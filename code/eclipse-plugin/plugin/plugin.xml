@@ -40,7 +40,7 @@
       <view
             allowMultiple="false"
             category="cz.muni.fi.cdii.plugin.category.cdi"
-            class="cz.muni.fi.cdii.ecilpse.ui.e3.InspectorPartE3Wrapper"
+            class="cz.muni.fi.cdii.eclipse.ui.e3.InspectorPartE3Wrapper"
             icon="icons/cdii_icon.png"
             id="cz.muni.fi.cdii.eclipse.e3viewparts.cdii"
             name="CDI Inspector"

@@ -12,8 +12,8 @@ import org.eclipse.ui.PlatformUI;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 
-import cz.muni.fi.cdii.ecilpse.ui.e3.InspectorPartE3Wrapper;
 import cz.muni.fi.cdii.eclipse.inspection.GraphInspection;
+import cz.muni.fi.cdii.eclipse.ui.e3.InspectorPartE3Wrapper;
 
 /**
  * Entry point for showing the the inspection graph
