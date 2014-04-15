@@ -26,7 +26,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 import org.osgi.service.event.Event;
@@ -60,7 +59,6 @@ public class InspectorPart implements ISelectionChangedListener, EventHandler {
     @Inject
     private IEventBroker broker;
 
-    private Label inspectionPartLabel;
     private CdiiGraphViewer graphViewer;
     private ColorManager colorManager;
     private Composite parent;
@@ -82,7 +80,6 @@ public class InspectorPart implements ISelectionChangedListener, EventHandler {
 	        EModelService modelService,
 	        EPartService partService
 	        ) {
-	    //setMPartPosition(mPart, preferences, modelService, partService, application);
         this.broker.subscribe(CdiiEventTopics.SELECT_NODE, this);
         this.broker.subscribe(CdiiEventTopics.UPDATE_DETAILS_REQUEST, this);
         this.broker.subscribe(CdiiEventTopics.UPDATE_FILTER_LABELS_REQUEST, this);
@@ -90,8 +87,6 @@ public class InspectorPart implements ISelectionChangedListener, EventHandler {
 		this.colorManager = new ColorManager();
 		parent.setLayout(new GridLayout(1, true));
 		
-		this.inspectionPartLabel = new Label(parent, SWT.NONE);
-		this.inspectionPartLabel.setText("Inspector part"); // TODO smazat
 		if (this.log != null) {
 			log.info("log injected into inspection part");
 		}
