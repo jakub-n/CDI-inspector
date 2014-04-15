@@ -57,7 +57,7 @@ public class FilterPart implements EventHandler {
     
     @PostConstruct
     public void createControls(Composite parent) {
-        this.broker.subscribe(CdiiEventTopics.UPDATE_FILTER_LABELS, this); // dispose unsubscribe
+        this.broker.subscribe(CdiiEventTopics.UPDATE_FILTER_LABELS, this);
         parent.setLayout(new GridLayout(2, false));
         
         Label classNameLabel = new Label(parent, SWT.NONE);
@@ -149,7 +149,6 @@ public class FilterPart implements EventHandler {
         Set<String> qualifiersCriterion = getCriterion(FilterPartModelFactory.CATEGORY_QUALIFIERS);
         filterCriteria.setQualifiers(qualifiersCriterion);
         this.broker.post(CdiiEventTopics.FILTER_GRAPH, filterCriteria);
-        // TODO dodelat prijem v ... nekde - graph content provider asi
     }
     
     private Set<String> getCriterion(String categoryName) {
@@ -191,6 +190,7 @@ public class FilterPart implements EventHandler {
             CategoryFilterModel[] providerInput = FilterPartModelFactory.create(inspection);
             this.treeViewer.setInput(providerInput);
             this.treeViewer.expandAll();
+            this.text.setText("");
             return;
         }
     }

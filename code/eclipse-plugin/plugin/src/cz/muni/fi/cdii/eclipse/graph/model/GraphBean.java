@@ -1,6 +1,8 @@
 package cz.muni.fi.cdii.eclipse.graph.model;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Vertex;
@@ -8,12 +10,16 @@ import com.tinkerpop.frames.Adjacency;
 import com.tinkerpop.frames.Property;
 import com.tinkerpop.frames.VertexFrame;
 import com.tinkerpop.frames.annotations.gremlin.GremlinGroovy;
+import com.tinkerpop.frames.annotations.gremlin.GremlinParam;
 import com.tinkerpop.frames.modules.javahandler.Initializer;
 import com.tinkerpop.frames.modules.javahandler.JavaHandler;
 import com.tinkerpop.frames.modules.javahandler.JavaHandlerClass;
 import com.tinkerpop.frames.modules.javahandler.JavaHandlerContext;
 
 import cz.muni.fi.cdii.common.model.Bean;
+import cz.muni.fi.cdii.common.model.Qualifier;
+import cz.muni.fi.cdii.common.model.Type;
+import cz.muni.fi.cdii.eclipse.ui.parts.filter.FilterModel;
 
 @JavaHandlerClass(GraphBean.Impl.class)
 public interface GraphBean extends VertexFrame, GraphElement {
@@ -71,6 +77,17 @@ public interface GraphBean extends VertexFrame, GraphElement {
     @GremlinGroovy("it.out('injectedInto').in('hasInjectionPoint').in('hasMember').dedup()")
     public Iterable<GraphType> getAuxiliaryInjectionTargetTypes();
     
+    /**
+     * Result has zero or one items.
+     * @return types that has members that produces this bean
+     */
+    @GremlinGroovy("it.in('produces').in('hasMember').dedup()")
+    public Iterable<GraphType> getProducingType();
+    
+
+    @JavaHandler
+    public boolean satisfies(FilterModel criteria);
+    
     @JavaHandler
     public String getTooltipText();
     
@@ -84,6 +101,48 @@ public interface GraphBean extends VertexFrame, GraphElement {
         // TODO upravit
         public String getTooltipText() {
             return this.getOrigin().getType().toString(true, true);
+        }
+        
+        public boolean satisfies(FilterModel criteria) {
+            boolean typeNameSatisfied = criteria.getClassName() == "" ? true : 
+                getMainType().getOrigin().toString(true, false).contains(criteria.getClassName());
+            boolean elNameSatisfied = criteria.getElNames().isEmpty() ? true : 
+                criteria.getElNames().contains(this.getElName());
+            boolean packageSatisfied = criteria.getPackages().isEmpty() ? true : 
+                criteria.getPackages().contains(this.getMainType().getPackage());
+            boolean typesSatisfied = criteria.getTypes().isEmpty() ? true : 
+                hasIntersection(typesToFullParameterizedNames(this.getOrigin().getTypeSet()), 
+                        criteria.getTypes());
+            boolean qualifiersSatisfied = criteria.getQualifiers().isEmpty() ? true : 
+                hasIntersection(qualifiersToQualifiedNames(this.getOrigin().getQualifiers()), 
+                        criteria.getQualifiers());
+            boolean result = typeNameSatisfied && elNameSatisfied && packageSatisfied 
+                    && typesSatisfied && qualifiersSatisfied;
+            return result;
+        }
+        
+        private static Set<String> qualifiersToQualifiedNames(Set<Qualifier> qualifiers) {
+            HashSet<String> result = new HashSet<>();
+            for (Qualifier qualifier : qualifiers) {
+                String name = qualifier.toString(true);
+                result.add(name);
+            }
+            return result;
+        }
+
+        private static <T> boolean hasIntersection(Set<T> editableSet, Set<T> anotherSet) {
+            editableSet.retainAll(anotherSet);
+            boolean isIntersectionNonEmpty = !editableSet.isEmpty();
+            return isIntersectionNonEmpty;
+        }
+        
+        private static Set<String> typesToFullParameterizedNames(Set<Type> types) {
+            HashSet<String> result = new HashSet<>();
+            for (Type type : types) {
+                String name = type.toString(true, true);
+                result.add(name);
+            }
+            return result;
         }
     }
 }

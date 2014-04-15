@@ -58,13 +58,13 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
         case AUX_INJECT:
             setConnectionColor(connection, GraphColorEnum.INJECT_CONNECTION);
             connection.setConnectionStyle(ZestStyles.CONNECTIONS_DIRECTED);
-            connection.setTooltip(new Label("@inject"));
+            connection.setTooltip(new Label("@Inject"));
             break;
         case PRODUCES:
         case AUX_PRODUCES:
             setConnectionColor(connection, GraphColorEnum.PRODUCES_CONNECTION);
             connection.setConnectionStyle(ZestStyles.CONNECTIONS_DIRECTED);
-            connection.setTooltip(new Label("@produces"));
+            connection.setTooltip(new Label("@Produces"));
             break;
         }
         

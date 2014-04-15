@@ -2,9 +2,13 @@ package cz.muni.fi.cdii.eclipse.ui.parts.filter;
 
 import java.util.Set;
 
+import cz.muni.fi.cdii.common.model.Qualifier;
+import cz.muni.fi.cdii.common.model.Type;
+
 /**
  * Class defining set of criteria for graph filtering
  *
+ * @see FilterPartModelFactory
  */
 public class FilterModel {
 
@@ -12,6 +16,12 @@ public class FilterModel {
     private Set<String> packages;
     private Set<String> elNames;
     private Set<String> types;
+    
+    /**
+     * string returned by {@link Type#toString(boolean, boolean)} with parameters {@code true, true}
+     * <br>
+     * e.g. "java.util.Set&lt;java.lang.Integer&gt;"
+     */
     public Set<String> getTypes() {
         return types;
     }
@@ -22,6 +32,9 @@ public class FilterModel {
 
     private Set<String> qualifiers;
     
+    /**
+     * Arbitrary user string
+     */
     public String getClassName() {
         return className;
     }
@@ -30,6 +43,9 @@ public class FilterModel {
         this.className = className;
     }
     
+    /**
+     * e.g. "java.lang"
+     */
     public Set<String> getPackages() {
         return packages;
     }
@@ -38,6 +54,9 @@ public class FilterModel {
         this.packages = packages;
     }
     
+    /**
+     * expression language names
+     */
     public Set<String> getElNames() {
         return elNames;
     }
@@ -46,6 +65,9 @@ public class FilterModel {
         this.elNames = elNames;
     }
     
+    /**
+     * String returned by {@link Qualifier#toString(boolean)} with parameter {@code true}
+     */
     public Set<String> getQualifiers() {
         return qualifiers;
     }

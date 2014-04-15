@@ -28,18 +28,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.zest.layouts.LayoutAlgorithm;
-import org.eclipse.zest.layouts.algorithms.CompositeLayoutAlgorithm;
-import org.eclipse.zest.layouts.algorithms.DirectedGraphLayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
-
-import com.tinkerpop.blueprints.Vertex;
-import com.tinkerpop.gremlin.groovy.Gremlin;
-import com.tinkerpop.gremlin.java.GremlinPipeline;
-import com.tinkerpop.pipes.PipeFunction;
-import com.tinkerpop.pipes.sideeffect.SideEffectFunctionPipe;
 
 import cz.muni.fi.cdii.common.model.Bean;
 import cz.muni.fi.cdii.common.model.DetailsElement;
@@ -107,13 +98,14 @@ public class InspectorPart implements ISelectionChangedListener, EventHandler {
 		this.graphViewer = new CdiiGraphViewer(parent, SWT.BORDER);
 		this.graphViewer.getGraphControl().setLayoutData(
 		        new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		this.graphViewer.setContentProvider(new GraphContentProvider());
+		this.graphViewer.setContentProvider(
+		        new GraphContentProvider(this.broker, this.graphViewer));
 		this.graphViewer.setLabelProvider(
 		        new GraphLabelProvider(this.colorManager, this.graphViewer));
-		CompositeLayoutAlgorithm layoutAlgorithm = new CompositeLayoutAlgorithm(
-		        new LayoutAlgorithm[] { 
-		                new TreeLayoutAlgorithm() /*new SpringLayoutAlgorithm()*/, 
-		                new DirectedGraphLayoutAlgorithm(DirectedGraphLayoutAlgorithm.VERTICAL) });
+//		CompositeLayoutAlgorithm layoutAlgorithm = new CompositeLayoutAlgorithm(
+//		        new LayoutAlgorithm[] { 
+//		                new TreeLayoutAlgorithm() /*new SpringLayoutAlgorithm()*/, 
+//		                new DirectedGraphLayoutAlgorithm(DirectedGraphLayoutAlgorithm.VERTICAL) });
 		this.graphViewer.setLayoutAlgorithm(new TreeLayoutAlgorithm());
 		addGraphContextMenu();
 		this.graphViewer.addSelectionChangedListener(this);

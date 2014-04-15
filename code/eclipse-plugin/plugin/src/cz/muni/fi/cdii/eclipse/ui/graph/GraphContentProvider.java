@@ -1,33 +1,51 @@
 package cz.muni.fi.cdii.eclipse.ui.graph;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
 import org.eclipse.zest.core.viewers.INestedContentProvider;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventHandler;
 
 import com.tinkerpop.blueprints.Graph;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.frames.FramedGraph;
 import com.tinkerpop.gremlin.java.GremlinPipeline;
 
+import cz.muni.fi.cdii.eclipse.CdiiEventTopics;
 import cz.muni.fi.cdii.eclipse.graph.model.Constants;
 import cz.muni.fi.cdii.eclipse.graph.model.GraphBean;
 import cz.muni.fi.cdii.eclipse.graph.model.GraphElement;
 import cz.muni.fi.cdii.eclipse.graph.model.GraphMember;
 import cz.muni.fi.cdii.eclipse.graph.model.GraphType;
+import cz.muni.fi.cdii.eclipse.ui.parts.filter.FilterModel;
 
-public class GraphContentProvider implements IGraphEntityContentProvider, INestedContentProvider {
+public class GraphContentProvider implements IGraphEntityContentProvider, INestedContentProvider, 
+        EventHandler {
 
+    private IEventBroker broker;
+    private CdiiGraphViewer graphViewer;
     private FramedGraph<Graph> input;
+    private FilterModel filterCriteria;
+    private Set<GraphElement> filterSet;
 
-    public GraphContentProvider() {
+    public GraphContentProvider(IEventBroker broker, CdiiGraphViewer graphViewer) {
+        this.broker = broker;
+        this.graphViewer = graphViewer;
+        this.filterCriteria = null;
+        this.broker.subscribe(CdiiEventTopics.FILTER_GRAPH, this);
     }
 
     @Override
     public void dispose() {
-        // nothing
+        this.broker.unsubscribe(this);
     }
 
     @Override
@@ -36,6 +54,7 @@ public class GraphContentProvider implements IGraphEntityContentProvider, INeste
             @SuppressWarnings("unchecked")
             FramedGraph<Graph> graph = (FramedGraph<Graph>) newInput;
             this.input = graph;
+            this.updateFilterSet();
             return;
         }
         if (newInput == null) {
@@ -44,6 +63,40 @@ public class GraphContentProvider implements IGraphEntityContentProvider, INeste
         }
         throw new RuntimeException("Unexpected input class: "
                 + (newInput == null ? "null" : newInput.getClass()));
+    }
+
+    private void updateFilterSet() {
+        List<GraphBean> allBeans = iterableToList(this.input.getVertices(
+                Constants.VERTEX_TYPE_PROPERTY, GraphBean.VERTEX_TYPE_NAME, GraphBean.class));
+        Set<GraphBean> filteredBeans = filterBeans(allBeans);
+        Set<GraphElement> filterSet = new HashSet<>();
+        filterSet.addAll(filteredBeans);
+        for (GraphBean filteredBean : filteredBeans) {
+            Collection<? extends GraphElement> adjacentTypes = getAdjacentTypes(filteredBean);
+            filterSet.addAll(adjacentTypes);
+        }
+        this.filterSet = Collections.unmodifiableSet(filterSet);
+    }
+
+    private Set<GraphBean> filterBeans(List<GraphBean> allBeans) {
+        Set<GraphBean> result = new HashSet<>();
+        for (GraphBean bean : allBeans) {
+            if (this.filterCriteria == null || bean.satisfies(this.filterCriteria)) {
+                result.add(bean);
+            }
+        }
+        return result;
+    }
+
+    private Collection<? extends GraphElement> getAdjacentTypes(GraphBean bean) {
+        Set<GraphElement> result = new HashSet<>();
+        GraphType mainType = bean.getMainType();
+        List<GraphType> injectionTargets = iterableToList(bean.getAuxiliaryInjectionTargetTypes());
+        List<GraphType> producer = iterableToList(bean.getProducingType());
+        result.add(mainType);
+        result.addAll(injectionTargets);
+        result.addAll(producer);
+        return result;
     }
 
     @Override
@@ -71,17 +124,11 @@ public class GraphContentProvider implements IGraphEntityContentProvider, INeste
         List<GraphBean> beans = iterableToList(this.input.getVertices(
                 Constants.VERTEX_TYPE_PROPERTY, GraphBean.VERTEX_TYPE_NAME, GraphBean.class));
         List<GraphType> types = getMainTypeNodes(); 
-        ArrayList<Object> result = new ArrayList<>();
-        result.addAll(beans);
-        result.addAll(types);
-        return result.toArray();
-    }
-    
-    // TODO smazat
-    public double getWeight(Object entity1, Object entity2) {
-        // TODO edit
-        System.out.println("weight called");
-        return 0;
+        ArrayList<GraphElement> allElements = new ArrayList<>();
+        allElements.addAll(beans);
+        allElements.addAll(types);
+        Object[] filteredElements = filter(allElements);
+        return filteredElements;
     }
 
     private List<GraphType> getMainTypeNodes() {
@@ -102,23 +149,25 @@ public class GraphContentProvider implements IGraphEntityContentProvider, INeste
                     .getInjectionTargetMembers());
             List<GraphType> auxInjectionTargetTypes = iterableToList(
                     bean.getAuxiliaryInjectionTargetTypes());
-            ArrayList<GraphElement> result = new ArrayList<>();
-            result.add(type);
-            result.addAll(injectionTargetMembers);
-            result.addAll(auxInjectionTargetTypes);
-            return result.toArray();
+            ArrayList<GraphElement> elements = new ArrayList<>();
+            elements.add(type);
+            elements.addAll(injectionTargetMembers);
+            elements.addAll(auxInjectionTargetTypes);
+            Object[] filteredElements = filter(elements);
+            return filteredElements;
         }
         if (entity instanceof GraphType) {
             GraphType graphType = (GraphType) entity;
             List<GraphBean> auxProcudesTragets = iterableToList(
                     graphType.getAuxiliaryProducesTargets());
-            return auxProcudesTragets.toArray();
+            Object[] filteredElements = filter(auxProcudesTragets);
+            return filteredElements;
         }
         if (entity instanceof GraphMember) {
             GraphMember member = (GraphMember) entity;
             GraphBean producedBean = member.getProducedBean();
             if (producedBean != null) {
-                return new Object[] { producedBean };
+                return filter(Collections.singletonList(producedBean));
             } else {
                 return new Object[0];
             }
@@ -133,6 +182,28 @@ public class GraphContentProvider implements IGraphEntityContentProvider, INeste
             result.add(item);
         }
         return result;
+    }
+    
+    private Object[] filter(Collection<? extends GraphElement> elements) {
+        Set<GraphElement> elementsSet = new HashSet<>(elements);
+        elementsSet.retainAll(this.filterSet);
+        Object[] result = elementsSet.toArray();
+        return result;
+    }
+
+    /**
+     * {@link CdiiEventTopics#FILTER_GRAPH}
+     */
+    @Override
+    public void handleEvent(Event event) {
+        String topic = event.getTopic();
+        if (CdiiEventTopics.FILTER_GRAPH.equals(topic)) {
+            this.filterCriteria = (FilterModel) event.getProperty(IEventBroker.DATA);
+            this.updateFilterSet();
+            this.graphViewer.refresh(false);
+            this.graphViewer.applyLayout();
+            return;
+        }
     }
 
 }

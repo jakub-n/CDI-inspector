@@ -3,8 +3,10 @@ package cz.muni.fi.cdii.eclipse.graph.model;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.frames.Adjacency;
 import com.tinkerpop.frames.Property;
+import com.tinkerpop.frames.annotations.gremlin.GremlinGroovy;
 
 import cz.muni.fi.cdii.common.model.Member;
+import cz.muni.fi.cdii.eclipse.ui.parts.filter.FilterModel;
 
 public interface GraphMember extends GraphElement {
     
@@ -25,4 +27,7 @@ public interface GraphMember extends GraphElement {
     
     @Adjacency(label="hasInjectionPoint", direction=Direction.OUT)
     public void setInjectionPoints(Iterable<GraphInjectionPoint> injectionPoints);
+    
+    @GremlinGroovy(value="true", frame=false)
+    public boolean satisfies(FilterModel criteria);
 }
