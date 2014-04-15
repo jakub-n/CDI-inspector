@@ -6,15 +6,23 @@ import java.util.List;
 import org.eclipse.zest.core.widgets.Graph;
 import org.eclipse.zest.core.widgets.GraphConnection;
 import org.eclipse.zest.core.widgets.GraphContainer;
+import org.eclipse.zest.layouts.LayoutAlgorithm;
+import org.eclipse.zest.layouts.algorithms.DirectedGraphLayoutAlgorithm;
+import org.eclipse.zest.layouts.algorithms.HorizontalShiftAlgorithm;
+import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
 public class CdiiGraphContainer extends GraphContainer {
 
     public CdiiGraphContainer(Graph graph, int style) {
         super(graph, style);
+        DirectedGraphLayoutAlgorithm directedGraphLayoutAlgorithm = 
+                new DirectedGraphLayoutAlgorithm();
+        directedGraphLayoutAlgorithm.setOrientation(DirectedGraphLayoutAlgorithm.HORIZONTAL);
+        this.setLayoutAlgorithm(directedGraphLayoutAlgorithm, false);
     }
     
-    /* tooltip can't be placed on title bar of the ontainer only 
-     * (org.eclipse.zest.core.widgets.GraphContainer.expandGraphLabel) due tu encaplulation.
+    /* tooltip can't be placed on title bar of the container only 
+     * (org.eclipse.zest.core.widgets.GraphContainer.expandGraphLabel) due to encaplulation.
      * Tooltip on whole area of opened container is confusing
      */
 //    @Override
