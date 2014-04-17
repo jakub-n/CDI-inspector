@@ -190,7 +190,9 @@ public class FilterPart implements EventHandler {
             CategoryFilterModel[] providerInput = FilterPartModelFactory.create(inspection);
             this.treeViewer.setInput(providerInput);
             this.treeViewer.expandAll();
-            this.text.setText("");
+            if (!"".equals(this.text.getText())) {
+                this.text.setText("");
+            }
             return;
         }
     }

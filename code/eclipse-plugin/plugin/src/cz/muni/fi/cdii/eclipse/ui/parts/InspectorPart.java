@@ -267,7 +267,7 @@ public class InspectorPart implements ISelectionChangedListener, EventHandler {
         this.graphViewer.setInput(this.inspection.getFramedGraph());
         this.graphViewer.applyLayout();
         this.setFocus();
-        this.parent.redraw();
+        this.parent.redraw(); //TODO remove
         this.parent.update();
     }
 
@@ -297,6 +297,7 @@ public class InspectorPart implements ISelectionChangedListener, EventHandler {
         GraphElement graphElement = getGraphElementByModelElement(modelElement);
         StructuredSelection selection = new StructuredSelection(graphElement);
         this.graphViewer.setSelection(selection, true);
+        this.graphViewer.reveal(graphElement);
         this.updateDetailsPart();
     }
     

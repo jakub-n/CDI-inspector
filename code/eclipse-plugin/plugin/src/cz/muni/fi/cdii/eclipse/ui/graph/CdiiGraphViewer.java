@@ -32,13 +32,17 @@ public class CdiiGraphViewer extends GraphViewer {
     
     public void openAllContainer() {
         for (GraphContainer container : this.containers) {
-            container.open(true);
+            if (!container.isDisposed()) {
+                container.open(true);
+            }
         }
     }
     
     public void closeAllContainer() {
         for (GraphContainer container : this.containers) {
-            container.close(true);
+            if (!container.isDisposed()) {
+                container.close(true);
+            }
         }
     }
     

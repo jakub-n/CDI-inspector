@@ -34,7 +34,6 @@ public class InspectionSubscriber implements EventHandler {
 	@Inject
 	@Optional
 	public void inspect(@UIEventTopic(CdiiEventTopics.INSPECT) GraphInspection inspection) {
-		this.log.info("CdiInspector.inspect()");
 	
 		/* <e3specific> */
 		IViewPart viewPart = openViewPart();

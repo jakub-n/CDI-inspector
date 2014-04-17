@@ -54,8 +54,6 @@ public class LocalInspectionJob extends Job {
 		InspectionTask task = new LocalInspectionTask(this.project, this.context);
 		Inspection inspection = new Inspection(model, task);
 		GraphInspection graphInspection = new GraphInspection(inspection);
-		// TODO delete
-		System.out.println(model);
 		broker.post(CdiiEventTopics.INSPECT, graphInspection);
 		return Status.OK_STATUS;
 	}

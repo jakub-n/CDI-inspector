@@ -76,6 +76,10 @@ public class GraphContentProvider implements IGraphEntityContentProvider, INeste
             Collection<? extends GraphElement> adjacentTypes = getAdjacentTypes(filteredBean);
             filterSet.addAll(adjacentTypes);
         }
+        List<GraphMember> allMembers = iterableToList(
+                this.input.getVertices(Constants.VERTEX_TYPE_PROPERTY, GraphMember.VERTEX_TYPE_NAME,
+                        GraphMember.class));
+        filterSet.addAll(allMembers);
         this.filterSet = Collections.unmodifiableSet(filterSet);
         updateGraphCanvasSize();
     }

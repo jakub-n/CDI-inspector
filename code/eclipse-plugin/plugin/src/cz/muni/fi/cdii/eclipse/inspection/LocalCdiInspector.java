@@ -107,21 +107,27 @@ public class LocalCdiInspector {
         member.setProducedBean(producedBean);
     }
     
-    private Member createMember(IProducer producerBean, Type type) {
+    private Member createMember(IProducer producerBean, Type surroundingCdiiType) {
         Member result = null;
         if (producerBean instanceof IProducerField) {
             result = new Field();
             final IProducerField producerField = (IProducerField) producerBean;
+            IParametedType jbossMemberType = producerField.getMemberType();
+            Type cdiiMemberType = this.addType(jbossMemberType);
+            result.setType(cdiiMemberType);
             result.setName(producerField.getField().getElementName());
         }
         if (producerBean instanceof IProducerMethod) {
             final Method method = new Method();
             result = method;
             final IProducerMethod producerMethod = (IProducerMethod) producerBean;
+            IParametedType jbossMemberType = producerMethod.getMemberType();
+            Type cdiiMemberType = this.addType(jbossMemberType);
+            result.setType(cdiiMemberType);
             this.copyMethodParameters(method, producerMethod);
             result.setName(producerMethod.getMethod().getElementName());
         }
-        result.setType(type);
+        result.setSurroundingType(surroundingCdiiType);
         return result;
     }
     
@@ -155,6 +161,7 @@ public class LocalCdiInspector {
         bean.setTypeSet(cdiiTypes);
         bean.setScope(scope);
         bean.setJbossBean(jbossBean);
+        bean.setElName(jbossBean.getName());
         copyInjectionPointsToType(bean, jbossBean);
         // TODO add other bean properties
         this.foundBeans.put(jbossBean, bean);

@@ -61,8 +61,10 @@ public class InjectionPoint {
 
     public DetailsElement getDetails() {
         DetailsElement root = new DetailsElement("Injection point", "");
-        root.addSubElement(new DetailsElement("EL name", 
-                this.getElName() == null ? "" : this.getElName()));
+        if (this.getElName() != null) {
+            root.addSubElement(new DetailsElement("EL name", 
+                    this.getElName() == null ? "" : this.getElName()));
+        }
         addResolvedBeans(root);
         if (!this.getQualifiers().isEmpty()) {
             root.addSubElement(Utils.getQualifiersDetails(this.getQualifiers()));

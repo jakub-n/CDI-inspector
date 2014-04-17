@@ -12,9 +12,17 @@ public interface Member extends Viewable {
 
     public void setName(final String elementName);
 
+    /**
+     * @param type return type / type of field
+     */
     public void setType(final Type type);
     
     public String getNodeText();
     
-    public Type getSurroundingType();
+    public Type getSurroundingType();    
+    
+    /**
+     * @param surroundingType type this member lives in
+     */
+    public void setSurroundingType(Type surroundingType);
 }
