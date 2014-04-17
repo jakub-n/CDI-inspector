@@ -68,6 +68,7 @@ public class DetailsPart implements EventHandler {
         this.valueLabelProvider.disposeWidgets();
         DetailsElement input = (DetailsElement) event.getProperty(IEventBroker.DATA);
         this.treeViewer.setInput(input);
+        this.treeViewer.expandAll();
     }
     
     @PreDestroy

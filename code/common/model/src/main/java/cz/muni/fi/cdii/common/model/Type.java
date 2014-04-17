@@ -21,28 +21,6 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 	isGetterVisibility=Visibility.NONE, fieldVisibility=Visibility.DEFAULT)
 public class Type implements Viewable {
 	
-//	/**
-//	 * null iff {@link #wildcardType} is {@link TypeWildcardEnum#QUESTIONMARK}
-//	 */
-//
-//	@JsonProperty
-//	private Class clazz;
-//	/**
-//	 * null if 
-//	 * <ul>
-//	 * <li>{@link #wildcardType} is {@link TypeWildcardEnum#QUESTIONMARK}
-//	 * <li>type is non-parametrized
-//	 * </ul>
-//	 */
-
-//	@JsonProperty
-//	private List<Type> typeParameters;
-
-//	@JsonProperty
-//	private TypeWildcardEnum wildcardType;
-	
-	// ----------------------------------------------------------
-	
 	private String package_;
 	private String name;
 	private List<Type> typeParameters = new ArrayList<Type>();
@@ -184,12 +162,20 @@ public class Type implements Viewable {
         return this.toString(true, true);
     }
     
-    // TODO
     @Override
     public DetailsElement getDetails() {
         DetailsElement root = new DetailsElement();
         root.addSubElement(new DetailsElement("Package:", this.getPackage()));
         root.addSubElement(new DetailsElement("Name:", this.getName()));
+        root.addSubElement(new DetailsElement("Is array", this.isArray() ? "true" : "false"));
+        
+        if (!this.getTypeParameters().isEmpty()) {
+            DetailsElement typeParamsRoot = new DetailsElement("Type parameters", "");
+            for (Type type : this.getTypeParameters()) {
+                typeParamsRoot.addSubElement(new DetailsElement("", type.toString(true, true)));
+            }
+            root.addSubElement(typeParamsRoot);
+        }
         return root;
     }
     

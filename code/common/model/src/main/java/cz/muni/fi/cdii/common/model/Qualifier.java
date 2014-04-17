@@ -95,5 +95,11 @@ public class Qualifier {
         }
         
     }
+
+    public DetailsElement getDetails() {
+        DetailsElement root = new DetailsElement("", this.toString(false));
+        root.addSubElement(new DetailsElement("Package", this.getType().getPackage()));
+        return root;
+    }
     
 }

@@ -14,6 +14,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 public class Method implements Member {
 
     private String name;
+    
     /**
      * null iff method is a constructor or returns void
      */
@@ -21,6 +22,7 @@ public class Method implements Member {
     private Bean producedBean;
     private List<MethodParameter> parameters = new ArrayList<>();
     private boolean isConstructor = false;
+    
     /**
      * the only purpose of this field is equality computation
      */
@@ -168,8 +170,30 @@ public class Method implements Member {
 
     @Override
     public DetailsElement getDetails() {
-        // TODO
-        return new DetailsElement();
+        DetailsElement root = new DetailsElement();
+        root.addSubElement(new DetailsElement("Name", this.getName()));
+        root.addSubElement(new DetailsElement("Return type", this.getReturnTypeString()));
+        root.addSubElement(new DetailsElement("Is constructor", 
+                String.valueOf(this.isConstructor())));
+        DetailsElement parameters = new DetailsElement("Method parameters", "");
+        for (MethodParameter param : this.getParameters()) {
+            parameters.addSubElement(param.getDetails());
+        }
+        root.addSubElement(parameters);
+        if (this.getProducedBean() != null) {
+            root.addSubElement(new DetailsElement("Produced bean", this.getProducedBean()));
+        }
+        return root;
+    }
+    
+    public String getReturnTypeString() {
+        if (this.isConstructor()) {
+            return "";
+        }
+        if (this.getType() == null) {
+            return "void";
+        }
+        return this.getType().toString(true, true);
     }
     
 }

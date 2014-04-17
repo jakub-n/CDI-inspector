@@ -25,5 +25,11 @@ public class MethodParameter {
         this.injectionPoint = injectionPoint;
     }
     
-    
+    public DetailsElement getDetails() {
+        DetailsElement root = new DetailsElement("", this.getType().toString(true, true));
+        if (this.getInjectionPoint() != null) {
+            root.addSubElement(this.getInjectionPoint().getDetails());
+        }
+        return root;
+    }
 }

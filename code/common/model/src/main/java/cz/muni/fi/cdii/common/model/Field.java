@@ -122,16 +122,16 @@ public class Field implements Member {
     @Override
     public DetailsElement getDetails() {
         DetailsElement root = new DetailsElement();
+        DetailsElement name = new DetailsElement("Name", this.getName());
+        root.addSubElement(name);
         DetailsElement type = new DetailsElement("Type", this.getType().toString(true, true));
         root.addSubElement(type);
-        DetailsElement name = new DetailsElement("Name", this.getType().toString(true, true));
-        root.addSubElement(name);
-        DetailsElement surroundingType = new DetailsElement("Surrounding type", 
-                this.getType().toString(true, true));
-        root.addSubElement(surroundingType);
-        DetailsElement producedBean = new DetailsElement("Produced bean", this.getProducedBean());
-        root.addSubElement(producedBean);
-        // TODO
+        if (this.getProducedBean() != null) {
+            root.addSubElement(new DetailsElement("Produced bean", this.getProducedBean()));
+        }
+        if (this.getInjectionPoint() != null) {
+            root.addSubElement(this.getInjectionPoint().getDetails());
+        }
         
         return root;
     }

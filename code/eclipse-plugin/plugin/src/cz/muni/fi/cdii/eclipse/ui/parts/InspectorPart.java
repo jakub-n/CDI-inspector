@@ -104,7 +104,7 @@ public class InspectorPart implements ISelectionChangedListener, EventHandler {
 		this.graphViewer.setLayoutAlgorithm(new TreeLayoutAlgorithm());
 		addGraphContextMenu();
 		this.graphViewer.addSelectionChangedListener(this);
-		updateDetailsPart();
+		updateDetailsPart(); 
 	}
 	
     /**

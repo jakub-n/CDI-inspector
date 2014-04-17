@@ -86,4 +86,13 @@ public class Scope {
             return false;
         return true;
     }
+    
+
+    public DetailsElement getDetails() {
+        DetailsElement root = new DetailsElement("Scope", "");
+        root.addSubElement(new DetailsElement("Name", this.getName()));
+        root.addSubElement(new DetailsElement("Package", this.getPackage()));
+        root.addSubElement(new DetailsElement("Is pseudo", this.isPseudo() ? "true" : "false"));
+        return root;
+    }
 }

@@ -14,6 +14,9 @@ public class DetailsElement {
     private List<DetailsElement> children = new ArrayList<>();
     private DetailsElement parent;
 
+    /**
+     * This constructor is intended for root of details structure only.
+     */
     public DetailsElement() {
         this.label = null;
         this.value = null;

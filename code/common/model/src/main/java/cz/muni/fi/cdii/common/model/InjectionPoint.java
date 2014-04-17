@@ -58,4 +58,31 @@ public class InjectionPoint {
     public void setElName(String elName) {
         this.elName = elName;
     }
+
+    public DetailsElement getDetails() {
+        DetailsElement root = new DetailsElement("Injection point", "");
+        root.addSubElement(new DetailsElement("EL name", 
+                this.getElName() == null ? "" : this.getElName()));
+        addResolvedBeans(root);
+        if (!this.getQualifiers().isEmpty()) {
+            root.addSubElement(Utils.getQualifiersDetails(this.getQualifiers()));
+        }
+        return root;
+    }
+
+    private void addResolvedBeans(DetailsElement root) {
+        if (this.getResolvedBeans().size() == 1) {
+            DetailsElement oneBeanDetails = new DetailsElement("Resolved bean", 
+                    this.getResolvedBeans().toArray(new Bean[0])[0]);
+            root.addSubElement(oneBeanDetails);
+            return;
+        } else {
+            DetailsElement beansRoot = new DetailsElement("Resolved beans", "");
+            for (Bean resolvedBean : this.getResolvedBeans()) {
+                beansRoot.addSubElement(new DetailsElement("", resolvedBean));
+            }
+            root.addSubElement(beansRoot);
+        }
+        
+    }
 }
