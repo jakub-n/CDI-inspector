@@ -7,7 +7,6 @@ import javax.inject.Inject;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.e4.core.di.extensions.Preference;
 import org.eclipse.e4.core.services.events.IEventBroker;
-import org.eclipse.e4.core.services.log.Logger;
 import org.eclipse.e4.ui.di.Focus;
 import org.eclipse.e4.ui.model.application.MApplication;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
@@ -54,9 +53,6 @@ public class InspectorPart implements ISelectionChangedListener, EventHandler {
     public static final String ID = "cz.muni.fi.cdii.plugin.InspectorPartDescriptor";
 
     @Inject
-    private Logger log;
-
-    @Inject
     private IEventBroker broker;
 
     private CdiiGraphViewer graphViewer;
@@ -87,9 +83,6 @@ public class InspectorPart implements ISelectionChangedListener, EventHandler {
 		this.colorManager = new ColorManager();
 		parent.setLayout(new GridLayout(1, true));
 		
-		if (this.log != null) {
-			log.info("log injected into inspection part");
-		}
 		this.graphViewer = new CdiiGraphViewer(parent, SWT.BORDER);
 		this.graphViewer.getGraphControl().setLayoutData(
 		        new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));

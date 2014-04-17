@@ -65,6 +65,14 @@ public class DetailsPart implements EventHandler {
      */
     @Override
     public void handleEvent(Event event) {
+        /*
+         * sometimes an event come even if the part is already disposed, maybe an E4 bug
+         */
+        if (this.treeViewer.getTree().isDisposed()) {
+            this.broker.unsubscribe(this);
+            return;
+        }
+        
         this.valueLabelProvider.disposeWidgets();
         DetailsElement input = (DetailsElement) event.getProperty(IEventBroker.DATA);
         this.treeViewer.setInput(input);

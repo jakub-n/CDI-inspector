@@ -187,8 +187,12 @@ public class FilterPart implements EventHandler {
             this.checkboxColumnLabelProvider.disposeWidgets();
             final GraphInspection inspection = 
                     (GraphInspection) event.getProperty(IEventBroker.DATA);
-            CategoryFilterModel[] providerInput = FilterPartModelFactory.create(inspection);
-            this.treeViewer.setInput(providerInput);
+            if (inspection == null) {
+                this.treeViewer.setInput(null);
+            } else {
+                CategoryFilterModel[] providerInput = FilterPartModelFactory.create(inspection);
+                 this.treeViewer.setInput(providerInput);
+            }
             this.treeViewer.expandAll();
             if (!"".equals(this.text.getText())) {
                 this.text.setText("");
