@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
 import org.eclipse.zest.core.viewers.INestedContentProvider;
 import org.osgi.service.event.Event;
@@ -76,6 +77,17 @@ public class GraphContentProvider implements IGraphEntityContentProvider, INeste
             filterSet.addAll(adjacentTypes);
         }
         this.filterSet = Collections.unmodifiableSet(filterSet);
+        updateGraphCanvasSize();
+    }
+
+    private void updateGraphCanvasSize() {
+        int numOfTopLevelNodes = this.getElements(this.input).length;
+        int canvasXPreferedLength = 65 * numOfTopLevelNodes;
+        int canvasYPreferedLength = 55 * numOfTopLevelNodes;
+        Point controlSize = this.graphViewer.getGraphControl().getSize();
+        int canvasX = Math.max(controlSize.x, canvasXPreferedLength);
+        int canvasY = Math.max(controlSize.y, canvasYPreferedLength);
+        this.graphViewer.getGraphControl().setPreferredSize(canvasX, canvasY);
     }
 
     private Set<GraphBean> filterBeans(List<GraphBean> allBeans) {
