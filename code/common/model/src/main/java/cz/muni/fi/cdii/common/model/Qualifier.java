@@ -63,6 +63,7 @@ public class Qualifier {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + ((members == null) ? 0 : members.hashCode());
         result = prime * result + ((type == null) ? 0 : type.hashCode());
         return result;
     }
@@ -76,6 +77,11 @@ public class Qualifier {
         if (getClass() != obj.getClass())
             return false;
         Qualifier other = (Qualifier) obj;
+        if (members == null) {
+            if (other.members != null)
+                return false;
+        } else if (!members.equals(other.members))
+            return false;
         if (type == null) {
             if (other.type != null)
                 return false;
@@ -97,9 +103,22 @@ public class Qualifier {
     }
 
     public DetailsElement getDetails() {
-        DetailsElement root = new DetailsElement("", this.toString(false));
+        DetailsElement root = new DetailsElement(this.toString(false), "");
         root.addSubElement(new DetailsElement("Package", this.getType().getPackage()));
         return root;
+    }
+    
+    /**
+     * Defines equality based on qualifier type only (regardless the members).
+     */
+    public static class QualifierTypeComparator implements Comparator<Qualifier> {
+
+        @Override
+        public int compare(Qualifier o1, Qualifier o2) {
+            int result = o1.getType().compareTo(o2.getType());
+            return result;
+        }
+        
     }
     
 }

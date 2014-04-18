@@ -8,8 +8,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
-import org.eclipse.jdt.core.IAnnotation;
 import org.eclipse.jdt.core.IMemberValuePair;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.ITypeHierarchy;
@@ -27,6 +27,7 @@ import org.jboss.tools.cdi.core.IParameter;
 import org.jboss.tools.cdi.core.IProducer;
 import org.jboss.tools.cdi.core.IProducerField;
 import org.jboss.tools.cdi.core.IProducerMethod;
+import org.jboss.tools.cdi.core.IQualifier;
 import org.jboss.tools.cdi.core.IQualifierDeclaration;
 import org.jboss.tools.cdi.core.IScope;
 import org.jboss.tools.common.java.IParametedType;
@@ -163,11 +164,68 @@ public class LocalCdiInspector {
         bean.setJbossBean(jbossBean);
         bean.setElName(jbossBean.getName());
         copyInjectionPointsToType(bean, jbossBean);
-        // TODO add other bean properties
+        Collection<IQualifierDeclaration> jbossQualifierDeclarations = 
+                jbossBean.getQualifierDeclarations();
+        Set<Qualifier> cdiiQualifiers = toCdiiQualifiers(jbossQualifierDeclarations);
+        Collection<IQualifier> jbossQualifiers = jbossBean.getQualifiers();
+        Set<Qualifier> implicitQualifiers = toCdiQualifiers(jbossQualifiers);
+        Set<Qualifier> allQualifiers = new TreeSet<>(new Qualifier.QualifierTypeComparator());
+        allQualifiers.addAll(cdiiQualifiers);
+        allQualifiers.addAll(implicitQualifiers);
+        bean.setQualifiers(allQualifiers);
         this.foundBeans.put(jbossBean, bean);
         return bean;
     }
     
+    /**
+     * excludes {@link javax.inject.Named}, this type of info is processed separately
+     */
+    private static Set<Qualifier> toCdiQualifiers(Collection<IQualifier> jbossQualifiers) {
+        HashSet<Qualifier> result = new HashSet<>();
+        for (IQualifier jbossQualifier : jbossQualifiers) {
+            Qualifier cdiiQualifier = createQualifier(jbossQualifier);
+            if (!"javax.inject.Named".equals(cdiiQualifier.toString(true))) {
+                result.add(cdiiQualifier);
+            }
+        }
+        return result;
+    }
+
+    private static Qualifier createQualifier(IQualifier jbossQualifier) {
+        Qualifier result = new Qualifier();
+        String fullyQualifiedName = jbossQualifier.getSourceType().getFullyQualifiedName();
+        int lastDotPositionIndex = fullyQualifiedName.lastIndexOf(".");
+        AnnotationType annotationType = new AnnotationType();
+        annotationType.setName(fullyQualifiedName.substring(lastDotPositionIndex + 1));
+        annotationType.setPackage(fullyQualifiedName.substring(0, lastDotPositionIndex));
+        result.setType(annotationType);
+        return result;
+    }
+    
+    /**
+     * excludes {@link javax.inject.Named}, this type of info is processed separately
+     */
+    private Set<Qualifier> toCdiiQualifiers(Collection<IQualifierDeclaration> jbossQualifiers) {
+        HashSet<Qualifier> result = new HashSet<>();
+        for (IQualifierDeclaration jbossQualifierDeclaration : jbossQualifiers) {
+            Qualifier cdiiQualifier = createQualifier(jbossQualifierDeclaration);
+            if (!"javax.inject.Named".equals(cdiiQualifier.toString(true))) {
+                result.add(cdiiQualifier);
+            }
+        }
+        return result;
+    }
+
+    private static Set<AnnotationMemeber> createAnnotationMembers(
+            IMemberValuePair[] memberValuePairs) {
+        HashSet<AnnotationMemeber> result = new HashSet<>();
+        for (IMemberValuePair memberValuePair : memberValuePairs) {
+            AnnotationMemeber annotationMemeber = createAnnotationMemebers(memberValuePair);
+            result.add(annotationMemeber);
+        }
+        return result;
+    }
+
     private Type getDeclaredType(IType eclipseTypeHint, Set<Type> cdiiTypes, 
             Set<IParametedType> jbossTypes) {
         if (eclipseTypeHint == null) {
@@ -237,59 +295,34 @@ public class LocalCdiInspector {
     private void copyInjectionPointsToType(Bean outputBean, IBean inputBean) {
         Collection<IInjectionPoint> injectionPoints = inputBean.getInjectionPoints();
         for (IInjectionPoint jbossInjectionPoint : injectionPoints) {
-            // TODO refactor to separate method
             IParametedType jbossInjectedType = jbossInjectionPoint.getType();
             Type cdiiInjectedType = addType(jbossInjectedType);
             InjectionPoint cdiiInjectionPoint = new InjectionPoint();
             cdiiInjectionPoint.setType(cdiiInjectedType);
             cdiiInjectionPoint.setElName(jbossInjectionPoint.getBeanName());
-            Collection<IBean> jbossBeansEligibleForInjection = this.project.getBeans(true, jbossInjectionPoint);
+            Collection<IBean> jbossBeansEligibleForInjection = 
+                    this.project.getBeans(true, jbossInjectionPoint);
             Set<Bean> beans = addBeans(jbossBeansEligibleForInjection, null);
             cdiiInjectionPoint.setResolvedBeans(beans);
-            // TODO add qualifiers
-            
             Collection<IQualifierDeclaration> qualifierDeclarations = jbossInjectionPoint.getQualifierDeclarations();
-            for (IQualifierDeclaration jbossQualifierDeclaration : qualifierDeclarations) {
-                Qualifier cdiiQualifier = createQualifier(jbossQualifierDeclaration);
-                jbossQualifierDeclaration.getTypeName();
-                //AnnotationType cdiiAnnotationType = 
-                //cdiiQualifier.setType(type);
-                cdiiInjectionPoint.getQualifiers().add(cdiiQualifier);
-            }
+            Set<Qualifier> cdiiQualifiers = toCdiiQualifiers(qualifierDeclarations);
+            cdiiInjectionPoint.setQualifiers(cdiiQualifiers);
             
             addInjectionPointToType(outputBean.getType(), cdiiInjectionPoint, jbossInjectionPoint);
         }
     }
 
     private static Qualifier createQualifier(IQualifierDeclaration jbossQualifierDeclaration) {
-        Qualifier cdiiQualifier = new Qualifier();
-        AnnotationType type = annotationTypeFromQualifiedName(
-                jbossQualifierDeclaration.getTypeName());
-        Set<AnnotationMemeber> members = createAnnotationMemebers(
-                jbossQualifierDeclaration.getJavaAnnotation());
-        cdiiQualifier.setType(type);
-        cdiiQualifier.setMembers(members);
-        return cdiiQualifier;
-    }
-    
-    private static Set<AnnotationMemeber> createAnnotationMemebers (IAnnotation javaAnnotation) {
-        try {
-            return createAnnotationMemebersUnchecked(javaAnnotation);
-        } catch (JavaModelException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-
-    private static Set<AnnotationMemeber> createAnnotationMemebersUnchecked
-            (IAnnotation javaAnnotation) throws JavaModelException {
-        Set<AnnotationMemeber> result = new HashSet<>();
-        for (IMemberValuePair memberValuePair : javaAnnotation.getMemberValuePairs()) {
-            AnnotationMemeber annotationMemeber = createAnnotationMemebers(memberValuePair);
-            result.add(annotationMemeber);
-        }
+        Qualifier result = new Qualifier();
+        IMemberValuePair[] memberValuePairs = jbossQualifierDeclaration.getMemberValuePairs();
+        Set<AnnotationMemeber> annotationMemebers = createAnnotationMembers(memberValuePairs);
+        result.setMembers(annotationMemebers);
+        AnnotationType annotationType = 
+                annotationTypeFromQualifiedName(jbossQualifierDeclaration.getTypeName());
+        result.setType(annotationType);
         return result;
     }
-
+    
     private static AnnotationMemeber createAnnotationMemebers(IMemberValuePair eclipseMember) {
         AnnotationMemeber result = new AnnotationMemeber();
         result.setName(eclipseMember.getMemberName());

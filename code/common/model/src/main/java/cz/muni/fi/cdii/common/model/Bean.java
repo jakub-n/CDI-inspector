@@ -158,7 +158,7 @@ public class Bean implements Viewable {
     public String getNodeText() {
         StringBuilder result = new StringBuilder();
         for (Qualifier qualifier : this.getQualifiers()) {
-            result.append(qualifier.toString()).append("\n");
+            result.append("@").append(qualifier.toString(false)).append("\n");
         }
         if (this.getElName() != null) {
             result.append("@Named(\"" + this.getElName() + "\")").append("\n");
