@@ -18,7 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import cz.muni.fi.cdii.eclipse.Activator;
 
-
+// TODO delete
 public class TmpAction1 extends Action {
     
     public static final String EVENT = "tmpActionEvent";

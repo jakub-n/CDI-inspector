@@ -36,7 +36,6 @@ public class GraphInspection {
     
     private final InspectionTask task;
     
-    // TODO hashset or treeset
     /**
      * for filter part
      */

@@ -16,7 +16,6 @@ import org.jboss.tools.cdi.core.ICDIProject;
 
 import cz.muni.fi.cdii.common.model.Model;
 import cz.muni.fi.cdii.eclipse.Activator;
-import cz.muni.fi.cdii.eclipse.CdiiEventTopics;
 
 /**
  * Eclipse fashion thread encapsulation of local project cdi metadata extraction.
@@ -52,10 +51,7 @@ public class LocalInspectionJob extends Job {
 		ICDIProject cdiProject = LocalInspectionJob.getCdiProjectFromProject(this.project);
 		Model model = LocalCdiInspector.inspect(cdiProject);
 		InspectionTask task = new LocalInspectionTask(this.project, this.context);
-		Inspection inspection = new Inspection(model, task);
-		GraphInspection graphInspection = new GraphInspection(inspection);
-		broker.post(CdiiEventTopics.INSPECT, graphInspection);
-		return Status.OK_STATUS;
+		return Utils.createGraphInspectionAndDispatch(model, task, this.broker);
 	}
 
 	private static ICDIProject getCdiProjectFromProject(IProject project) {
