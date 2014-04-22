@@ -6,6 +6,10 @@ import io.undertow.util.HttpString;
 
 import javax.enterprise.inject.spi.BeanManager;
 
+import cz.muni.fi.cdii.common.model.Model;
+import cz.muni.fi.cdii.wildfly.extraction.Utils;
+import cz.muni.fi.cdii.wildfly.extraction.WildflyExtraction;
+
 /**
  * It handles http request of request path matching "<context_root>/cdii/?", other requests are 
  * passed to next handler.
@@ -42,9 +46,9 @@ public class CdiiHttpHandler implements HttpHandler {
     private void handleCdiiDataRequest(final HttpServerExchange exchange) {
         exchange.getResponseHeaders().add(new HttpString("Content-Type"), 
                 "application/json");
-        exchange.getResponseSender().send("cdii demo: " + 
-                (beanManager == null ? "null" : beanManager)
-                + " " + cz.muni.fi.cdii.wildfly.extraction.Utils.serialize(null));
+        Model model = WildflyExtraction.extract(this.beanManager);
+        String jsonModel = Utils.serialize(model);
+        exchange.getResponseSender().send(jsonModel);
     }
     
     private static boolean isCdiiStateRequest(final HttpServerExchange exchange) {

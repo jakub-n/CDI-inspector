@@ -3,9 +3,6 @@ package cz.muni.fi.cdii.wildfly.extension;
 import org.jboss.as.controller.SimpleResourceDefinition;
 import org.jboss.as.controller.registry.ManagementResourceRegistration;
 
-/**
- * @author <a href="mailto:tcerar@redhat.com">Tomaz Cerar</a>
- */
 public class SubsystemDefinition extends SimpleResourceDefinition {
     public static final SubsystemDefinition INSTANCE = new SubsystemDefinition();
 
