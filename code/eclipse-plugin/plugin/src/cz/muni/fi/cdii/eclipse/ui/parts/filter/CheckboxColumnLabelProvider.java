@@ -55,25 +55,24 @@ public class CheckboxColumnLabelProvider extends CellLabelProvider {
         return result;
     }
 
-    private void attachSelectionListener(final Button checkbox, final FilterPartModel modelElement) {
+    private void attachSelectionListener(final Button checkbox, 
+            final FilterPartModel modelElement) {
         if (modelElement instanceof CategoryFilterModel) {
             checkbox.addSelectionListener(new SelectionListener() {
                 
                 /**
-                 * Sets all checkboxes in category and also the category's checkbox to "unchecked",
-                 * because there is no difference between everything selected and everything 
-                 * unselected
+                 * Sets all checkboxes in category to state of this checkbox.
                  */
                 @Override
                 public void widgetSelected(SelectionEvent e) {
-                    checkbox.setSelection(false);
+                    boolean categorySelectionState = checkbox.getSelection();
                     CategoryFilterModel category = (CategoryFilterModel) modelElement;
                     for (ElementFilterModel element : category.getElements()) {
                         Button elemCheckbox = 
                                 CheckboxColumnLabelProvider.this.checkboxes.get(element);
-                        elemCheckbox.setSelection(false);
-                        CheckboxColumnLabelProvider.this.filterPart.doFilter();
+                        elemCheckbox.setSelection(categorySelectionState);
                     }
+                    CheckboxColumnLabelProvider.this.filterPart.doFilter();
                 }
                 
                 @Override
