@@ -141,9 +141,6 @@ public class Bean implements Viewable {
         for (Qualifier qualifier : this.getQualifiers()) {
             result.append("@").append(qualifier.toString(false)).append("\n");
         }
-        if (this.getElName() != null) {
-            result.append("@Named(\"" + this.getElName() + "\")").append("\n");
-        }
         result.append(this.getScope().toString()).append("\n");
         result.append(this.getType().toString(false, true));
         return result.toString();

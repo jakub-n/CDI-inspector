@@ -178,16 +178,11 @@ public class LocalCdiInspector {
         return bean;
     }
     
-    /**
-     * excludes {@link javax.inject.Named}, this type of info is processed separately
-     */
     private static Set<Qualifier> toCdiQualifiers(Collection<IQualifier> jbossQualifiers) {
         HashSet<Qualifier> result = new HashSet<>();
         for (IQualifier jbossQualifier : jbossQualifiers) {
             Qualifier cdiiQualifier = createQualifier(jbossQualifier);
-            if (!"javax.inject.Named".equals(cdiiQualifier.toString(true))) {
-                result.add(cdiiQualifier);
-            }
+            result.add(cdiiQualifier);
         }
         return result;
     }
@@ -203,16 +198,11 @@ public class LocalCdiInspector {
         return result;
     }
     
-    /**
-     * excludes {@link javax.inject.Named}, this type of info is processed separately
-     */
     private Set<Qualifier> toCdiiQualifiers(Collection<IQualifierDeclaration> jbossQualifiers) {
         HashSet<Qualifier> result = new HashSet<>();
         for (IQualifierDeclaration jbossQualifierDeclaration : jbossQualifiers) {
             Qualifier cdiiQualifier = createQualifier(jbossQualifierDeclaration);
-            if (!"javax.inject.Named".equals(cdiiQualifier.toString(true))) {
-                result.add(cdiiQualifier);
-            }
+            result.add(cdiiQualifier);
         }
         return result;
     }
