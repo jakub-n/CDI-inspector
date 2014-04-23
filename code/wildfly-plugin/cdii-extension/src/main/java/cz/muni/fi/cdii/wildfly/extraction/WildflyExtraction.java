@@ -515,6 +515,9 @@ public class WildflyExtraction {
     }
 
     private static String getClassName(String packageName, String qualifiedName) {
+        if (packageName.isEmpty()) {
+            return qualifiedName;
+        }
         String result = qualifiedName.substring(packageName.length() + 1);
         return result;
     }
