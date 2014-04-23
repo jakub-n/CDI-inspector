@@ -84,7 +84,8 @@ public class FilterPartModelFactory {
     private static CategoryFilterModel getPackageCategory(GraphInspection inspection) {
         CategoryFilterModel result = new CategoryFilterModel(CATEGORY_PACKAGES);
         for (String packageName : inspection.getPackageNames()) {
-            ElementFilterModel item = new ElementFilterModel(packageName, packageName);
+            String label = packageName.isEmpty() ? "<none>" : packageName;
+            ElementFilterModel item = new ElementFilterModel(label, packageName);
             result.addElement(item);
         }
         return result;
