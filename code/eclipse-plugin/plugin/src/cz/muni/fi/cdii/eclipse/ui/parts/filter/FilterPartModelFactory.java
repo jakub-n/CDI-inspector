@@ -2,6 +2,8 @@ package cz.muni.fi.cdii.eclipse.ui.parts.filter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.eclipse.jface.viewers.StyledString;
 
@@ -69,7 +71,9 @@ public class FilterPartModelFactory {
 
     private static CategoryFilterModel getTypesCategory(GraphInspection inspection) {
         CategoryFilterModel result = new CategoryFilterModel(CATEGORY_TYPES);
-        for (Type type : inspection.getTypes()) {
+        SortedSet<Type> nameSortedTypes = new TreeSet<Type>(new Type.NameTypeComparator());
+        nameSortedTypes.addAll(inspection.getTypes());
+        for (Type type : nameSortedTypes) {
             StyledString styledString = new StyledString();
             styledString.append(type.toString(false, true));
             styledString.append(" ");

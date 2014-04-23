@@ -1,6 +1,7 @@
 package cz.muni.fi.cdii.common.model;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -193,5 +194,20 @@ public class Type implements Viewable {
         return root;
     }
     
-    
+    /**
+     * Sorts Types lexicographically base on their name and package. Name has higher priority.
+     */
+    public static class NameTypeComparator implements Comparator<Type> {
+
+        @Override
+        public int compare(Type o1, Type o2) {
+            int nameComparison = o1.getName().compareTo(o2.getName());
+            if (nameComparison != 0) {
+                return nameComparison;
+            }
+            int packageComparison = o1.getPackage().compareTo(o2.getPackage());
+            return packageComparison;
+        }
+        
+    }
 }
