@@ -23,7 +23,8 @@ public class LabelColumnLabelProvider extends StyledCellLabelProvider {
                 cell.setText(filterElement.getFancyLabel().getString());
                 cell.setStyleRanges(filterElement.getFancyLabel().getStyleRanges());
             } else {
-                cell.setText(filterElement.getLabel());
+                String text = filterElement.getLabel();
+                cell.setText(text);
             }
             return;
         }

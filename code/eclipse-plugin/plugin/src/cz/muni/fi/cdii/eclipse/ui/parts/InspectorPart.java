@@ -58,7 +58,6 @@ public class InspectorPart implements ISelectionChangedListener, EventHandler {
 
     private CdiiGraphViewer graphViewer;
     private ColorManager colorManager;
-    private Composite parent;
 
     private GraphInspection inspection;
 
@@ -81,7 +80,6 @@ public class InspectorPart implements ISelectionChangedListener, EventHandler {
         this.broker.subscribe(CdiiEventTopics.SELECT_NODE, this);
         this.broker.subscribe(CdiiEventTopics.UPDATE_DETAILS_REQUEST, this);
         this.broker.subscribe(CdiiEventTopics.UPDATE_FILTER_LABELS_REQUEST, this);
-	    this.parent = parent;
 		this.colorManager = new ColorManager();
 		parent.setLayout(new GridLayout(1, true));
 		
@@ -92,10 +90,6 @@ public class InspectorPart implements ISelectionChangedListener, EventHandler {
 		        new GraphContentProvider(this.broker, this.graphViewer));
 		this.graphViewer.setLabelProvider(
 		        new GraphLabelProvider(this.colorManager, this.graphViewer));
-//		CompositeLayoutAlgorithm layoutAlgorithm = new CompositeLayoutAlgorithm(
-//		        new LayoutAlgorithm[] { 
-//		                new TreeLayoutAlgorithm() /*new SpringLayoutAlgorithm()*/, 
-//		                new DirectedGraphLayoutAlgorithm(DirectedGraphLayoutAlgorithm.VERTICAL) });
 		this.graphViewer.setLayoutAlgorithm(new TreeLayoutAlgorithm());
 		addGraphContextMenu();
 		this.graphViewer.addSelectionChangedListener(this);
@@ -105,7 +99,6 @@ public class InspectorPart implements ISelectionChangedListener, EventHandler {
     /**
      * Graph selection listener
      */
-    // TODO reimplement, edges only
     @Override
     public void selectionChanged(SelectionChangedEvent event) {
         GraphElement selectedElement = getCurrentGraphSelection();
@@ -113,26 +106,6 @@ public class InspectorPart implements ISelectionChangedListener, EventHandler {
 //        updateNeighborHighlights(selectedElement);
     }
     
-//    private void updateNeighborHighlights(GraphElement selectedElement) {
-//        cleanNeighborHighlights();
-//        if (selectedElement != null) {
-//            highlightHeighborOf(selectedElement);
-//        }
-//        this.graphViewer.refresh();
-//    }
-
-//    private void cleanNeighborHighlights() {
-//        GremlinPipeline<Vertex, Vertex> gremlinPipeline = new GremlinPipeline<>(
-//                this.inspection.getFramedGraph().getVertices());
-//        gremlinPipeline.sideEffect(new PipeFunction<Vertex, Void>() {
-//
-//            @Override
-//            public Void compute(Vertex vertex) {
-//                vertex.setProperty(GraphElement.NEIGHBOR_HIGHLIGHT, false);
-//            }
-//        }).iterate();
-//    }
-
     private GraphElement getCurrentGraphSelection() {
         ISelection selection = this.graphViewer.getSelection();
         if (selection instanceof IStructuredSelection) {
@@ -263,8 +236,6 @@ public class InspectorPart implements ISelectionChangedListener, EventHandler {
         this.graphViewer.setInput(this.inspection.getFramedGraph());
         this.graphViewer.applyLayout();
         this.setFocus();
-        this.parent.redraw(); //TODO remove
-        this.parent.update();
     }
     
     /**

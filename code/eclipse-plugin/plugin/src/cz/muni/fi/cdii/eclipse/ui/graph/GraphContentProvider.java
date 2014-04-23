@@ -87,7 +87,7 @@ public class GraphContentProvider implements IGraphEntityContentProvider, INeste
     private void updateGraphCanvasSize() {
         int numOfTopLevelNodes = this.getElements(this.input).length;
         int canvasXPreferedLength = 65 * numOfTopLevelNodes;
-        int canvasYPreferedLength = 55 * numOfTopLevelNodes;
+        int canvasYPreferedLength = 100 * ((int) Math.ceil(Math.log(numOfTopLevelNodes)));
         Point controlSize = this.graphViewer.getGraphControl().getSize();
         int canvasX = Math.max(controlSize.x, canvasXPreferedLength);
         int canvasY = Math.max(controlSize.y, canvasYPreferedLength);
