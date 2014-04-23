@@ -62,7 +62,6 @@ public class InspectorPart implements ISelectionChangedListener, EventHandler {
     private GraphInspection inspection;
 
     public InspectorPart() {
-        System.out.println("Inspector part init()");
     }
 
     /**

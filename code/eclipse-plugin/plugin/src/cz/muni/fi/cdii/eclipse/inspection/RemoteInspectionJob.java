@@ -33,7 +33,7 @@ public class RemoteInspectionJob extends Job {
     /**
      * base url; cdii suffix needs to be added
      */
-    private URL inspectionUrl;
+    private URL baseUrl;
     
     @Inject
     private IEclipseContext context;
@@ -46,7 +46,7 @@ public class RemoteInspectionJob extends Job {
 
     public RemoteInspectionJob(URL baseUrl, IEclipseContext context) {
         super("Inspecting remote CDI app: " + baseUrl.toString());
-        this.inspectionUrl = getInspectionUrl(baseUrl);
+        this.baseUrl = baseUrl;
         ContextInjectionFactory.inject(this, context);
     }
 
@@ -55,17 +55,18 @@ public class RemoteInspectionJob extends Job {
         ObjectMapper mapper = new ObjectMapper();
         Model model;
         InputStream inputStream = null;
-        try { 
-            inputStream = this.inspectionUrl.openStream();
+        URL inspectionUrl = getInspectionUrl(this.baseUrl);
+        try {
+            inputStream = inspectionUrl.openStream();
             String jsonString = IOUtils.toString(inputStream);
             model = mapper.readValue(jsonString, Model.class);
         } catch (IOException e) {
             log.warn(e);
-            return handleException(e);
+            return handleException(e, inspectionUrl);
         } finally {
             IOUtils.closeQuietly(inputStream);
         }
-        InspectionTask task = new RemoteInspectionTask(this.inspectionUrl, this.context);
+        InspectionTask task = new RemoteInspectionTask(this.baseUrl, this.context);
         IStatus status = Utils.createGraphInspectionAndDispatch(model, task, this.broker);
         return status;
     }
@@ -83,7 +84,7 @@ public class RemoteInspectionJob extends Job {
         }
     }
 
-    private Status handleException(IOException e) {
+    private Status handleException(IOException e, final URL inspectionUrl) {
         Display.getDefault().asyncExec(new Runnable() {
             public void run() {
                 Shell defaultShell = Display.getDefault().getActiveShell();
@@ -92,12 +93,12 @@ public class RemoteInspectionJob extends Job {
                 messageBox.setText("CDI Inspector");
                 messageBox.setMessage("Remote CDI inspection failed."
                         + "\n"
-                        + "Inspection URL: " + RemoteInspectionJob.this.inspectionUrl);
+                        + "Inspection URL: " + inspectionUrl);
                 messageBox.open();
             }
         });
         return new Status(Status.WARNING, Activator.PLUGIN_ID, 
-                "Remote CDI inspection of application " + this.inspectionUrl.toString() 
+                "Remote CDI inspection of application " + inspectionUrl.toString() 
                 + " failed.", e);
     }
 
