@@ -3,6 +3,7 @@ package cz.muni.fi.cdii.common.model;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 /**
@@ -11,16 +12,25 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
  */
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 @JsonAutoDetect(getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE, 
-	isGetterVisibility=Visibility.NONE, fieldVisibility=Visibility.DEFAULT)
+	isGetterVisibility=Visibility.NONE, fieldVisibility=Visibility.NONE)
 public class Field implements Member {
 
+    @JsonProperty
     private String name;
+
+    @JsonProperty
     private Type type;
+
+    @JsonProperty
     private Bean producedBean;
+
+    @JsonProperty
     private InjectionPoint injectionPoint;
+    
     /**
      * the only purpose of this field is equality computation
      */
+    @JsonProperty
     private Type surroundingType;
     
     public String getName() {

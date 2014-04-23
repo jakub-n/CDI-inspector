@@ -1,5 +1,11 @@
 package cz.muni.fi.cdii.common.model;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+@JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.PROPERTY, property="@type")
+@JsonSubTypes({@com.fasterxml.jackson.annotation.JsonSubTypes.Type(name="field", value=Field.class),
+    @com.fasterxml.jackson.annotation.JsonSubTypes.Type(name="method", value=Method.class)})
 public interface Member extends Viewable {
     
     public String getName();

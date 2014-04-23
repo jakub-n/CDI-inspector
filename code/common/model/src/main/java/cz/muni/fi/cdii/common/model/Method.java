@@ -6,26 +6,37 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 @JsonAutoDetect(getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE, 
-	isGetterVisibility=Visibility.NONE, fieldVisibility=Visibility.DEFAULT)
+	isGetterVisibility=Visibility.NONE, fieldVisibility=Visibility.NONE)
 public class Method implements Member {
 
+    @JsonProperty
     private String name;
     
     /**
      * null iff method is a constructor or returns void
      */
+    @JsonProperty
     private Type type;
+
+    @JsonProperty
     private Bean producedBean;
+
+    @JsonProperty
     private List<MethodParameter> parameters = new ArrayList<>();
+
+    @JsonProperty
     private boolean isConstructor = false;
     
     /**
      * the only purpose of this field is equality computation
      */
+
+    @JsonProperty
     private Type surroundingType;
     
     public String getName() {

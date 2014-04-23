@@ -1,9 +1,23 @@
 package cz.muni.fi.cdii.common.model;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+
+@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
+@JsonAutoDetect(getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE, 
+    isGetterVisibility=Visibility.NONE, fieldVisibility=Visibility.NONE)
 public class AnnotationMemeber {
-    
+
+    @JsonProperty
     private String name;
+
+    @JsonProperty
     private String type;
+
+    @JsonProperty
     private String value;
 
     public String getName() {

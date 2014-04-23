@@ -1,5 +1,6 @@
 package cz.muni.fi.cdii.common.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -14,10 +15,10 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 public class Model {
 
 	@JsonProperty
-	private Set<? extends Bean> beans;
+	private Set<? extends Bean> beans = new HashSet<>();
 
-	@JsonProperty
-	private Set<Type> types;
+//	@JsonProperty
+//	private Set<Type> types;
 
     public Set<? extends Bean> getBeans() {
         return beans;
@@ -27,13 +28,13 @@ public class Model {
         this.beans = beans;
     }
 
-    public Set<Type> getTypes() {
-        return types;
-    }
+//    public Set<Type> getTypes() {
+//        return types;
+//    }
 
-    public void setTypes(Set<Type> types) {
-        this.types = types;
-    }
+//    public void setTypes(Set<Type> types) {
+//        this.types = types;
+//    }
 	
 	@Override
 	public String toString() {

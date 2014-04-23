@@ -8,6 +8,7 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 /**
@@ -18,14 +19,25 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
  */
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 @JsonAutoDetect(getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE, 
-	isGetterVisibility=Visibility.NONE, fieldVisibility=Visibility.DEFAULT)
+	isGetterVisibility=Visibility.NONE, fieldVisibility=Visibility.NONE)
 public class Type implements Viewable {
 	
+    /*
+     * could be empty string in case of primitive types or type vars e.g. 'char', 'T'
+     */
+    @JsonProperty
 	private String package_;
+
+    @JsonProperty
 	private String name;
+
+    @JsonProperty
 	private List<Type> typeParameters = new ArrayList<Type>();
+
+    @JsonProperty
 	private boolean isArray;
-	
+
+    @JsonProperty
 	private Set<Member> members = new HashSet<Member>();
 	
 	
@@ -154,9 +166,11 @@ public class Type implements Viewable {
             return false;
         return true;
     }
+    
     public String getNodeText() {
         return this.toString(false, true);
     }
+    
     @Override
     public String getNodeTooltipText() {
         return this.toString(true, true);

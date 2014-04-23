@@ -6,6 +6,7 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
@@ -28,7 +29,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
  */
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 @JsonAutoDetect(getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE, 
-	isGetterVisibility=Visibility.NONE, fieldVisibility=Visibility.DEFAULT)
+	isGetterVisibility=Visibility.NONE, fieldVisibility=Visibility.NONE)
 public class Bean implements Viewable {
 
 	@JsonProperty
@@ -46,10 +47,10 @@ public class Bean implements Viewable {
 	@JsonProperty
 	private String elName;
 	
-	@JsonProperty
+	@JsonIgnore
 	private Set<InterceptorBinding> interceptorBindings;
 	
-	@JsonProperty
+	@JsonIgnore
 	private Set<Delegate> associatedDeletates;
 
     public Type getType() {

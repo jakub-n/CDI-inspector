@@ -1,26 +1,33 @@
 package cz.muni.fi.cdii.common.model;
 
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.TreeSet;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 @JsonAutoDetect(getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE, 
-	isGetterVisibility=Visibility.NONE, fieldVisibility=Visibility.DEFAULT)
+	isGetterVisibility=Visibility.NONE, fieldVisibility=Visibility.NONE)
 public class Qualifier {
 
+    @JsonProperty
     private AnnotationType type;
     
     /**
      * Set is sorted in order to keep toString output static.
      */
-    private SortedSet<AnnotationMemeber> members = new TreeSet<>(new AnnotationMemberComparator());
+    @JsonProperty
+    /*
+     * solution using costum Comparator is not compatible with Jackson library
+     */
+//    private SortedSet<AnnotationMemeber> members = new TreeSet<>(new AnnotationMemberComparator());
+    private Set<AnnotationMemeber> members = new HashSet<>();
 
     public AnnotationType getType() {
         return type;
