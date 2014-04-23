@@ -201,10 +201,10 @@ public class AsyncModelComputation implements Runnable {
         }
         Display.getDefault().asyncExec(new Runnable() {
         
-        @Override
-        public void run() {
-            dialog.setTreeViewerInput(input);
-        }
+            @Override
+            public void run() {
+                dialog.setTreeViewerInput(input);
+            }
     });
         
     }

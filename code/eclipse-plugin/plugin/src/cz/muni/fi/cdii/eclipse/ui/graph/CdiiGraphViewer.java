@@ -16,6 +16,8 @@ public class CdiiGraphViewer extends GraphViewer {
 
     public CdiiGraphViewer(Composite composite, int style) {
         super(composite, style);
+        this.getZoomManager().setZoomLevels(
+                new double[]{ .05, .1, .25, .5, .75, 1.0, 1.5, 2.0, 2.5, 3, 4 });
     }
     
     public void zoomIn() {
