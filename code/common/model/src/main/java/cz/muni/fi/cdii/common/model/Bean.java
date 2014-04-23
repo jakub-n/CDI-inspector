@@ -6,7 +6,6 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
@@ -47,12 +46,6 @@ public class Bean implements Viewable {
 	@JsonProperty
 	private String elName;
 	
-	@JsonIgnore
-	private Set<InterceptorBinding> interceptorBindings;
-	
-	@JsonIgnore
-	private Set<Delegate> associatedDeletates;
-
     public Type getType() {
         return type;
     }
@@ -105,10 +98,7 @@ public class Bean implements Viewable {
         result = prime * result
                 + ((effectiveQualifierSet == null) ? 0 : effectiveQualifierSet.hashCode());
         result = prime * result + ((elName == null) ? 0 : elName.hashCode());
-        result = prime * result
-                + ((interceptorBindings == null) ? 0 : interceptorBindings.hashCode());
         result = prime * result + ((scope == null) ? 0 : scope.hashCode());
-        result = prime * result + ((type == null) ? 0 : type.hashCode());
         result = prime * result + ((typeSet == null) ? 0 : typeSet.hashCode());
         return result;
     }
@@ -132,20 +122,10 @@ public class Bean implements Viewable {
                 return false;
         } else if (!elName.equals(other.elName))
             return false;
-        if (interceptorBindings == null) {
-            if (other.interceptorBindings != null)
-                return false;
-        } else if (!interceptorBindings.equals(other.interceptorBindings))
-            return false;
         if (scope == null) {
             if (other.scope != null)
                 return false;
         } else if (!scope.equals(other.scope))
-            return false;
-        if (type == null) {
-            if (other.type != null)
-                return false;
-        } else if (!type.equals(other.type))
             return false;
         if (typeSet == null) {
             if (other.typeSet != null)
