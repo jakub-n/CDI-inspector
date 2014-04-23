@@ -22,7 +22,8 @@
 				<extensions>true</extensions>
 				<configuration>
 					<!-- <finalName>this-works</finalName> -->
-					<!-- not necessary for tycho; for eclipse to be able to recognize this project -->
+					<!-- not necessary for tycho; for eclipse to be able to recognize this 
+						project -->
 					<manifestLocation>META-INF</manifestLocation>
 					<instructions>
 						<Bundle-Version>${project.version}v${timestamp}</Bundle-Version>
@@ -34,7 +35,8 @@
 						<_exportcontents>
 							com.tinkerpop.*,
 							com.fasterxml.jackson.*,
-							javassist.*
+							javassist.*,
+							org.apache.commons.io
 						</_exportcontents>
 						<Import-Package></Import-Package>
 						<_nouses>true</_nouses>
@@ -51,20 +53,40 @@
 			<artifactId>frames</artifactId>
 			<version>2.4.0</version>
 		</dependency>
-        <dependency>
-            <groupId>com.tinkerpop.blueprints</groupId>
-            <artifactId>blueprints-core</artifactId>
-            <version>2.4.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.tinkerpop.blueprints</groupId>
-            <artifactId>blueprints-sail-graph</artifactId>
-            <version>2.4.0</version>
-        </dependency>
+		<dependency>
+			<groupId>com.tinkerpop.blueprints</groupId>
+			<artifactId>blueprints-core</artifactId>
+			<version>2.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.tinkerpop.blueprints</groupId>
+			<artifactId>blueprints-sail-graph</artifactId>
+			<version>2.4.0</version>
+		</dependency>
 		<dependency>
 			<groupId>com.tinkerpop.gremlin</groupId>
 			<artifactId>gremlin-java</artifactId>
 			<version>2.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.3.2</version>
+        </dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>2.3.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.3.2</version>
 		</dependency>
 	</dependencies>
 </project> 
