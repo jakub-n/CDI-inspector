@@ -14,7 +14,6 @@ import cz.muni.fi.cdii.eclipse.ui.e3.actions.ReloadModelAction;
 import cz.muni.fi.cdii.eclipse.ui.e3.actions.ResetZoom;
 import cz.muni.fi.cdii.eclipse.ui.e3.actions.ShowDetailsAction;
 import cz.muni.fi.cdii.eclipse.ui.e3.actions.ShowFilterAction;
-import cz.muni.fi.cdii.eclipse.ui.e3.actions.TmpAction1;
 import cz.muni.fi.cdii.eclipse.ui.e3.actions.ZoomInAction;
 import cz.muni.fi.cdii.eclipse.ui.e3.actions.ZoomOutAction;
 import cz.muni.fi.cdii.eclipse.ui.parts.InspectorPart;
@@ -65,8 +64,6 @@ public class InspectorPartE3Wrapper extends DIViewPart<InspectorPart> {
         toolBarManager.add(new Separator());
         toolBarManager.add(this.injectInto(new ShowDetailsAction()));
         toolBarManager.add(this.injectInto(new ShowFilterAction()));
-        toolBarManager.add(new Separator());
-        toolBarManager.add(this.injectInto(new TmpAction1()));
     }
     
     private <T> T injectInto(T objectToInject) {
