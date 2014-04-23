@@ -1,11 +1,13 @@
 package cz.muni.fi.cdii.eclipse.inspection;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.inject.Inject;
 
+import org.apache.commons.io.IOUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -13,11 +15,12 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.services.events.IEventBroker;
+import org.eclipse.e4.core.services.log.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import cz.muni.fi.cdii.common.model.Model;
@@ -37,6 +40,9 @@ public class RemoteInspectionJob extends Job {
     
     @Inject
     private IEventBroker broker;
+    
+    @Inject 
+    private Logger log;
 
     public RemoteInspectionJob(URL baseUrl, IEclipseContext context) {
         super("Inspecting remote CDI app: " + baseUrl.toString());
@@ -47,12 +53,17 @@ public class RemoteInspectionJob extends Job {
     @Override
     protected IStatus run(IProgressMonitor monitor) {
         ObjectMapper mapper = new ObjectMapper();
-        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         Model model;
-        try {
-            model = mapper.readValue(this.inspectionUrl, Model.class);
+        InputStream inputStream = null;
+        try { 
+            inputStream = this.inspectionUrl.openStream();
+            String jsonString = IOUtils.toString(inputStream);
+            model = mapper.readValue(jsonString, Model.class);
         } catch (IOException e) {
-            return handleMapperError(e);
+            log.warn(e);
+            return handleException(e);
+        } finally {
+            IOUtils.closeQuietly(inputStream);
         }
         InspectionTask task = new RemoteInspectionTask(this.inspectionUrl, this.context);
         IStatus status = Utils.createGraphInspectionAndDispatch(model, task, this.broker);
@@ -72,11 +83,12 @@ public class RemoteInspectionJob extends Job {
         }
     }
 
-    private Status handleMapperError(IOException e) {
+    private Status handleException(IOException e) {
         Display.getDefault().asyncExec(new Runnable() {
             public void run() {
+                Shell defaultShell = Display.getDefault().getActiveShell();
                 MessageBox messageBox = new MessageBox(
-                        Display.getDefault().getActiveShell(), SWT.ICON_WARNING | SWT.OK);
+                        defaultShell, SWT.ICON_WARNING | SWT.OK);
                 messageBox.setText("CDI Inspector");
                 messageBox.setMessage("Remote CDI inspection failed."
                         + "\n"

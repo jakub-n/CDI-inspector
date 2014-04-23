@@ -34,8 +34,6 @@ public class ConnectToServerAction extends Action {
         ConnectToServerDialog dialog = new ConnectToServerDialog(this.shell);
         int dialogResult = dialog.open();
         if (dialogResult == Dialog.OK) {
-            String selectedUrlString = dialog.getSelectedUrl().toString();
-            System.out.println("selected URL: " + selectedUrlString);
             URL selectedUrl = dialog.getSelectedUrl();
             RemoteInspectionTask remoteInspectionTask = new RemoteInspectionTask(selectedUrl, 
                     this.context);

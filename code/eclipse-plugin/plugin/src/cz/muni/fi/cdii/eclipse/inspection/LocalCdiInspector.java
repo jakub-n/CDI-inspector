@@ -73,7 +73,8 @@ public class LocalCdiInspector {
 
     private void saveResultsToModel() {
         this.model.setBeans(new HashSet<>(this.foundBeans.values()));
-        this.model.setTypes(this.foundTypes);
+        // TODO delete
+//        this.model.setTypes(this.foundTypes);
     }
 
     public Model getModel() {

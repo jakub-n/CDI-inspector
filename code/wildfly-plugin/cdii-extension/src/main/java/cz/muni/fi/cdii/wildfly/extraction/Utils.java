@@ -15,7 +15,6 @@ public class Utils {
         try {
             serializedModel = objectMapper.writeValueAsString(model);
         } catch (JsonProcessingException e) {
-            // TODO consistent exceptions management
             throw new RuntimeException("Model serialization failed.", e);
         }
         return serializedModel;

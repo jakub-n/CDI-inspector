@@ -7,6 +7,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -265,8 +266,8 @@ public class WildflyExtraction {
 
     public Model getModel() {
         Model model = new Model();
-        model.setBeans(new HashSet<cz.muni.fi.cdii.common.model.Bean>(this.beansMap.values()));
-        model.setTypes(new HashSet<>(this.typesMap.values()));
+        Collection<cz.muni.fi.cdii.common.model.Bean> beans = this.beansMap.values();
+        model.setBeans(new HashSet<cz.muni.fi.cdii.common.model.Bean>(beans));
         return model;
     }
 
