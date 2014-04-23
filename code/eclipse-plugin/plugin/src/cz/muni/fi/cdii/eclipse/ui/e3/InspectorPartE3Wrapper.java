@@ -1,7 +1,11 @@
 package cz.muni.fi.cdii.eclipse.ui.e3;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.tools.compat.parts.DIViewPart;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.swt.widgets.Composite;
@@ -34,6 +38,8 @@ public class InspectorPartE3Wrapper extends DIViewPart<InspectorPart> {
 	 * View ID as defined in {@code plugin.xml} descriptor
 	 */
 	public static String VIEW_ID = "cz.muni.fi.cdii.eclipse.e3viewparts.cdii";
+	
+	public Set<Action> enableableActions = new HashSet<>();
 
 	public InspectorPartE3Wrapper() {
 		super(InspectorPart.class);
@@ -48,22 +54,35 @@ public class InspectorPartE3Wrapper extends DIViewPart<InspectorPart> {
 	public void createPartControl(Composite parent) {
 	    super.createPartControl(parent);
 	    this.addToolBarActions();
+	    this.getComponent().setE3Wrapper(this);
 	}
 
     private void addToolBarActions() {
         IToolBarManager toolBarManager = this.getViewSite().getActionBars().getToolBarManager();
-        toolBarManager.add(new ZoomInAction(this.getComponent()));
-        toolBarManager.add(new ZoomOutAction(this.getComponent()));
-        toolBarManager.add(new ResetZoom(this.getComponent()));
-        toolBarManager.add(new ExpandAllAction(this.getComponent()));
-        toolBarManager.add(new CollapseAllAction(this.getComponent()));
+        toolBarManager.add(addToEnableable(new ZoomInAction(this.getComponent())));
+        toolBarManager.add(addToEnableable(new ZoomOutAction(this.getComponent())));
+        toolBarManager.add(addToEnableable(new ResetZoom(this.getComponent())));
+        toolBarManager.add(addToEnableable(new ExpandAllAction(this.getComponent())));
+        toolBarManager.add(addToEnableable(new CollapseAllAction(this.getComponent())));
         toolBarManager.add(new Separator());
-        toolBarManager.add(new RelayoutAction(this.getComponent()));
-        toolBarManager.add(new ReloadModelAction(this.getComponent()));
+        toolBarManager.add(addToEnableable(new RelayoutAction(this.getComponent())));
+        toolBarManager.add(addToEnableable(new ReloadModelAction(this.getComponent())));
         toolBarManager.add(this.injectInto(new ConnectToServerAction(this.getSite().getShell())));
         toolBarManager.add(new Separator());
         toolBarManager.add(this.injectInto(new ShowDetailsAction()));
         toolBarManager.add(this.injectInto(new ShowFilterAction()));
+        updateToolbar();
+    }
+    
+    public void updateToolbar() {
+        for (Action action : this.enableableActions) {
+            action.setEnabled(this.getComponent().isNonEmpty());
+        }
+    }
+    
+    private Action addToEnableable(Action action) {
+        this.enableableActions.add(action);
+        return action;
     }
     
     private <T> T injectInto(T objectToInject) {

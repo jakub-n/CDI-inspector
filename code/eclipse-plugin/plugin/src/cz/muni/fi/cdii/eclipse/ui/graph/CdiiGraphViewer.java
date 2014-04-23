@@ -12,7 +12,7 @@ import org.eclipse.zest.core.widgets.GraphNode;
 
 public class CdiiGraphViewer extends GraphViewer {
     
-    private Set<CdiiGraphContainer> containers;
+    private Set<CdiiGraphContainer> containers = new HashSet<>();
 
     public CdiiGraphViewer(Composite composite, int style) {
         super(composite, style);

@@ -42,6 +42,7 @@ import cz.muni.fi.cdii.eclipse.graph.model.GraphMember;
 import cz.muni.fi.cdii.eclipse.graph.model.GraphType;
 import cz.muni.fi.cdii.eclipse.inspection.GraphInspection;
 import cz.muni.fi.cdii.eclipse.model.LocalBean;
+import cz.muni.fi.cdii.eclipse.ui.e3.InspectorPartE3Wrapper;
 import cz.muni.fi.cdii.eclipse.ui.graph.CdiiGraphViewer;
 import cz.muni.fi.cdii.eclipse.ui.graph.ColorManager;
 import cz.muni.fi.cdii.eclipse.ui.graph.GraphContentProvider;
@@ -60,6 +61,8 @@ public class InspectorPart implements ISelectionChangedListener, EventHandler {
     private Composite parent;
 
     private GraphInspection inspection;
+
+    private InspectorPartE3Wrapper e3Wrapper;
 
     public InspectorPart() {
     }
@@ -96,7 +99,7 @@ public class InspectorPart implements ISelectionChangedListener, EventHandler {
 		this.graphViewer.setLayoutAlgorithm(new TreeLayoutAlgorithm());
 		addGraphContextMenu();
 		this.graphViewer.addSelectionChangedListener(this);
-		updateDetailsPart(); 
+		updateDetailsPart();
 	}
 	
     /**
@@ -216,6 +219,7 @@ public class InspectorPart implements ISelectionChangedListener, EventHandler {
         this.inspection = inspection;
         this.updateFilterPart();
         this.updateGraph();
+        this.e3Wrapper.updateToolbar();
     }
 
     private void updateFilterPart() {
@@ -261,6 +265,14 @@ public class InspectorPart implements ISelectionChangedListener, EventHandler {
         this.setFocus();
         this.parent.redraw(); //TODO remove
         this.parent.update();
+    }
+    
+    /**
+     * @return true if some graph is shown; false otherwise
+     */
+    public boolean isNonEmpty() {
+        boolean result = this.graphViewer.getInput() != null;
+        return result;
     }
 
     /**
@@ -319,6 +331,10 @@ public class InspectorPart implements ISelectionChangedListener, EventHandler {
             return graphMember;
         }
         throw new RuntimeException("Unknown bean to select.");
+    }
+
+    public void setE3Wrapper(InspectorPartE3Wrapper e3Wrapper) {
+        this.e3Wrapper = e3Wrapper;
     }
 
 }
