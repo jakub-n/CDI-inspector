@@ -73,8 +73,6 @@ public class LocalCdiInspector {
 
     private void saveResultsToModel() {
         this.model.setBeans(new HashSet<>(this.foundBeans.values()));
-        // TODO delete
-//        this.model.setTypes(this.foundTypes);
     }
 
     public Model getModel() {
@@ -423,34 +421,36 @@ public class LocalCdiInspector {
         }
     }
 
-    private void addMethodParameterIPToTypeUnchecked(Type cdiiType, 
+    private void addMethodParameterIPToTypeUnchecked(Type memberParentCdiiType, 
             InjectionPoint cdiiInjectionPoint, final IInjectionPointParameter jbossIpParameter) 
             throws JavaModelException {
         String methodName = jbossIpParameter.getBeanMethod().getMethod().getElementName();
-        Method method = (Method) cdiiType.getMemberByName(methodName);
+        Method method = (Method) memberParentCdiiType.getMemberByName(methodName);
         if (method == null) {
             Type methodType = addType(jbossIpParameter.getBeanMethod().getMemberType());
             method = new Method();
             method.setName(methodName);
             method.setType(methodType);
+            method.setSurroundingType(memberParentCdiiType);
             method.setConstructor(jbossIpParameter.getBeanMethod().getMethod().isConstructor());
             this.copyMethodParameters(method, jbossIpParameter.getBeanMethod());
-            cdiiType.getMembers().add(method);
+            memberParentCdiiType.getMembers().add(method);
         }
         final int parameterIndex = getParameterIndex(jbossIpParameter);
         method.getParameters().get(parameterIndex).setInjectionPoint(cdiiInjectionPoint);
     }
 
-    private void addFieldIPToType(Type type, InjectionPoint modelIP,
+    private void addFieldIPToType(Type memberParentType, InjectionPoint modelIP,
             final IInjectionPointField jbossIPField) {
         String fieldName = jbossIPField.getField().getElementName();
-        Field cdiiField = (Field) type.getMemberByName(fieldName);
+        Field cdiiField = (Field) memberParentType.getMemberByName(fieldName);
         if (cdiiField == null) {
             Type cdiiIpType = addType(jbossIPField.getType());
             cdiiField = new Field();
             cdiiField.setType(cdiiIpType);
             cdiiField.setName(fieldName);
-            type.getMembers().add(cdiiField);
+            cdiiField.setSurroundingType(memberParentType);
+            memberParentType.getMembers().add(cdiiField);
         }
         cdiiField.setInjectionPoint(modelIP);
     }

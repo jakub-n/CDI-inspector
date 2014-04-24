@@ -349,7 +349,7 @@ public class WildflyExtraction {
     }
 
     /**
-     * This is workaround of poorly designed {@link Type} model class, TODO FIX
+     * This is workaround of poorly designed {@link Type} model class, TODO FIX.
      * 
      * @param cdiiUpperBounds
      *            list of upper bounds
@@ -524,7 +524,7 @@ public class WildflyExtraction {
 
     /*
      *  TODO filtering of nodes could be added to remove isolated graph components created purely 
-     *  by application server
+     *  by application server.
      *  
      *  hints:
      *  import org.jboss.as.server.deployment.Attachments;

@@ -55,10 +55,12 @@ public class FilterPart implements EventHandler {
 
     private TreeViewerColumn labelColumn;
     
+    private boolean ignoreNextTextModFlag = false;
+    
     @PostConstruct
     public void createControls(Composite parent) {
         this.broker.subscribe(CdiiEventTopics.UPDATE_FILTER_LABELS, this);
-        this.broker.subscribe(CdiiEventTopics.RESET_FILTER, this);
+        this.broker.subscribe(CdiiEventTopics.CLEAN_FILTER_FORM, this);
         parent.setLayout(new GridLayout(2, false));
         
         Label classNameLabel = new Label(parent, SWT.NONE);
@@ -114,7 +116,10 @@ public class FilterPart implements EventHandler {
 
             @Override
             public void modifyText(ModifyEvent e) {
-                FilterPart.this.doFilter();
+                if (!FilterPart.this.ignoreNextTextModFlag) {
+                    FilterPart.this.doFilter();
+                }
+                FilterPart.this.ignoreNextTextModFlag = false;
             }
             
         };
@@ -200,16 +205,21 @@ public class FilterPart implements EventHandler {
             }
             return;
         }
-        if (CdiiEventTopics.RESET_FILTER.equals(topic)) {
-            this.reset();
+        if (CdiiEventTopics.CLEAN_FILTER_FORM.equals(topic)) {
+            this.cleanFilterForm();
             return;
         }
     }
 
     private void reset() {
+        cleanFilterForm();
+        this.doFilter();
+    }
+
+    private void cleanFilterForm() {
+        this.ignoreNextTextModFlag = true;
         this.text.setText("");
         this.checkboxColumnLabelProvider.reset();
         this.text.setFocus();
-        this.doFilter();
     }
 }

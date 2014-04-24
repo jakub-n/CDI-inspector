@@ -26,6 +26,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.zest.core.widgets.GraphContainer;
+import org.eclipse.zest.core.widgets.GraphItem;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
@@ -34,6 +36,8 @@ import cz.muni.fi.cdii.common.model.Bean;
 import cz.muni.fi.cdii.eclipse.CdiiEventTopics;
 import cz.muni.fi.cdii.eclipse.graph.model.GraphBean;
 import cz.muni.fi.cdii.eclipse.graph.model.GraphElement;
+import cz.muni.fi.cdii.eclipse.graph.model.GraphMember;
+import cz.muni.fi.cdii.eclipse.graph.model.GraphType;
 import cz.muni.fi.cdii.eclipse.inspection.GraphInspection;
 import cz.muni.fi.cdii.eclipse.model.LocalBean;
 import cz.muni.fi.cdii.eclipse.ui.e3.InspectorPartE3Wrapper;
@@ -58,6 +62,8 @@ public class InspectorPart implements ISelectionChangedListener, EventHandler {
 
     private InspectorPartE3Wrapper e3Wrapper;
 
+    private GraphContentProvider graphContentProvider;
+
     public InspectorPart() {
     }
 
@@ -81,8 +87,8 @@ public class InspectorPart implements ISelectionChangedListener, EventHandler {
 		this.graphViewer = new CdiiGraphViewer(parent, SWT.BORDER);
 		this.graphViewer.getGraphControl().setLayoutData(
 		        new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		this.graphViewer.setContentProvider(
-		        new GraphContentProvider(this.broker, this.graphViewer));
+		graphContentProvider = new GraphContentProvider(this.broker, this.graphViewer);
+        this.graphViewer.setContentProvider(graphContentProvider);
 		this.graphViewer.setLabelProvider(
 		        new GraphLabelProvider(this.colorManager, this.graphViewer));
 		this.graphViewer.setLayoutAlgorithm(new TreeLayoutAlgorithm());
@@ -250,7 +256,7 @@ public class InspectorPart implements ISelectionChangedListener, EventHandler {
         String topic = event.getTopic();
         if (CdiiEventTopics.SELECT_NODE.equals(topic)) {
             final GraphElement modelElement = (GraphElement) event.getProperty(IEventBroker.DATA);
-            selectNode(modelElement);
+            showAndSelectNode(modelElement);
             return;
         }
         if (CdiiEventTopics.UPDATE_DETAILS_REQUEST.equals(topic)) {
@@ -263,24 +269,59 @@ public class InspectorPart implements ISelectionChangedListener, EventHandler {
         }
     }
 
-    private void selectNode(GraphElement graphElement) {
+    private void showAndSelectNode(GraphElement graphElement) {
         resetFilterIfElementNotShown(graphElement);
-        StructuredSelection selection = new StructuredSelection(graphElement);
-        this.graphViewer.setSelection(selection, true);
-        this.graphViewer.reveal(graphElement);
-        this.updateDetailsPart();
+        ifMemberNodeOpenContainer(graphElement);
+        selectNode(graphElement);
     }
 
     /**
-     * works semi-synchronously. By the time this method returns, graph restructure is being 
-     * prodessed.
+     * Schedules node selection and details part update on UI thread.
+     */
+    private void selectNode(final GraphElement graphElement) {
+        this.graphViewer.getGraphControl().getDisplay().asyncExec(new Runnable() {
+            
+            @Override
+            public void run() {
+                StructuredSelection selection = new StructuredSelection(graphElement);
+                InspectorPart.this.graphViewer.setSelection(selection, true);
+                InspectorPart.this.graphViewer.reveal(graphElement);
+                InspectorPart.this.updateDetailsPart();
+            }
+        });
+    }
+
+    /**
+     * Schedules node open on UI thread provided {@code graphElement} in instance of 
+     * {@link GraphMember}
+     */
+    private void ifMemberNodeOpenContainer(final GraphElement graphElement) {
+        if (graphElement instanceof GraphMember) {
+            this.graphViewer.getGraphControl().getDisplay().asyncExec(new Runnable() {
+                
+                @Override
+                public void run() {
+                    GraphMember graphMember = (GraphMember) graphElement;
+                    GraphType surroundingGraphType = graphMember.getSurroundingType();
+                    GraphItem surroundingItem = 
+                            InspectorPart.this.graphViewer.findGraphItem(surroundingGraphType);
+                    GraphContainer surroundingContainer = (GraphContainer) surroundingItem;
+                    surroundingContainer.open(true);
+                }
+            });
+        }
+    }
+
+    /**
+     * If passed graphElement is filtered out, it reset the filter form and show all nodes in graph.
      */
     private void resetFilterIfElementNotShown(GraphElement graphElement) {
         GraphContentProvider graphContentProvider = 
                 (GraphContentProvider) this.graphViewer.getContentProvider();
         boolean isElementShown = graphContentProvider.getFilterSet().contains(graphElement);
         if (!isElementShown) {
-            this.broker.send(CdiiEventTopics.RESET_FILTER, null);
+            this.broker.send(CdiiEventTopics.CLEAN_FILTER_FORM, null);
+            this.graphContentProvider.filter(null);
         }
         
     }

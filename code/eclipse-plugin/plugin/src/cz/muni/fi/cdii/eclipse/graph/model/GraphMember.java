@@ -45,6 +45,9 @@ public interface GraphMember extends GraphElement {
     @Adjacency(label="hasInjectionPoint", direction=Direction.OUT)
     public void setInjectionPoints(Iterable<GraphInjectionPoint> injectionPoints);
     
+    @Adjacency(label="hasMember", direction=Direction.IN)
+    public GraphType getSurroundingType();
+    
     @GremlinGroovy(value="true", frame=false)
     public boolean satisfies(FilterModel criteria);
     

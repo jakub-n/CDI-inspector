@@ -16,6 +16,6 @@ public interface CdiiEventTopics {
             "cz/muni/fi/cdii/eclipse/events/updateDetailsRequest";
     public static final String UPDATE_FILTER_LABELS_REQUEST = 
             "cz/muni/fi/cdii/eclipse/events/updateFilterLabelsRequest";
-    public static final String RESET_FILTER = "cz/muni/fi/cdii/eclipse/events/resetFilter";
+    public static final String CLEAN_FILTER_FORM = "cz/muni/fi/cdii/eclipse/events/cleanFilterForm";
     
 }

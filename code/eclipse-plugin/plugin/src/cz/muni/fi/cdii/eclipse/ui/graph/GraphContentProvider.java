@@ -216,12 +216,23 @@ public class GraphContentProvider implements IGraphEntityContentProvider, INeste
     public void handleEvent(Event event) {
         String topic = event.getTopic();
         if (CdiiEventTopics.FILTER_GRAPH.equals(topic)) {
-            this.filterCriteria = (FilterModel) event.getProperty(IEventBroker.DATA);
-            this.updateFilterSet();
-            this.graphViewer.refresh(false);
-            this.graphViewer.applyLayout();
+            FilterModel criteria = (FilterModel) event.getProperty(IEventBroker.DATA);
+            filter(criteria);
             return;
         }
+    }
+
+
+    /**
+     * Filter graph and refresh it. 
+     * @param criteria all bean nodes have to satisfy in order to be show. 
+     * null means show everything
+     */
+    public void filter(FilterModel criteria) {
+        this.filterCriteria = criteria;
+        this.updateFilterSet();
+        this.graphViewer.refresh(false);
+        this.graphViewer.applyLayout();
     }
 
 }

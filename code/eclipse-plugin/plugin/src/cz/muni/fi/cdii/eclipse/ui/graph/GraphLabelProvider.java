@@ -268,25 +268,6 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
         return null;
     }
 
-    /**
-     * 
-     * @param type
-     * @param connections
-     * @return subset of input {@code connections} such that it ends in node that represents 
-     * {@code type}
-     */
-    // TODO delete
-//    private Set<GraphConnection> filterConnectionsToType(GraphType type, 
-//            List<GraphConnection> connections) {
-//        Set<GraphConnection> result = new HashSet<>();
-//        for (GraphConnection connection : connections) {
-//            if (type.equals(connection.getDestination().getData())) {
-//                result.add(connection);
-//            }
-//        }
-//        return result;
-//    }
-
     private static enum ConnectionType {
         /**
          * bean -> type

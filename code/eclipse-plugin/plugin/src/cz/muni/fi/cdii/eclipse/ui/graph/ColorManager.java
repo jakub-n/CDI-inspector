@@ -13,7 +13,6 @@ import org.eclipse.swt.graphics.RGB;
 public class ColorManager {
 	
 	public static enum GraphColorEnum {
-		// TODO delete
 		FONT_COLOR (10, 10, 10),
 		BORDER_COLOR (10,10,10),
 		SELECTED_BORDER_COLOR (250,10,10),
