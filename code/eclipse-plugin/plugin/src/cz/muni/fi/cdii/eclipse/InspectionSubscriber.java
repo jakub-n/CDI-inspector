@@ -68,7 +68,10 @@ public class InspectionSubscriber implements EventHandler {
 
 	@Override
 	public void handleEvent(Event event) {
-		final GraphInspection inspection = (GraphInspection) event.getProperty(IEventBroker.DATA);
-		this.inspect(inspection);
+	    if (CdiiEventTopics.INSPECT.equals(event.getTopic())) {
+	        final GraphInspection inspection = 
+	                (GraphInspection) event.getProperty(IEventBroker.DATA);
+	        this.inspect(inspection);
+	    }
 	}
 }

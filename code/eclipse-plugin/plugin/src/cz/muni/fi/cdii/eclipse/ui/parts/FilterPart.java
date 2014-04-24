@@ -188,6 +188,10 @@ public class FilterPart implements EventHandler {
      */
     @Override
     public void handleEvent(Event event) {
+        if (this.treeViewer.getControl().isDisposed()) {
+            this.dispose();
+            return;
+        }
         String topic = event.getTopic();
         if (CdiiEventTopics.UPDATE_FILTER_LABELS.equals(topic)) {
             this.checkboxColumnLabelProvider.disposeWidgets();

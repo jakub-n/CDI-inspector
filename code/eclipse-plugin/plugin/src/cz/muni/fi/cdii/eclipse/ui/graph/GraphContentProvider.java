@@ -65,6 +65,7 @@ public class GraphContentProvider implements IGraphEntityContentProvider, INeste
             @SuppressWarnings("unchecked")
             FramedGraph<Graph> graph = (FramedGraph<Graph>) newInput;
             this.input = graph;
+            this.filterCriteria = null;
             this.updateFilterSet();
             return;
         }

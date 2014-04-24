@@ -128,6 +128,7 @@ public class GraphInspection {
         if (bean.getElName() != null) {
             this.elNames.add(bean.getElName());
         }
+        this.qualifiers.addAll(bean.getQualifiers());
         GraphType type = addType(bean.getType());
         Set<GraphType> typeSet = addTypes(bean.getTypeSet());
         List<String> qualifiers = qualifiersToList(bean.getQualifiers());
