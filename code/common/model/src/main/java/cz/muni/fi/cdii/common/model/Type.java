@@ -177,23 +177,6 @@ public class Type implements Viewable {
         return this.toString(true, true);
     }
     
-    @Override
-    public DetailsElement getDetails() {
-        DetailsElement root = new DetailsElement();
-        root.addSubElement(new DetailsElement("Package:", this.getPackage()));
-        root.addSubElement(new DetailsElement("Name:", this.getName()));
-        root.addSubElement(new DetailsElement("Is array", this.isArray() ? "true" : "false"));
-        
-        if (!this.getTypeParameters().isEmpty()) {
-            DetailsElement typeParamsRoot = new DetailsElement("Type parameters", "");
-            for (Type type : this.getTypeParameters()) {
-                typeParamsRoot.addSubElement(new DetailsElement("", type.toString(true, true)));
-            }
-            root.addSubElement(typeParamsRoot);
-        }
-        return root;
-    }
-    
     /**
      * Sorts Types lexicographically base on their name and package. Name has higher priority.
      */

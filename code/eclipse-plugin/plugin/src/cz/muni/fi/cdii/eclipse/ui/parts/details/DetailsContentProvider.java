@@ -3,8 +3,6 @@ package cz.muni.fi.cdii.eclipse.ui.parts.details;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-import cz.muni.fi.cdii.common.model.DetailsElement;
-
 public class DetailsContentProvider implements ITreeContentProvider {
     
     @Override

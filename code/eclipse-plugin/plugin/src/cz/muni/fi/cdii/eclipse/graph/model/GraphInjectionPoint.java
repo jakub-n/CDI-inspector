@@ -30,4 +30,7 @@ public interface GraphInjectionPoint {
     
     @Adjacency(label="injectedInto", direction=Direction.IN)
     public void addInjectedBean(GraphBean bean);
+    
+    @Adjacency(label="injectedInto", direction=Direction.IN)
+    public Iterable<GraphBean> getInjectedBeans();
 }

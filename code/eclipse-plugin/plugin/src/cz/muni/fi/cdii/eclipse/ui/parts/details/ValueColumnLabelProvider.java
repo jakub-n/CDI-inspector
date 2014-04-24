@@ -15,14 +15,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
 
-import cz.muni.fi.cdii.common.model.DetailsElement;
-import cz.muni.fi.cdii.common.model.Viewable;
 import cz.muni.fi.cdii.eclipse.CdiiEventTopics;
+import cz.muni.fi.cdii.eclipse.graph.model.GraphElement;
 
 public class ValueColumnLabelProvider extends CellLabelProvider {
     
     private EventBroker broker;
-    private Map<Viewable, Button> buttons = new HashMap<>();
+    private Map<GraphElement, Button> buttons = new HashMap<>();
 
     public ValueColumnLabelProvider(EventBroker broker) {
         super();
@@ -39,20 +38,20 @@ public class ValueColumnLabelProvider extends CellLabelProvider {
                 cell.setText(text);
                 return;
             }
-            if (value instanceof Viewable) {
-                Viewable viewable = (Viewable) value;
-                setShowInGraphButtonEditor(cell, viewable);
+            if (value instanceof GraphElement) {
+                GraphElement graphElement = (GraphElement) value;
+                setShowInGraphButtonEditor(cell, graphElement);
                 return;
             }
         }
     }
 
-    private void setShowInGraphButtonEditor(ViewerCell cell, final Viewable viewable) {
+    private void setShowInGraphButtonEditor(ViewerCell cell, final GraphElement graphElement) {
         Button button;
-        if (this.buttons.containsKey(viewable)) {
-            button = this.buttons.get(viewable);
+        if (this.buttons.containsKey(graphElement)) {
+            button = this.buttons.get(graphElement);
         } else {
-            button = createButton(cell, viewable);
+            button = createButton(cell, graphElement);
         }
 
         TreeItem item = (TreeItem) cell.getItem();
@@ -62,22 +61,23 @@ public class ValueColumnLabelProvider extends CellLabelProvider {
         editor.setEditor(button, item, cell.getColumnIndex());
     }
 
-    private Button createButton(ViewerCell cell, final Viewable viewable) {
+    private Button createButton(ViewerCell cell, final GraphElement graphElement) {
         Button button;
         button = new Button((Composite) cell.getViewerRow().getControl(), SWT.NONE);
-        button.setText("Show in graph");
+        String buttonText = graphElement.getDetailsLinkLabel();
+        button.setText(buttonText);
         button.addSelectionListener(new SelectionListener() {
             
             @Override
             public void widgetSelected(SelectionEvent e) {
-                broker.post(CdiiEventTopics.SELECT_NODE, viewable);
+                broker.post(CdiiEventTopics.SELECT_NODE, graphElement);
             }
             
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
-        this.buttons.put(viewable, button);
+        this.buttons.put(graphElement, button);
         return button;
     }
     

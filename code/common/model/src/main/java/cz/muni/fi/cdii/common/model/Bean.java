@@ -150,24 +150,5 @@ public class Bean implements Viewable {
     public String getNodeTooltipText() {
         return this.getType().toString(true, true);
     }
-
-    @Override
-    public DetailsElement getDetails() {
-        DetailsElement root = new DetailsElement();
-        root.addSubElement(new DetailsElement("Type", this.getType()));
-        if (this.getElName() != null) {
-            root.addSubElement(new DetailsElement("EL name", this.getElName()));
-        }
-        root.addSubElement(this.getScope().getDetails());
-        if (!this.getQualifiers().isEmpty()) {
-            root.addSubElement(Utils.getQualifiersDetails(this.getQualifiers()));
-        }
-        DetailsElement typeSet = new DetailsElement("Type set", "");
-        for (Type type : this.getTypeSet()) {
-            typeSet.addSubElement(new DetailsElement("", type.toString(true, true)));
-        }
-        root.addSubElement(typeSet);
-        return root;
-    }
     
 }

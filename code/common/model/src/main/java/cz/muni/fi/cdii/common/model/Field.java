@@ -130,20 +130,10 @@ public class Field implements Member {
     }
 
     @Override
-    public DetailsElement getDetails() {
-        DetailsElement root = new DetailsElement();
-        DetailsElement name = new DetailsElement("Name", this.getName());
-        root.addSubElement(name);
-        DetailsElement type = new DetailsElement("Type", this.getType().toString(true, true));
-        root.addSubElement(type);
-        if (this.getProducedBean() != null) {
-            root.addSubElement(new DetailsElement("Produced bean", this.getProducedBean()));
-        }
-        if (this.getInjectionPoint() != null) {
-            root.addSubElement(this.getInjectionPoint().getDetails());
-        }
-        
-        return root;
+    public String getDetailsLinkLabel() {
+        return this.getType().toString(false, true) 
+                + " " + this.getSurroundingType().getName() 
+                + " " + this.getName();
     }
     
 }

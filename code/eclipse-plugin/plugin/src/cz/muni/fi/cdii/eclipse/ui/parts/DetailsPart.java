@@ -16,9 +16,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 
-import cz.muni.fi.cdii.common.model.DetailsElement;
 import cz.muni.fi.cdii.eclipse.CdiiEventTopics;
 import cz.muni.fi.cdii.eclipse.ui.parts.details.DetailsContentProvider;
+import cz.muni.fi.cdii.eclipse.ui.parts.details.DetailsElement;
 import cz.muni.fi.cdii.eclipse.ui.parts.details.LabelColumnLabelProvider;
 import cz.muni.fi.cdii.eclipse.ui.parts.details.ValueColumnLabelProvider;
 

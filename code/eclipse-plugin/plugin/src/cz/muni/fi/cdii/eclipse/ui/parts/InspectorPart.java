@@ -31,15 +31,9 @@ import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 
 import cz.muni.fi.cdii.common.model.Bean;
-import cz.muni.fi.cdii.common.model.DetailsElement;
-import cz.muni.fi.cdii.common.model.Member;
-import cz.muni.fi.cdii.common.model.Type;
-import cz.muni.fi.cdii.common.model.Viewable;
 import cz.muni.fi.cdii.eclipse.CdiiEventTopics;
 import cz.muni.fi.cdii.eclipse.graph.model.GraphBean;
 import cz.muni.fi.cdii.eclipse.graph.model.GraphElement;
-import cz.muni.fi.cdii.eclipse.graph.model.GraphMember;
-import cz.muni.fi.cdii.eclipse.graph.model.GraphType;
 import cz.muni.fi.cdii.eclipse.inspection.GraphInspection;
 import cz.muni.fi.cdii.eclipse.model.LocalBean;
 import cz.muni.fi.cdii.eclipse.ui.e3.InspectorPartE3Wrapper;
@@ -47,6 +41,7 @@ import cz.muni.fi.cdii.eclipse.ui.graph.CdiiGraphViewer;
 import cz.muni.fi.cdii.eclipse.ui.graph.ColorManager;
 import cz.muni.fi.cdii.eclipse.ui.graph.GraphContentProvider;
 import cz.muni.fi.cdii.eclipse.ui.graph.GraphLabelProvider;
+import cz.muni.fi.cdii.eclipse.ui.parts.details.DetailsElement;
 
 @SuppressWarnings("restriction")
 public class InspectorPart implements ISelectionChangedListener, EventHandler {
@@ -127,7 +122,7 @@ public class InspectorPart implements ISelectionChangedListener, EventHandler {
     private void updateDetailsPart(GraphElement graphElement) {
         DetailsElement details = graphElement == null 
                 ? null 
-                : graphElement.getOrigin().getDetails();
+                : graphElement.getDetails();
         broker.post(CdiiEventTopics.UPDATE_DETAILS, details);
     }
 
@@ -254,7 +249,7 @@ public class InspectorPart implements ISelectionChangedListener, EventHandler {
     public void handleEvent(Event event) {
         String topic = event.getTopic();
         if (CdiiEventTopics.SELECT_NODE.equals(topic)) {
-            final Viewable modelElement = (Viewable) event.getProperty(IEventBroker.DATA);
+            final GraphElement modelElement = (GraphElement) event.getProperty(IEventBroker.DATA);
             selectNode(modelElement);
             return;
         }
@@ -268,40 +263,26 @@ public class InspectorPart implements ISelectionChangedListener, EventHandler {
         }
     }
 
-    private void selectNode(Viewable modelElement) {
-        GraphElement graphElement = getGraphElementByModelElement(modelElement);
+    private void selectNode(GraphElement graphElement) {
+        resetFilterIfElementNotShown(graphElement);
         StructuredSelection selection = new StructuredSelection(graphElement);
         this.graphViewer.setSelection(selection, true);
         this.graphViewer.reveal(graphElement);
         this.updateDetailsPart();
     }
-    
-    private GraphElement getGraphElementByModelElement(Viewable modelElement) {
-        if (modelElement instanceof Bean) {
-            Bean bean = (Bean) modelElement;
-            GraphBean graphBean = this.inspection.getBeanMap().get(bean);
-            if (graphBean == null) {
-                throw new RuntimeException("Unknown bean to select.");
-            }
-            return graphBean;
+
+    /**
+     * works semi-synchronously. By the time this method returns, graph restructure is being 
+     * prodessed.
+     */
+    private void resetFilterIfElementNotShown(GraphElement graphElement) {
+        GraphContentProvider graphContentProvider = 
+                (GraphContentProvider) this.graphViewer.getContentProvider();
+        boolean isElementShown = graphContentProvider.getFilterSet().contains(graphElement);
+        if (!isElementShown) {
+            this.broker.send(CdiiEventTopics.RESET_FILTER, null);
         }
-        if (modelElement instanceof Type) {
-            Type type = (Type) modelElement;
-            GraphType graphType = this.inspection.getTypeMap().get(type);
-            if (graphType == null) {
-                throw new RuntimeException("Unknown bean to select.");
-            }
-            return graphType;
-        }
-        if (modelElement instanceof Member) {
-            Member member = (Member) modelElement;
-            GraphMember graphMember = this.inspection.getMemberMap().get(member);
-            if (graphMember == null) {
-                throw new RuntimeException("Unknown bean to select.");
-            }
-            return graphMember;
-        }
-        throw new RuntimeException("Unknown bean to select.");
+        
     }
 
     public void setE3Wrapper(InspectorPartE3Wrapper e3Wrapper) {

@@ -26,6 +26,7 @@ import cz.muni.fi.cdii.eclipse.graph.model.GraphBean;
 import cz.muni.fi.cdii.eclipse.graph.model.GraphElement;
 import cz.muni.fi.cdii.eclipse.graph.model.GraphMember;
 import cz.muni.fi.cdii.eclipse.graph.model.GraphType;
+import cz.muni.fi.cdii.eclipse.graph.model.Utils;
 import cz.muni.fi.cdii.eclipse.ui.parts.filter.FilterModel;
 
 public class GraphContentProvider implements IGraphEntityContentProvider, INestedContentProvider, 
@@ -35,6 +36,9 @@ public class GraphContentProvider implements IGraphEntityContentProvider, INeste
     private CdiiGraphViewer graphViewer;
     private FramedGraph<Graph> input;
     private FilterModel filterCriteria;
+    /**
+     * all currently visible (~ shown) nodes
+     */
     private Set<GraphElement> filterSet;
 
     public GraphContentProvider(IEventBroker broker, CdiiGraphViewer graphViewer) {
@@ -43,6 +47,12 @@ public class GraphContentProvider implements IGraphEntityContentProvider, INeste
         this.filterCriteria = null;
         this.broker.subscribe(CdiiEventTopics.FILTER_GRAPH, this);
     }
+    
+
+    public Set<GraphElement> getFilterSet() {
+        return filterSet;
+    }
+
 
     @Override
     public void dispose() {
@@ -67,7 +77,7 @@ public class GraphContentProvider implements IGraphEntityContentProvider, INeste
     }
 
     private void updateFilterSet() {
-        List<GraphBean> allBeans = iterableToList(this.input.getVertices(
+        List<GraphBean> allBeans = Utils.iterableToList(this.input.getVertices(
                 Constants.VERTEX_TYPE_PROPERTY, GraphBean.VERTEX_TYPE_NAME, GraphBean.class));
         Set<GraphBean> filteredBeans = filterBeans(allBeans);
         Set<GraphElement> filterSet = new HashSet<>();
@@ -76,7 +86,7 @@ public class GraphContentProvider implements IGraphEntityContentProvider, INeste
             Collection<? extends GraphElement> adjacentTypes = getAdjacentTypes(filteredBean);
             filterSet.addAll(adjacentTypes);
         }
-        List<GraphMember> allMembers = iterableToList(
+        List<GraphMember> allMembers = Utils.iterableToList(
                 this.input.getVertices(Constants.VERTEX_TYPE_PROPERTY, GraphMember.VERTEX_TYPE_NAME,
                         GraphMember.class));
         filterSet.addAll(allMembers);
@@ -107,8 +117,8 @@ public class GraphContentProvider implements IGraphEntityContentProvider, INeste
     private Collection<? extends GraphElement> getAdjacentTypes(GraphBean bean) {
         Set<GraphElement> result = new HashSet<>();
         GraphType mainType = bean.getMainType();
-        List<GraphType> injectionTargets = iterableToList(bean.getAuxiliaryInjectionTargetTypes());
-        List<GraphType> producer = iterableToList(bean.getProducingType());
+        List<GraphType> injectionTargets = Utils.iterableToList(bean.getAuxiliaryInjectionTargetTypes());
+        List<GraphType> producer = Utils.iterableToList(bean.getProducingType());
         result.add(mainType);
         result.addAll(injectionTargets);
         result.addAll(producer);
@@ -125,7 +135,7 @@ public class GraphContentProvider implements IGraphEntityContentProvider, INeste
     public Object[] getChildren(Object element) {
         if (element instanceof GraphType) {
             GraphType typeVertex = (GraphType) element;
-            List<GraphMember> children = iterableToList(typeVertex.getMembers());
+            List<GraphMember> children = Utils.iterableToList(typeVertex.getMembers());
             return children.toArray();
         }
         throw new RuntimeException("Unexpected element type: "
@@ -137,7 +147,7 @@ public class GraphContentProvider implements IGraphEntityContentProvider, INeste
         if (this.input == null) {
             return new Object[0];
         }
-        List<GraphBean> beans = iterableToList(this.input.getVertices(
+        List<GraphBean> beans = Utils.iterableToList(this.input.getVertices(
                 Constants.VERTEX_TYPE_PROPERTY, GraphBean.VERTEX_TYPE_NAME, GraphBean.class));
         List<GraphType> types = getMainTypeNodes(); 
         ArrayList<GraphElement> allElements = new ArrayList<>();
@@ -151,7 +161,7 @@ public class GraphContentProvider implements IGraphEntityContentProvider, INeste
         GremlinPipeline<Vertex, Vertex> mainTypesPipeline = new GremlinPipeline<Vertex, Vertex>()
                 .has(Constants.VERTEX_TYPE_PROPERTY, GraphBean.VERTEX_TYPE_NAME).out("mainType");
         mainTypesPipeline.setStarts(this.input.getVertices());
-        List<GraphType> types = iterableToList(
+        List<GraphType> types = Utils.iterableToList(
                 this.input.frameVertices(mainTypesPipeline, GraphType.class));
         return types;
     }
@@ -161,9 +171,9 @@ public class GraphContentProvider implements IGraphEntityContentProvider, INeste
         if (entity instanceof GraphBean) {
             GraphBean bean = (GraphBean) entity;
             GraphType type = bean.getMainType();
-            List<GraphMember> injectionTargetMembers = iterableToList(bean
+            List<GraphMember> injectionTargetMembers = Utils.iterableToList(bean
                     .getInjectionTargetMembers());
-            List<GraphType> auxInjectionTargetTypes = iterableToList(
+            List<GraphType> auxInjectionTargetTypes = Utils.iterableToList(
                     bean.getAuxiliaryInjectionTargetTypes());
             ArrayList<GraphElement> elements = new ArrayList<>();
             elements.add(type);
@@ -174,7 +184,7 @@ public class GraphContentProvider implements IGraphEntityContentProvider, INeste
         }
         if (entity instanceof GraphType) {
             GraphType graphType = (GraphType) entity;
-            List<GraphBean> auxProcudesTragets = iterableToList(
+            List<GraphBean> auxProcudesTragets = Utils.iterableToList(
                     graphType.getAuxiliaryProducesTargets());
             Object[] filteredElements = filter(auxProcudesTragets);
             return filteredElements;
@@ -192,14 +202,6 @@ public class GraphContentProvider implements IGraphEntityContentProvider, INeste
                 + (entity == null ? "null" : entity.getClass()));
     }
 
-    private static <T> List<T> iterableToList(Iterable<T> input) {
-        ArrayList<T> result = new ArrayList<>();
-        for (T item : input) {
-            result.add(item);
-        }
-        return result;
-    }
-    
     private Object[] filter(Collection<? extends GraphElement> elements) {
         Set<GraphElement> elementsSet = new HashSet<>(elements);
         elementsSet.retainAll(this.filterSet);

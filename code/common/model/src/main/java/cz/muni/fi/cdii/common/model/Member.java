@@ -31,4 +31,6 @@ public interface Member extends Viewable {
      * @param surroundingType type this member lives in
      */
     public void setSurroundingType(Type surroundingType);
+    
+    public String getDetailsLinkLabel();
 }

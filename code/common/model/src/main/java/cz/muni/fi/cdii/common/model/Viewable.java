@@ -14,9 +14,4 @@ public interface Viewable {
      * Tooltip text for nodes corresponding to instance of this interface.
      */
     public String getNodeTooltipText();
-    
-    /**
-     * Details part content.
-     */
-    public DetailsElement getDetails();
 }

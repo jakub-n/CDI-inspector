@@ -99,7 +99,7 @@ public class Method implements Member {
             result.append(" ");
         }
         result.append(this.getName());
-        printParameterToBuilder(result, false);
+        result.append(getParametersAsString(false));
         return result.toString();
     }
     
@@ -113,7 +113,7 @@ public class Method implements Member {
         }
         result.append(this.getType() != null ? this.getType().toString(true, true) : "void");
         result.append(" ").append(this.getName());
-        printParameterToBuilder(result, true);
+        result.append(getParametersAsString(true));
         return result.toString();
     }
     
@@ -128,11 +128,12 @@ public class Method implements Member {
 
     /**
      * 
-     * @param builder where to print to
      * @param verbose if true, parameters has qualified names and each one is on separate line
      *                <br> otherwise parameters are unqualified and comma-space separated
+     * @return "(...params...)"              
      */
-    private void printParameterToBuilder(StringBuilder builder, boolean verbose) {
+    private String getParametersAsString(boolean verbose) {
+        StringBuilder builder = new StringBuilder();
         builder.append("(");
         for (MethodParameter param : this.parameters) {
             builder.append(param.getType().toString(verbose, true));
@@ -141,6 +142,7 @@ public class Method implements Member {
         }
         builder.delete(builder.length()-2, builder.length());
         builder.append(")");
+        return builder.toString();
     }
     
     @Override
@@ -178,24 +180,6 @@ public class Method implements Member {
             return false;
         return true;
     }
-
-    @Override
-    public DetailsElement getDetails() {
-        DetailsElement root = new DetailsElement();
-        root.addSubElement(new DetailsElement("Name", this.getName()));
-        root.addSubElement(new DetailsElement("Return type", this.getReturnTypeString()));
-        root.addSubElement(new DetailsElement("Is constructor", 
-                String.valueOf(this.isConstructor())));
-        DetailsElement parameters = new DetailsElement("Method parameters", "");
-        for (MethodParameter param : this.getParameters()) {
-            parameters.addSubElement(param.getDetails());
-        }
-        root.addSubElement(parameters);
-        if (this.getProducedBean() != null) {
-            root.addSubElement(new DetailsElement("Produced bean", this.getProducedBean()));
-        }
-        return root;
-    }
     
     public String getReturnTypeString() {
         if (this.isConstructor()) {
@@ -205,6 +189,12 @@ public class Method implements Member {
             return "void";
         }
         return this.getType().toString(true, true);
+    }
+
+    @Override
+    public String getDetailsLinkLabel() {
+        return getReturnTypeString() + " " + this.getSurroundingType().getName() 
+                + " " + this.getParametersAsString(false);
     }
     
 }

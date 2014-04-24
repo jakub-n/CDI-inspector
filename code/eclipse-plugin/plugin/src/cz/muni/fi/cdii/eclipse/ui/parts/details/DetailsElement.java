@@ -1,8 +1,10 @@
-package cz.muni.fi.cdii.common.model;
+package cz.muni.fi.cdii.eclipse.ui.parts.details;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import cz.muni.fi.cdii.eclipse.graph.model.GraphElement;
 
 /**
  * Model class for details part.
@@ -28,7 +30,7 @@ public class DetailsElement {
         this.value = value;
     }
     
-    public DetailsElement(String label, Viewable value) {
+    public DetailsElement(String label, GraphElement value) {
         super();
         this.label = label;
         this.value = value;

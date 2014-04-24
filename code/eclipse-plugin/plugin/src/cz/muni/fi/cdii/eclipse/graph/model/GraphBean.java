@@ -18,6 +18,8 @@ import com.tinkerpop.frames.modules.javahandler.JavaHandlerContext;
 import cz.muni.fi.cdii.common.model.Bean;
 import cz.muni.fi.cdii.common.model.Qualifier;
 import cz.muni.fi.cdii.common.model.Type;
+import cz.muni.fi.cdii.eclipse.ui.parts.details.DetailsElement;
+import cz.muni.fi.cdii.eclipse.ui.parts.details.DetailsElementFactory;
 import cz.muni.fi.cdii.eclipse.ui.parts.filter.FilterModel;
 
 @JavaHandlerClass(GraphBean.Impl.class)
@@ -83,12 +85,21 @@ public interface GraphBean extends VertexFrame, GraphElement {
     @GremlinGroovy("it.in('produces').in('hasMember').dedup()")
     public Iterable<GraphType> getProducingType();
     
+    @GremlinGroovy("it.in('produces').dedup()")
+    public Iterable<GraphMember> getProducingMembers();
+    
 
     @JavaHandler
     public boolean satisfies(FilterModel criteria);
     
     @JavaHandler
     public String getTooltipText();
+    
+    @JavaHandler
+    public DetailsElement getDetails();
+    
+    @JavaHandler
+    public String getDetailsLinkLabel();
     
     public static abstract class Impl implements JavaHandlerContext<Vertex>, GraphBean {
         
@@ -97,9 +108,51 @@ public interface GraphBean extends VertexFrame, GraphElement {
             it().setProperty(Constants.VERTEX_TYPE_PROPERTY, VERTEX_TYPE_NAME);
         }
         
-        // TODO upravit
         public String getTooltipText() {
             return this.getOrigin().getType().toString(true, true);
+        }
+        
+        public DetailsElement getDetails() {
+            DetailsElement root = new DetailsElement();
+            root.addSubElement(new DetailsElement("Type", this.getMainType()));
+            root.addSubElement(new DetailsElement("EL name", 
+                    this.getOrigin().getElName() != null 
+                            ? this.getOrigin().getElName() 
+                            : "<none>"));
+            root.addSubElement(DetailsElementFactory.create(this.getOrigin().getScope()));
+            root.addSubElement(DetailsElementFactory.create(this.getOrigin().getQualifiers()));
+            List<GraphMember> producingMembers = Utils.iterableToList(this.getProducingMembers());
+            if (producingMembers.isEmpty()) {
+                root.addSubElement(new DetailsElement("Produced by", "<none>"));
+            } else {
+                DetailsElement producedByRoot = new DetailsElement("Produced by","");
+                for (GraphMember producingMember : producingMembers) {
+                    producedByRoot.addSubElement(new DetailsElement("", producingMember));
+                }
+                root.addSubElement(producedByRoot);
+            }            
+            List<GraphMember> injectionTargetMembers = Utils.iterableToList(
+                    this.getInjectionTargetMembers());
+            if (injectionTargetMembers.isEmpty()) {
+                root.addSubElement(new DetailsElement("Injected into", "<none>"));
+            } else {
+                DetailsElement producedByRoot = new DetailsElement("Injected into","");
+                for (GraphMember injectionTargetMember : injectionTargetMembers) {
+                    producedByRoot.addSubElement(new DetailsElement("", injectionTargetMember));
+                }
+                root.addSubElement(producedByRoot);
+            }
+            DetailsElement typeSet = new DetailsElement("Type set", "");
+            for (Type type : this.getOrigin().getTypeSet()) {
+                typeSet.addSubElement(new DetailsElement("", type.toString(true, true)));
+            }
+            root.addSubElement(typeSet);
+            return root;
+        }
+        
+        public String getDetailsLinkLabel() {
+            return "@" + this.getOrigin().getScope().getName() 
+                    + " " + this.getOrigin().getType().getName();
         }
         
         public boolean satisfies(FilterModel criteria) {

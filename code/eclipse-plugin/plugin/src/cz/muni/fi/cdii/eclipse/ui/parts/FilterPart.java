@@ -58,6 +58,7 @@ public class FilterPart implements EventHandler {
     @PostConstruct
     public void createControls(Composite parent) {
         this.broker.subscribe(CdiiEventTopics.UPDATE_FILTER_LABELS, this);
+        this.broker.subscribe(CdiiEventTopics.RESET_FILTER, this);
         parent.setLayout(new GridLayout(2, false));
         
         Label classNameLabel = new Label(parent, SWT.NONE);
@@ -197,6 +198,10 @@ public class FilterPart implements EventHandler {
             if (!"".equals(this.text.getText())) {
                 this.text.setText("");
             }
+            return;
+        }
+        if (CdiiEventTopics.RESET_FILTER.equals(topic)) {
+            this.reset();
             return;
         }
     }
