@@ -140,7 +140,9 @@ public class Method implements Member {
             builder.append(",");
             builder.append(verbose ? "\n" : " ");
         }
-        builder.delete(builder.length()-2, builder.length());
+        if (!this.parameters.isEmpty()) {
+            builder.delete(builder.length()-2, builder.length());
+        }
         builder.append(")");
         return builder.toString();
     }
