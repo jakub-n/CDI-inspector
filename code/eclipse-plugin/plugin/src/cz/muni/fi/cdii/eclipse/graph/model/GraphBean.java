@@ -152,7 +152,7 @@ public interface GraphBean extends VertexFrame, GraphElement {
         
         public String getDetailsLinkLabel() {
             return "@" + this.getOrigin().getScope().getName() 
-                    + " " + this.getOrigin().getType().getName();
+                    + " " + this.getOrigin().getType().toString(false, true);
         }
         
         public boolean satisfies(FilterModel criteria) {

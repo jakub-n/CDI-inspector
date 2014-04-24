@@ -539,10 +539,17 @@ public class LocalCdiInspector {
     private Type extractType(IParametedType jbossType) {
         String simpleName = jbossType.getSimpleName();
         boolean isArray = simpleName.endsWith("[]");
-        String fullyQualifiedName = jbossType.getType().getFullyQualifiedName();
-        int lastDotIndex = fullyQualifiedName.lastIndexOf(".");
-        String package_ = fullyQualifiedName.substring(0, lastDotIndex);
-        String name = fullyQualifiedName.substring(lastDotIndex + 1);
+        String name;
+        String package_;
+        if (jbossType.getType() != null) {
+            String fullyQualifiedName = jbossType.getType().getFullyQualifiedName();
+            int lastDotIndex = fullyQualifiedName.lastIndexOf(".");
+            package_ = fullyQualifiedName.substring(0, lastDotIndex);
+            name = fullyQualifiedName.substring(lastDotIndex + 1);
+        } else {
+            package_ = "";
+            name = simpleName;
+        }
         List<Type> typeParameters = new ArrayList<>();
         if (!jbossType.getParameters().isEmpty()) {
             for (IParametedType jbossParam : jbossType.getParameters()) {
