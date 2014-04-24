@@ -10,7 +10,7 @@ public class InjectionPoint {
     /**
      * type required for injection
      */
-    // TODO maybe it is not necessary
+    // TODO maybe it is not necessary.
     @JsonProperty
     private Type type;
 
