@@ -247,6 +247,14 @@ public class LocalCdiInspector {
                 }
             }
         }
+        if (typeList.size() > 1) {
+            for (IType eclipseType : typeList) {
+                if (eclipseType.getFullyQualifiedName().equals("java.lang.Object")) {
+                    typeList.remove(eclipseType);
+                    break;
+                }
+            }
+        }
         if (typeList.size() != 1) {
             throw new RuntimeException("Most specific type can't be find.");
         }
