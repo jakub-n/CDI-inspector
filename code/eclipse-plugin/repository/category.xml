@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/cz.muni.fi.cdii.eclipse.feature_0.0.1.qualifier.jar" id="cz.muni.fi.cdii.eclipse.feature" version="0.0.1.qualifier">
+   <feature url="features/cz.muni.fi.cdii.eclipse.feature_1.0.0.jar" id="cz.muni.fi.cdii.eclipse.feature" version="1.0.0">
       <category name="cz.muni.fi.cdii.cdiinspectorcategory"/>
    </feature>
    <category-def name="cz.muni.fi.cdii.cdiinspectorcategory" label="CDI Inspector category"/>

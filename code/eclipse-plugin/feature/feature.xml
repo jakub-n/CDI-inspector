@@ -2,8 +2,7 @@
 <feature
       id="cz.muni.fi.cdii.eclipse.feature"
       label="CDI Inspector"
-      version="0.0.1.qualifier"
-      provider-name="Jakub Niedermertl">
+      version="1.0.0">
 
    <description url="https://github.com/jakub-n/CDI-inspector">
       CDI Inspector
