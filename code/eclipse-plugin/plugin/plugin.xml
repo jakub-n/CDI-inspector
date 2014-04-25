@@ -19,15 +19,22 @@
             id="cz.muni.fi.cdii.plugin.coreExpr.inspectCdi">
          <with
                variable="activeMenuSelection">
+            <and>
             <iterate
                   ifEmpty="false"
                   operator="or">
-               <or>
+               <and>
                   <adapt
                         type="org.eclipse.jdt.core.IJavaProject">
                   </adapt>
-               </or>
+                  <test property="org.eclipse.core.resources.projectNature" 
+                        value="org.jboss.tools.cdi.core.cdinature" />
+               </and>
             </iterate>
+               <count
+                     value="1">
+               </count>
+            </and>
          </with>
       </definition>
    </extension>
