@@ -2,14 +2,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+        <relativePath>../pom.xml</relativePath>
+	    <groupId>cz.muni.fi.cdii</groupId>
+	    <artifactId>cz.muni.fi.cdii.parent</artifactId>
+        <version>1.0.0</version>
+	</parent>
 	<groupId>cz.muni.fi.cdii.eclipse</groupId>
 	<artifactId>cz.muni.fi.cdii.eclipse.parent</artifactId>
-	<version>1.0.0</version>
 	<packaging>pom</packaging>
 	<modules>
 		<module>./plugin</module>
 		<module>./feature</module>
-		<module>./repository</module>
+        <module>./repository</module>
 	</modules>
 
 	<properties>
@@ -26,12 +32,12 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 		<dependency>
 			<groupId>cz.muni.fi.cdii.common</groupId>
 			<artifactId>cz.muni.fi.cdii.common.model</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
         <dependency>
             <groupId>cz.muni.fi.cdii.eclipse</groupId>
             <artifactId>cz.muni.fi.cdii.eclipse.libwrapper</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
 	</dependencies>
 
@@ -141,6 +147,14 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 
 		<pluginManagement>
 			<plugins>
+	            <plugin>
+	                <groupId>org.apache.maven.plugins</groupId>
+	                <artifactId>maven-compiler-plugin</artifactId>
+	                <configuration>
+	                    <source>1.7</source>
+	                    <target>1.7</target>
+	                </configuration>
+	            </plugin>
 				<plugin>
 					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>target-platform-configuration</artifactId>
