@@ -9,12 +9,12 @@ A set of tools for CDI visualization and inspection.
 
 `https://raw.github.com/jakub-n/cdi-inspector-repo/master/repos/cdii`
 
-Update site contains all necessary dependencies. 
+Update site contains all necessary dependencies.
 Built with Eclipse 4.3.1
 
 ### WildFly extension
 
-[`module` directory](https://github.com/jakub-n/cdi-inspector-repo/tree/master/wildfly-binary/module) 
+[`module` directory](https://github.com/jakub-n/cdi-inspector-repo/tree/master/wildfly-binary/module)
 Copy content of `module` directory to your WildFly module directory.
 
 ## Local build
@@ -61,7 +61,7 @@ Copy content of *&lt;reporoot>/code/wildfly-plugin/cdii-extension/target/module*
 ### Inspecting running applications
 
 1. Show CDI Inspector window in Eclipse: *Main menu* > *Window* > *Show view* > "Other ...", Select *CDI Inspector*
-2. Click *Inspect running application* icon in view toolbar and select eclipse managed application or directly enter context URL of your running application. 
+2. Click *Inspect running application* icon in view toolbar and select eclipse managed application or directly enter context URL of your running application.
 e.g. `http://localhost:8080/your-cool-app`
 
 Extracted data in JSON format can be viewed at `http://localhost:8080/your-cool-app/cdii`
@@ -72,7 +72,7 @@ Extracted data in JSON format can be viewed at `http://localhost:8080/your-cool-
 
 * Maven
 * Eclipse SDK [Download](http://archive.eclipse.org/eclipse/downloads/drops4/)
-* JBoss Tools (Eclipse plugins) [for Kepler 4.3](http://marketplace.eclipse.org/content/jboss-tools-kepler) 
+* JBoss Tools (Eclipse plugins) [for Kepler 4.3](http://marketplace.eclipse.org/content/jboss-tools-kepler)
   [for Luna 4.4](http://marketplace.eclipse.org/content/jboss-tools-luna)
 * e4 (Eclipse plugins) [Download v0.15, Eclipse 4.3.1 compatible] (http://download.eclipse.org/e4/updates/0.15/)
   (optional, just for syntax highlighting and code completion)
@@ -80,6 +80,9 @@ Extracted data in JSON format can be viewed at `http://localhost:8080/your-cool-
   (optional, just for syntax highlighting and code completion)
 * TinkerPop (jars) [Download](http://repo1.maven.org/maven2/com/tinkerpop/)
   (optional, just for syntax highlighting and code completion)
+* Zest (Eclipse plugin) [Download, Eclipse 4.3.1 compatible](https://raw.github.com/jakub-n/cdi-inspector-repo/master/repos/zest_2)
+  (optional, just for syntax highlighting and code completion)
+* Apache Commons IO (jar) [Download] (http://commons.apache.org/proper/commons-io/download_io.cgi) (optional, just for syntax highlighting and code completion)
 
 ## Licence
 
