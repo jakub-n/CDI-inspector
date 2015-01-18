@@ -1,13 +1,13 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1421381982600
+Bnd-LastModified: 1421564626093
 Build-Jdk: 1.8.0_40-ea
 Built-By: watt
 Bundle-ManifestVersion: 2
 Bundle-Name: cz.muni.fi.cdii.common.model
 Bundle-SymbolicName: cz.muni.fi.cdii.common.model
-Bundle-Version: 1.0.0.0v20150116-0419
+Bundle-Version: 1.0.0.0v20150118-0703
 Created-By: Apache Maven Bundle Plugin
-Export-Package: cz.muni.fi.cdii.common.model;version="1.0.0.0v20150116-0
- 419"
+Export-Package: cz.muni.fi.cdii.common.model;version="1.0.0.0v20150118-0
+ 703"
 Import-Package: com.fasterxml.jackson.annotation;version="[2.3,3)"
 Tool: Bnd-2.1.0.20130426-122213
