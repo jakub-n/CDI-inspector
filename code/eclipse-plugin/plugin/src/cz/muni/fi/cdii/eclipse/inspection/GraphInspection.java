@@ -30,6 +30,9 @@ import cz.muni.fi.cdii.eclipse.graph.model.GraphInjectionPoint;
 import cz.muni.fi.cdii.eclipse.graph.model.GraphMember;
 import cz.muni.fi.cdii.eclipse.graph.model.GraphType;
 
+/**
+ * Graph oriented model of CDI Relations.
+ */
 public class GraphInspection {
 
     private final Model model;
@@ -69,9 +72,9 @@ public class GraphInspection {
     private Map<GraphInjectionPoint, Set<Bean>> deferredInjectedBeans = new HashMap<>();
     private Map<GraphMember, Bean> deferredProducedBeans = new HashMap<>();
     
-    public GraphInspection (Inspection inspection) {
-        this.model = inspection.getModel();
-        this.task = inspection.getTask();
+    public GraphInspection (Model model, InspectionTask task) {
+        this.model = model;
+        this.task = task;
         
         createGraph();
         browseModel();

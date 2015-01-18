@@ -47,7 +47,7 @@ public class LocalInspectionJob extends Job {
 		}
 	}
 
-	public IStatus checkedRun() {
+	private IStatus checkedRun() {
 		ICDIProject cdiProject = LocalInspectionJob.getCdiProjectFromProject(this.project);
 		Model model = LocalCdiInspector.inspect(cdiProject);
 		InspectionTask task = new LocalInspectionTask(this.project, this.context);

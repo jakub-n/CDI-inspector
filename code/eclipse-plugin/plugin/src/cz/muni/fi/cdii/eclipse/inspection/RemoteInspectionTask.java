@@ -18,8 +18,7 @@ public class RemoteInspectionTask implements InspectionTask {
     @Override
     public void run() {
         Job inspectionJob = new RemoteInspectionJob(this.cdiiRestUrl, this.context);
-        inspectionJob.setPriority(Job.SHORT);
-        inspectionJob.schedule();
+    	Utils.runJob(inspectionJob);
     }
     
 }

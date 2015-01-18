@@ -46,6 +46,10 @@ import cz.muni.fi.cdii.common.model.Scope;
 import cz.muni.fi.cdii.common.model.Type;
 import cz.muni.fi.cdii.eclipse.model.LocalBean;
 
+/**
+ * Class converting local project to bean oriented {@link Model}
+ *
+ */
 public class LocalCdiInspector {
 
     private Model model;

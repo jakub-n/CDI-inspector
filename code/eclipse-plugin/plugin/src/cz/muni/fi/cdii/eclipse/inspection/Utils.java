@@ -2,6 +2,7 @@ package cz.muni.fi.cdii.eclipse.inspection;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.e4.core.services.events.IEventBroker;
 
 import cz.muni.fi.cdii.common.model.Model;
@@ -21,9 +22,13 @@ public class Utils {
      */
     public static IStatus createGraphInspectionAndDispatch(Model model, InspectionTask task, 
             IEventBroker broker) {
-        Inspection inspection = new Inspection(model, task);
-        GraphInspection graphInspection = new GraphInspection(inspection);
+        GraphInspection graphInspection = new GraphInspection(model, task);
         broker.post(CdiiEventTopics.INSPECT, graphInspection);
         return Status.OK_STATUS;
+    }
+    
+    public static void runJob(Job job) {
+    	job.setPriority(Job.SHORT);
+    	job.schedule();
     }
 }
