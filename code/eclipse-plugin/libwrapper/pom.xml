@@ -33,7 +33,7 @@
 					<instructions>
 						<Bundle-Version>${project.version}v${timestamp}</Bundle-Version>
 						<Embed-Dependency>
-							*;scope=compile|runtime
+							*;scope=compile|runtime;groupId=!cz.muni.fi.cdii.*
 						</Embed-Dependency>
 						<Embed-Transitive>true</Embed-Transitive>
 						<Embed-Directory>jars</Embed-Directory>
