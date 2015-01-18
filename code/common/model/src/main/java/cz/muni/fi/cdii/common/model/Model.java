@@ -9,6 +9,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 
+/**
+ * Bean oriented model. It is shared among Wildfly and Eclipse
+ *
+ */
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 @JsonAutoDetect(getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE, 
 	isGetterVisibility=Visibility.NONE, fieldVisibility=Visibility.DEFAULT)
@@ -17,9 +21,6 @@ public class Model {
 	@JsonProperty
 	private Set<? extends Bean> beans = new HashSet<>();
 
-//	@JsonProperty
-//	private Set<Type> types;
-
     public Set<? extends Bean> getBeans() {
         return beans;
     }
@@ -27,14 +28,6 @@ public class Model {
     public void setBeans(Set<? extends Bean> beans) {
         this.beans = beans;
     }
-
-//    public Set<Type> getTypes() {
-//        return types;
-//    }
-
-//    public void setTypes(Set<Type> types) {
-//        this.types = types;
-//    }
 	
 	@Override
 	public String toString() {
