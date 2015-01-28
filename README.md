@@ -17,6 +17,8 @@ Built with Eclipse 4.3.1
 [`module` directory](https://github.com/jakub-n/cdi-inspector-repo/tree/master/wildfly-binary/module)
 Copy content of `module` directory to your WildFly module directory.
 
+Tested with Widfly 8.0, 8.1 and 8.2.
+
 ## Local build
 
 ### Requirements
@@ -39,6 +41,8 @@ Copy content of `module` directory to your WildFly module directory.
 1. Add *&lt;reporoot>/code/eclipse-plugin/repository/target/repository/* directory as a new local update site in your Eclipse installation.
 2. Install all features from this update site.
 
+To be able to easily select applications deplyed in WildFly for inspection it is also necessary to install *JBoss Web and Java EE Development > JBossAS Tools* feature from `http://download.jboss.org/jbosstools/updates/stable/kepler` update site.
+
 ### WildFly extension
 
 #### Build
@@ -48,7 +52,18 @@ Copy content of `module` directory to your WildFly module directory.
 
 #### Instalation
 
-Copy content of *&lt;reporoot>/code/wildfly-plugin/cdii-extension/target/module* into module directory of your WildFly installation.
+* Copy content of *&lt;reporoot>/code/wildfly-plugin/cdii-extension/target/module* into module directory of your WildFly installation.
+* Enable the CDII module in server confirutation file (if your run standard directory layout and standalone mode it is *&lt;wildfly-root>/standalone/standalone.xml*)
+  * Add following tag in `/server/extensions`:
+    ```
+    <extension module="cz.muni.fi.cdii"/>
+    ```
+    
+  * Add following tag in `/server/profile`:
+    ```
+    <subsystem xmlns="urn:cz.muni.fi.cdii:1.0"/>
+    ```
+
 
 ## Usage
 
@@ -87,3 +102,5 @@ Extracted data in JSON format can be viewed at `http://localhost:8080/your-cool-
 ## Licence
 
 [GNU General Public License version 3](https://www.gnu.org/copyleft/gpl.html)
+
+
